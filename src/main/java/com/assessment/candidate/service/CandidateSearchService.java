@@ -4,6 +4,7 @@ import com.assessment.candidate.model.Assessment;
 import com.assessment.candidate.model.Candidate;
 import com.assessment.candidate.response.CandidateSearchResponse;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -11,14 +12,17 @@ import java.util.List;
 @Service
 public class CandidateSearchService {
     public CandidateSearchResponse findCandidateDetailsByEmail(String emailId) {
-        CandidateSearchResponse candidateSearchResponse = CandidateSearchResponse.builder()
-                .assessments(getAssessments()).candidate(Candidate.builder().countryCode("971").dateOfBirth("20-07-1982")
-                        .emailAddress("john.doe@gmail.com")
-                        .firstName("John")
-                        .lastName("Doe")
-                        .loginId("john.doe@gmail.com")
-                        .mobileNo("8975425323232")
-                        .build()).build();
+        CandidateSearchResponse candidateSearchResponse = null;
+        if(!StringUtils.isEmpty(emailId) && "john.doe@gmail.com".equals(emailId)) {
+            candidateSearchResponse = CandidateSearchResponse.builder()
+                    .assessments(getAssessments()).candidate(Candidate.builder().countryCode("971").dateOfBirth("20-07-1982")
+                            .emailAddress("john.doe@gmail.com")
+                            .firstName("John")
+                            .lastName("Doe")
+                            .loginId("john.doe@gmail.com")
+                            .mobileNo("8975425323232")
+                            .build()).build();
+        }
         return candidateSearchResponse;
     }
 
