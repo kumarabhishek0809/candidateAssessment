@@ -3,7 +3,6 @@ package com.assessment.candidate.controller;
 import com.assessment.candidate.service.EncodeDecodeService;
 import io.micrometer.core.instrument.util.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -27,4 +26,5 @@ public class AdminLoginController {
         }
         return loginAllowed;
     }
+
 }
