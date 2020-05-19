@@ -1,17 +1,16 @@
 package com.assessment.candidate.response;
 
-import com.assessment.candidate.model.Assessment;
+import com.assessment.candidate.model.CandidateAssessment;
 import com.assessment.candidate.model.Candidate;
-import lombok.Builder;
-import lombok.Data;
+import lombok.*;
 
 import java.util.List;
 
 @Data
 @Builder
-public class CandidateSearchResponse {
+public class CandidateSearchResponse extends GenericResponse{
 
-    private List<Assessment> assessments;
+    private List<CandidateAssessment> candidateAssessments;
     private Candidate candidate;
 
 

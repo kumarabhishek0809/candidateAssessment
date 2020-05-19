@@ -5,7 +5,7 @@ import lombok.Data;
 
 @Data
 @Builder
-public class Assessment {
+public class CandidateAssessment {
 
     private String result;
     private String percentage;
