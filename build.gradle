@@ -28,6 +28,8 @@ dependencies {
     }
     compile 'org.apache.poi:poi-ooxml:4.1.2'
     compile 'org.jxls:jxls-jexcel:1.0.9'
+    compile('org.springframework.boot:spring-boot-starter-web')
+    compile('org.springframework.boot:spring-boot-starter-actuator')
 }
 
 test {

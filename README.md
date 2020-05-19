@@ -1,0 +1,1 @@
+http://localhost:8080/valdiateLogin?loginId=Admin&password=UEBzc3cwciQ=
