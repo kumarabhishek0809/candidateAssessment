@@ -12,10 +12,15 @@ public class CandidateAssessment {
     @GeneratedValue(strategy= GenerationType.AUTO)
     private Integer id;
 
+    //post process
     private String result;
     private String percentage;
-    private String name;
     private String action;
+
+    //While Registering
+    @OneToOne
+    private Assessment assessment;
+
     @ManyToOne
     private Candidate candidate;
 }

@@ -1,8 +1,10 @@
 package com.assessment.candidate.service;
 
+import com.assessment.candidate.entity.Assessment;
 import com.assessment.candidate.entity.Candidate;
 import com.assessment.candidate.entity.CandidateAssessment;
 import com.assessment.candidate.model.CandidateAssessmentRequest;
+import com.assessment.candidate.repository.IAssessmentRepository;
 import com.assessment.candidate.repository.ICandidateAssessmentRepository;
 import com.assessment.candidate.repository.ICandidateRepository;
 import com.assessment.candidate.response.CandidateSearchResponse;
@@ -20,6 +22,8 @@ public class CandidateService {
     private ICandidateRepository candidateRepository;
     @Autowired
     private ICandidateAssessmentRepository candidateAssessmentRepository;
+    @Autowired
+    private IAssessmentRepository assessmentRepository;
 
     public CandidateSearchResponse findCandidateDetailsByEmail(String emailId) {
         CandidateSearchResponse candidateSearchResponse = CandidateSearchResponse.builder().build();
@@ -51,12 +55,28 @@ public class CandidateService {
     public GenericResponse registerCandidateAndScheduleAssessment(CandidateAssessmentRequest candidate) {
         GenericResponse genericResponse = new GenericResponse();
         genericResponse.setDataAvailable(true);
-        com.assessment.candidate.entity.Candidate candidateEntity = candidateRepository.save(candidate.getCandidate());
+
+        //FindCandidate if not then save
+        Candidate candidateEntity = null;
+        Optional<Candidate> byEmailAddress = candidateRepository.findByEmailAddress(candidate.getCandidate().getEmailAddress());
+        if (byEmailAddress.isPresent()) {
+            candidateEntity = byEmailAddress.get();
+        } else {
+            candidateEntity = candidateRepository.save(candidate.getCandidate());
+        }
         System.out.println(candidateEntity.getId());
-        CandidateAssessment candidateAssessment = candidate.getCandidateAssessment();
-        candidateAssessment.setCandidate(candidateEntity);
-        CandidateAssessment assessment = candidateAssessmentRepository.save(candidateAssessment);
-        System.out.println(assessment.getId());
+
+        Optional<Assessment> byId = assessmentRepository.findById(candidate.getCandidateAssessment().getAssessment().getId());
+        if (byId.isPresent()) {
+            Assessment assessment = byId.get();
+            CandidateAssessment candidateAssessment = candidate.getCandidateAssessment();
+            candidateAssessment.setCandidate(candidateEntity);
+            candidateAssessment.setAssessment(assessment);
+            CandidateAssessment canAssessment = candidateAssessmentRepository.save(candidateAssessment);
+            System.out.println(assessment.getId());
+        }
+
+
         return genericResponse;
     }
 }
