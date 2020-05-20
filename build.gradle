@@ -6,7 +6,6 @@ plugins {
 
 group = 'com.assessment'
 version = '0.0.1'
-sourceCompatibility = '1.8'
 
 configurations {
     compileOnly {
@@ -30,6 +29,10 @@ dependencies {
     compile 'org.jxls:jxls-jexcel:1.0.9'
     compile('org.springframework.boot:spring-boot-starter-web')
     compile('org.springframework.boot:spring-boot-starter-actuator')
+
+    //MYSQL
+    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+    runtimeOnly 'mysql:mysql-connector-java'
 }
 
 test {

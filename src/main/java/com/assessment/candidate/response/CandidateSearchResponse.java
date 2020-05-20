@@ -1,8 +1,9 @@
 package com.assessment.candidate.response;
 
-import com.assessment.candidate.model.CandidateAssessment;
-import com.assessment.candidate.model.Candidate;
-import lombok.*;
+import com.assessment.candidate.entity.Candidate;
+import com.assessment.candidate.entity.CandidateAssessment;
+import lombok.Builder;
+import lombok.Data;
 
 import java.util.List;
 
