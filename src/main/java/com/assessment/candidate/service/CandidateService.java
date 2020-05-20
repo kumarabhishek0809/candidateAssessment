@@ -13,7 +13,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class CandidateService {
@@ -31,9 +33,30 @@ public class CandidateService {
             Optional<com.assessment.candidate.entity.Candidate> byEmailAddress = candidateRepository.findByEmailAddress(emailId);
             if (byEmailAddress.isPresent()) {
                 com.assessment.candidate.entity.Candidate candidate = byEmailAddress.get();
+
+                List<CandidateAssessment> candidateAssessments = candidate.getCandidateAssessments();
+                List<com.assessment.candidate.model.CandidateAssessment> assessments = candidateAssessments.stream()
+                        .map(candidateAssessment -> com.assessment.candidate.model.CandidateAssessment.builder()
+                                .assessment(candidateAssessment.getAssessment())
+                                .action(candidateAssessment.getAction())
+                                .id(candidateAssessment.getId())
+                                .percentage(candidateAssessment.getPercentage())
+                                .result(candidateAssessment.getResult())
+                                .build()
+                        ).collect(Collectors.toList());
+
                 candidateSearchResponse = CandidateSearchResponse.builder()
-                        .candidateAssessments(candidate.getCandidateAssessments())
-                        .candidate(candidate)
+                        .candidate(com.assessment.candidate.model.Candidate.builder()
+                                .mobileNo(candidate.getMobileNo())
+                                .countryCode(candidate.getCountryCode())
+                                .dateOfBirth(candidate.getDateOfBirth())
+                                .emailAddress(candidate.getEmailAddress())
+                                .firstName(candidate.getFirstName())
+                                .id(candidate.getId())
+                                .lastName(candidate.getLastName())
+                                .loginId(candidate.getLoginId())
+                                .candidateAssessments(assessments)
+                                .build())
                         .build();
                 candidateSearchResponse.setDataAvailable(true);
 
