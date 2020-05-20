@@ -7,6 +7,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.mail.MessagingException;
+
 @RestController
 public class EmailController {
 
@@ -15,9 +17,13 @@ public class EmailController {
 
     @PostMapping(value = "/sendmail")
     public String sendmail(@RequestBody Email email) {
-
         emailService.sendMail(email);
+        return "emailsent";
+    }
 
+    @PostMapping(value = "/sendmailAttachment")
+    public String sendmailAttachment(@RequestBody Email email) throws MessagingException {
+        emailService.sendMessageWithAttachment(email);
         return "emailsent";
     }
 }

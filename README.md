@@ -34,7 +34,19 @@ http://localhost:8080/registerCandidateScheduleAssessment
 }
 ========================================================
 http://localhost:8080/sendmail
-
+{
+	"toEmail" : "kumar.abhishek0809@gmail.com",
+	"subject" : "Good Luck You have cleared the test",
+	"message" : "Our Hiring Manager will getback to you."
+}
+========================================================
+http://localhost:8080/sendmailAttachment
+{
+	"toEmail" : "kumar.abhishek0809@gmail.com",
+	"subject" : "Good Luck You have cleared the test",
+	"message" : "Our Hiring Manager will getback to you.",
+	"pathToAttachment" : "C:/CandidateAssessment/Plan.xlsx"
+}
 ========================================================
 Setting UP DB
  create database db_example; -- Creates the new database
