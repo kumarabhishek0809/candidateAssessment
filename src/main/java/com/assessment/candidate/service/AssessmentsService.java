@@ -38,6 +38,7 @@ public class AssessmentsService {
         return assessmentResponse;
     }
 
+
     public com.assessment.candidate.model.Assessment mapEntityToModel(Assessment assessment) {
         return com.assessment.candidate.model.Assessment.builder()
                 .duration(assessment.getDuration())

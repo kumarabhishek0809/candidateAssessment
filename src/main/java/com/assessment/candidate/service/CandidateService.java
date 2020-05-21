@@ -28,6 +28,8 @@ public class CandidateService {
     private ICandidateAssessmentRepository candidateAssessmentRepository;
     @Autowired
     private IAssessmentRepository assessmentRepository;
+    @Autowired
+    private AssessmentsService assessmentsService;
 
     public CandidateSearchResponse findCandidateDetailsByEmail(String emailId) {
         CandidateSearchResponse candidateSearchResponse = CandidateSearchResponse.builder().build();
@@ -39,8 +41,9 @@ public class CandidateService {
                 List<CandidateAssessment> candidateAssessments = candidate.getCandidateAssessments();
                 List<com.assessment.candidate.model.CandidateAssessment> assessments = candidateAssessments.stream()
                         .filter(candidateAssessment -> candidateAssessment.isActive() == true)
-                        .map(candidateAssessment -> com.assessment.candidate.model.CandidateAssessment.builder()
-                                .assessment(candidateAssessment.getAssessment())
+                        .map(candidateAssessment ->
+                                com.assessment.candidate.model.CandidateAssessment.builder()
+                                .assessment(assessmentsService.mapEntityToModel(candidateAssessment.getAssessment()))
                                 .action(candidateAssessment.getAction())
                                 .id(candidateAssessment.getId())
                                 .percentage(candidateAssessment.getPercentage())

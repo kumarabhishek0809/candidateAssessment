@@ -1,6 +1,5 @@
 package com.assessment.candidate.model;
 
-import com.assessment.candidate.entity.Assessment;
 import lombok.Builder;
 import lombok.Data;
 
