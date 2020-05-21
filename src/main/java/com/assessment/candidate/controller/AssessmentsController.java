@@ -23,7 +23,8 @@ public class AssessmentsController {
     }
 
     @GetMapping(value = "/assessment/{assessmentId}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public AssessmentDetailResponse getAssessments(@PathVariable("assessmentId") Integer assessmentId, @RequestParam("emailId") String emailId){
+    public AssessmentDetailResponse getAssessments(@PathVariable("assessmentId") Integer assessmentId,
+                                                   @RequestParam("emailId") String emailId){
         return assessmentsService.getAssessment(assessmentId,emailId);
     }
 }

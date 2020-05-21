@@ -23,6 +23,8 @@ public class AssessmentsService {
     private IAssessmentRepository assessmentRepository;
     @Autowired
     private ICandidateRepository candidateRepository;
+    @Autowired
+    private CandidateService candidateService;
 
     public AssessmentResponse getAssessments() {
         Iterable<Assessment> assessmentRepositoryAll = assessmentRepository.findAll();
@@ -49,12 +51,15 @@ public class AssessmentsService {
     }
 
     public AssessmentDetailResponse getAssessment(Integer assessmentId, String emailId) {
+        AssessmentDetailResponse assessmentDetailResponse = AssessmentDetailResponse.builder().build();
+        assessmentDetailResponse.setDataAvailable(true);
         //validate if test is scheduled for email id.
         boolean isAssessmentAvailable = false;
         if (!StringUtils.isEmpty(emailId)) {
             Optional<Candidate> byEmailAddress = candidateRepository.findByEmailAddress(emailId);
             if (byEmailAddress.isPresent()) {
                 Candidate candidate = byEmailAddress.get();
+                assessmentDetailResponse.setCandidate(candidateService.mapEntityToModel(candidate, null));
                 List<CandidateAssessment> candidateAssessments = candidate.getCandidateAssessments();
                 if (!CollectionUtils.isEmpty(candidateAssessments)) {
                     isAssessmentAvailable = candidateAssessments.stream().filter(ca -> ca.isActive())
@@ -62,10 +67,13 @@ public class AssessmentsService {
                             .findAny().isPresent();
                 }
                 if (isAssessmentAvailable) {
-
+                    Optional<Assessment> assessment = assessmentRepository.findById(assessmentId);
+                    assessmentDetailResponse.setAssessments(assessment.get());
+                }else {
+                    assessmentDetailResponse.setDataAvailable(false);
                 }
             }
         }
-        return null;
+        return assessmentDetailResponse;
     }
 }

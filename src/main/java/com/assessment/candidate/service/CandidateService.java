@@ -53,22 +53,26 @@ public class CandidateService {
                         ).collect(Collectors.toList());
 
                 candidateSearchResponse = CandidateSearchResponse.builder()
-                        .candidate(com.assessment.candidate.model.Candidate.builder()
-                                .mobileNo(candidate.getMobileNo())
-                                .countryCode(candidate.getCountryCode())
-                                .dateOfBirth(candidate.getDateOfBirth())
-                                .emailAddress(candidate.getEmailAddress())
-                                .firstName(candidate.getFirstName())
-                                .id(candidate.getId())
-                                .lastName(candidate.getLastName())
-                                .candidateAssessments(assessments)
-                                .build())
+                        .candidate(mapEntityToModel(candidate, assessments))
                         .build();
                 candidateSearchResponse.setDataAvailable(true);
 
             }
         }
         return candidateSearchResponse;
+    }
+
+    public com.assessment.candidate.model.Candidate mapEntityToModel(Candidate candidate, List<com.assessment.candidate.model.CandidateAssessment> assessments) {
+        return com.assessment.candidate.model.Candidate.builder()
+                .mobileNo(candidate.getMobileNo())
+                .countryCode(candidate.getCountryCode())
+                .dateOfBirth(candidate.getDateOfBirth())
+                .emailAddress(candidate.getEmailAddress())
+                .firstName(candidate.getFirstName())
+                .id(candidate.getId())
+                .lastName(candidate.getLastName())
+                .candidateAssessments(assessments)
+                .build();
     }
 
     public GenericResponse registerCandidate(Candidate candidate) {
