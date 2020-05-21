@@ -7,17 +7,15 @@ import java.util.Set;
 
 @Data
 @Entity
-public class Assessment {
+public class Answer {
 
     @Id
     @GeneratedValue(strategy= GenerationType.AUTO)
     private Integer id;
 
-
-    private String duration;
-    private String name;
-    private String technology;
+    private String header;
+    private String description;
 
     @OneToMany
-    private Set<Question> questions;
+    private Set<AnswerOption> answerOptions;
 }

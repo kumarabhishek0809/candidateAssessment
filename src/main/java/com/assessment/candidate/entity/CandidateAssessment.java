@@ -17,6 +17,8 @@ public class CandidateAssessment {
     private String percentage;
     private String action;
 
+    private boolean active = true;
+
     //While Registering
     @OneToOne
     private Assessment assessment;

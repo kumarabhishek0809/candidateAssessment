@@ -1,6 +1,7 @@
 package com.assessment.candidate.controller;
 
 import com.assessment.candidate.entity.Candidate;
+import com.assessment.candidate.model.ProcessAssessments;
 import com.assessment.candidate.model.CandidateAssessmentRequest;
 import com.assessment.candidate.response.CandidateSearchResponse;
 import com.assessment.candidate.response.GenericResponse;
@@ -30,6 +31,11 @@ public class CandidateController {
     @PostMapping(value = "/registerCandidate" )
     public GenericResponse registerCandidate(@RequestBody Candidate candidate){
         return candidateService.registerCandidate(candidate);
+    }
+
+    @PutMapping(value = "/processAssessmentForCandidate")
+    public GenericResponse processAssessmentForCandidate(@RequestBody ProcessAssessments candidateAssessments){
+        return candidateService.processAssessmentForCandidate(candidateAssessments);
     }
 
     @PostMapping(value = "/registerCandidateScheduleAssessment" )

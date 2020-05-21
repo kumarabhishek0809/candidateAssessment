@@ -14,5 +14,6 @@ public class CandidateAssessment {
     private String result;
     private String percentage;
     private String action;
+    private boolean active;
     private Assessment assessment;
 }

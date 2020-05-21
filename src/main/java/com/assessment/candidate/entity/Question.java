@@ -3,21 +3,19 @@ package com.assessment.candidate.entity;
 import lombok.Data;
 
 import javax.persistence.*;
-import java.util.Set;
 
 @Data
 @Entity
-public class Assessment {
+public class Question {
 
     @Id
     @GeneratedValue(strategy= GenerationType.AUTO)
     private Integer id;
 
+    private String header;
+    private String description;
 
-    private String duration;
-    private String name;
-    private String technology;
+    @OneToOne
+    private Answer answer;
 
-    @OneToMany
-    private Set<Question> questions;
 }

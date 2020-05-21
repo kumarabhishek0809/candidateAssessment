@@ -4,6 +4,7 @@ import com.assessment.candidate.entity.Assessment;
 import com.assessment.candidate.entity.Candidate;
 import com.assessment.candidate.entity.CandidateAssessment;
 import com.assessment.candidate.model.CandidateAssessmentRequest;
+import com.assessment.candidate.model.ProcessAssessments;
 import com.assessment.candidate.repository.IAssessmentRepository;
 import com.assessment.candidate.repository.ICandidateAssessmentRepository;
 import com.assessment.candidate.repository.ICandidateRepository;
@@ -11,6 +12,7 @@ import com.assessment.candidate.response.CandidateSearchResponse;
 import com.assessment.candidate.response.GenericResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 
 import java.util.List;
@@ -36,12 +38,14 @@ public class CandidateService {
 
                 List<CandidateAssessment> candidateAssessments = candidate.getCandidateAssessments();
                 List<com.assessment.candidate.model.CandidateAssessment> assessments = candidateAssessments.stream()
+                        .filter(candidateAssessment -> candidateAssessment.isActive() == true)
                         .map(candidateAssessment -> com.assessment.candidate.model.CandidateAssessment.builder()
                                 .assessment(candidateAssessment.getAssessment())
                                 .action(candidateAssessment.getAction())
                                 .id(candidateAssessment.getId())
                                 .percentage(candidateAssessment.getPercentage())
                                 .result(candidateAssessment.getResult())
+                                .active(candidateAssessment.isActive())
                                 .build()
                         ).collect(Collectors.toList());
 
@@ -54,15 +58,12 @@ public class CandidateService {
                                 .firstName(candidate.getFirstName())
                                 .id(candidate.getId())
                                 .lastName(candidate.getLastName())
-                                .loginId(candidate.getLoginId())
                                 .candidateAssessments(assessments)
                                 .build())
                         .build();
                 candidateSearchResponse.setDataAvailable(true);
 
             }
-
-
         }
         return candidateSearchResponse;
     }
@@ -75,30 +76,57 @@ public class CandidateService {
         return genericResponse;
     }
 
-    public GenericResponse registerCandidateAndScheduleAssessment(CandidateAssessmentRequest candidate) {
+    public GenericResponse registerCandidateAndScheduleAssessment(CandidateAssessmentRequest candidateAssessmentRequest) {
         GenericResponse genericResponse = new GenericResponse();
         genericResponse.setDataAvailable(true);
 
         //FindCandidate if not then save
         Candidate candidateEntity = null;
-        Optional<Candidate> byEmailAddress = candidateRepository.findByEmailAddress(candidate.getCandidate().getEmailAddress());
+        Optional<Candidate> byEmailAddress = candidateRepository.findByEmailAddress(candidateAssessmentRequest.getCandidate().getEmailAddress());
         if (byEmailAddress.isPresent()) {
             candidateEntity = byEmailAddress.get();
         } else {
-            candidateEntity = candidateRepository.save(candidate.getCandidate());
+            candidateEntity = candidateRepository.save(candidateAssessmentRequest.getCandidate());
         }
         System.out.println(candidateEntity.getId());
 
-        Optional<Assessment> byId = assessmentRepository.findById(candidate.getCandidateAssessment().getAssessment().getId());
+        Optional<Assessment> byId = assessmentRepository.findById(candidateAssessmentRequest.getCandidateAssessment().getAssessment().getId());
         if (byId.isPresent()) {
             Assessment assessment = byId.get();
-            CandidateAssessment candidateAssessment = candidate.getCandidateAssessment();
-            candidateAssessment.setCandidate(candidateEntity);
-            candidateAssessment.setAssessment(assessment);
-            CandidateAssessment canAssessment = candidateAssessmentRepository.save(candidateAssessment);
+            CandidateAssessment newAssessment = candidateAssessmentRequest.getCandidateAssessment();
+            newAssessment.setCandidate(candidateEntity);
+            newAssessment.setAssessment(assessment);
+            CandidateAssessment canAssessment = candidateAssessmentRepository.save(newAssessment);
             System.out.println(assessment.getId());
         }
 
+
+        return genericResponse;
+    }
+
+    public GenericResponse processAssessmentForCandidate(ProcessAssessments candidateAssessments) {
+        GenericResponse genericResponse = new GenericResponse();
+        genericResponse.setDataAvailable(true);
+
+        Optional<Candidate> byEmailAddress = candidateRepository.findByEmailAddress(candidateAssessments.getEmailAddress());
+        if (byEmailAddress.isPresent()) {
+            Candidate candidateDb = byEmailAddress.get();
+            List<CandidateAssessment> dbCandidateAssessments = candidateDb.getCandidateAssessments();
+            List<ProcessAssessments.AssessmentStatus> assessmentStatusRequest = candidateAssessments.getCandidateAssessments();
+
+            if (!CollectionUtils.isEmpty(dbCandidateAssessments)) {
+                for (ProcessAssessments.AssessmentStatus assessmentStatus : assessmentStatusRequest) {
+
+                    for (CandidateAssessment candidateAssessment : dbCandidateAssessments) {
+                        if (candidateAssessment.getId() == assessmentStatus.getId()
+                                && candidateAssessment.isActive() != assessmentStatus.isStatus()) {
+                            candidateAssessment.setActive(assessmentStatus.isStatus());
+                        }
+                    }
+                }
+            }
+            candidateAssessmentRepository.saveAll(dbCandidateAssessments);
+        }
 
         return genericResponse;
     }
