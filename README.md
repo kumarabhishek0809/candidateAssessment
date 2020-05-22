@@ -58,7 +58,7 @@ http://localhost:8080/processAssessmentForCandidate
 Setting UP DB
 
  create database clientAssessmentPortal; 
- create user 'clientAssessmentPortal' identified by 'clientAssessmentPortal'; 
+ create user 'clientAssessmentPortal' identified by 'July@2020'; 
  grant all on clientAssessmentPortal.* to 'clientAssessmentPortal'; 
 
 
