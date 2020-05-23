@@ -40,6 +40,9 @@ public class CandidateController {
 
     @PostMapping(value = "/registerCandidateScheduleAssessment" )
     public GenericResponse registerCandidateAndScheduleAssessment(@RequestBody CandidateAssessmentRequest candidate){
+        if(candidate == null || candidate.getCandidate() == null || candidate.getCandidate().getEmailAddress() == null){
+            throw new RuntimeException();
+        }
         return candidateService.registerCandidateAndScheduleAssessment(candidate);
     }
 }

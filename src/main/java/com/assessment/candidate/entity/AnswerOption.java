@@ -16,4 +16,6 @@ public class AnswerOption {
     private Integer id;
 
     private String description;
+
+    private Integer marks;
 }

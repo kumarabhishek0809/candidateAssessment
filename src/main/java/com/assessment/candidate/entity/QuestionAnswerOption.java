@@ -6,17 +6,16 @@ import javax.persistence.*;
 
 @Data
 @Entity
-public class Question {
-
+public class QuestionAnswerOption {
     @Id
     @GeneratedValue(strategy= GenerationType.AUTO)
     private Integer id;
 
-    private String header;
-    private String description;
+    @OneToOne
+    private Question question;
 
     @OneToOne
-    private Answer answer;
+    private AnswerOption correctOptionId;
 
 
 

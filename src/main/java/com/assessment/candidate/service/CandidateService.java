@@ -4,6 +4,7 @@ import com.assessment.candidate.entity.Assessment;
 import com.assessment.candidate.entity.Candidate;
 import com.assessment.candidate.entity.CandidateAssessment;
 import com.assessment.candidate.model.CandidateAssessmentRequest;
+import com.assessment.candidate.model.Email;
 import com.assessment.candidate.model.ProcessAssessments;
 import com.assessment.candidate.repository.IAssessmentRepository;
 import com.assessment.candidate.repository.ICandidateAssessmentRepository;
@@ -30,6 +31,10 @@ public class CandidateService {
     private IAssessmentRepository assessmentRepository;
     @Autowired
     private AssessmentsService assessmentsService;
+    @Autowired
+    private EmailService emailService;
+
+    String testLink = "";
 
     public CandidateSearchResponse findCandidateDetailsByEmail(String emailId) {
         CandidateSearchResponse candidateSearchResponse = CandidateSearchResponse.builder().build();
@@ -86,28 +91,57 @@ public class CandidateService {
     public GenericResponse registerCandidateAndScheduleAssessment(CandidateAssessmentRequest candidateAssessmentRequest) {
         GenericResponse genericResponse = new GenericResponse();
         genericResponse.setDataAvailable(true);
-
+        String assessmentName = "Technical";
         //FindCandidate if not then save
         Candidate candidateEntity = null;
+        Assessment assessment = null;
         Optional<Candidate> byEmailAddress = candidateRepository.findByEmailAddress(candidateAssessmentRequest.getCandidate().getEmailAddress());
         if (byEmailAddress.isPresent()) {
             candidateEntity = byEmailAddress.get();
+            Candidate candidateRequest = candidateAssessmentRequest.getCandidate();
+            candidateEntity.setMobileNo(Optional.ofNullable(candidateEntity.getMobileNo()).orElse(candidateRequest.getMobileNo()));
+            candidateEntity.setLastName(Optional.ofNullable(candidateEntity.getLastName()).orElse(candidateRequest.getLastName()));
+            candidateEntity.setFirstName(Optional.ofNullable(candidateEntity.getFirstName()).orElse(candidateRequest.getFirstName()));
+            candidateEntity.setEmailAddress(Optional.ofNullable(candidateEntity.getEmailAddress()).orElse(candidateRequest.getEmailAddress()));
+            candidateEntity.setDateOfBirth(Optional.ofNullable(candidateEntity.getDateOfBirth()).orElse(candidateRequest.getDateOfBirth()));
+            candidateEntity.setCountryCode(Optional.ofNullable(candidateEntity.getCountryCode()).orElse(candidateRequest.getCountryCode()));
         } else {
             candidateEntity = candidateRepository.save(candidateAssessmentRequest.getCandidate());
         }
         System.out.println(candidateEntity.getId());
 
-        Optional<Assessment> byId = assessmentRepository.findById(candidateAssessmentRequest.getCandidateAssessment().getAssessment().getId());
-        if (byId.isPresent()) {
-            Assessment assessment = byId.get();
-            CandidateAssessment newAssessment = candidateAssessmentRequest.getCandidateAssessment();
-            newAssessment.setCandidate(candidateEntity);
-            newAssessment.setAssessment(assessment);
-            CandidateAssessment canAssessment = candidateAssessmentRepository.save(newAssessment);
-            System.out.println(assessment.getId());
+        CandidateAssessment candidateAssessment = candidateAssessmentRequest.getCandidateAssessment();
+        if(candidateAssessment != null && candidateAssessment.getAssessment() != null && candidateAssessment.getAssessment().getId() != null) {
+            Optional<Assessment> byId = assessmentRepository.findById(candidateAssessment.getAssessment().getId());
+            if (byId.isPresent()) {
+                assessment = byId.get();
+                assessmentName = assessment.getName();
+                CandidateAssessment newAssessment = candidateAssessment;
+                newAssessment.setCandidate(candidateEntity);
+                newAssessment.setAssessment(assessment);
+                CandidateAssessment canAssessment = candidateAssessmentRepository.save(newAssessment);
+                System.out.println(assessment.getId());
+            }
+
+            //Send Email,
+            if (candidateEntity != null && assessment != null) {
+                Email email = Email.builder().subject("Synechron invites you to take " + assessmentName + " Assessment")
+                        .message("Dear " + candidateEntity.getFirstName() + ",\n" +
+                                "\n" +
+                                "You have been invited to take the assessment \" + assessmentName + \" Assessment. " +
+                                "The duration of this test is " + assessment.getDuration() + "mins. Before you proceed to take the assessment " +
+                                "Please click on the link given below to start the test.\n" +
+                                "\n" +
+                                "http://localhost:8080/assessment/" + assessment.getId() + "?emailId=" + candidateEntity.getEmailAddress() + "\n" +
+                                "All the best!\n" +
+                                "\n" +
+                                "Regards ,\n" +
+                                "Synechron ")
+                        .toEmail(candidateEntity.getEmailAddress())
+                        .build();
+                emailService.sendMail(email);
+            }
         }
-
-
         return genericResponse;
     }
 
