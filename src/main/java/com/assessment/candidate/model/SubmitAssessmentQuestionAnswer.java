@@ -10,13 +10,13 @@ import java.util.List;
 public class SubmitAssessmentQuestionAnswer {
 
     private Integer assessmentId;
-    private List<QuestionAnswer> questionAnswers;
+    private List<QuestionAnswerReq> questionAnswerReq;
 
 
     @Data
-    public static class QuestionAnswer {
+    public static class QuestionAnswerReq {
         private Integer questionId;
-        private Integer answerId;
+        private Integer optionId;
     }
 
 

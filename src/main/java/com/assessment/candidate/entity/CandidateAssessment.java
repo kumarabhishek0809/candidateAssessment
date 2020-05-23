@@ -27,4 +27,7 @@ public class CandidateAssessment {
 
     @ManyToOne
     private Candidate candidate;
+
+    float totalAssessmentScore = 0;
+    float totalMarksObtained = 0;
 }

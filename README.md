@@ -71,13 +71,13 @@ http://localhost:8080/processAssessmentForCandidate
 
 ==========================================================
 
-http://localhost:8080/submitAssessment?emailId=john.doe@gmail.com
+http://localhost:8080/submitAssessment?emailId=kumar.abhishek1@synechron.com
 ==========================================================
-
 {
  "assessmentId": 1,
- "questionAnswers"  : [
-	{"questionId" : 1 , "answerId" : 1}
+ "questionAnswerReq"  : [
+	{"questionId" : 1 , "optionId" : 1},
+	{"questionId" : 2 , "optionId" : 1}
  ]
 }
 
@@ -120,6 +120,13 @@ INSERT INTO `clientAssessmentPortal`.`assessment_questions` (`assessment_id`, `q
 INSERT INTO `clientAssessmentPortal`.`assessment_questions` (`assessment_id`, `questions_id`) VALUES ('3', '2');
 INSERT INTO `clientAssessmentPortal`.`assessment_questions` (`assessment_id`, `questions_id`) VALUES ('3', '1');
 COMMIT;
+
+INSERT INTO `clientassessmentportal`.`question_answer` (`id`, `marks`, `assessment_id`, `options_id`, `question_id`) VALUES ('1', '5', '1', '2', '1');
+INSERT INTO `clientassessmentportal`.`question_answer` (`id`, `marks`, `assessment_id`, `options_id`, `question_id`) VALUES ('2', '1', '1', '1', '2');
+INSERT INTO `clientassessmentportal`.`question_answer` (`id`, `marks`, `assessment_id`, `options_id`, `question_id`) VALUES ('3', '4', '2', '2', '1');
+INSERT INTO `clientassessmentportal`.`question_answer` (`id`, `marks`, `assessment_id`, `options_id`, `question_id`) VALUES ('4', '3', '2', '3', '1');
+
+
 ====================================================================
 SELECT * FROM clientAssessmentPortal.assessment;
 SELECT * FROM clientAssessmentPortal.candidate_assessment;

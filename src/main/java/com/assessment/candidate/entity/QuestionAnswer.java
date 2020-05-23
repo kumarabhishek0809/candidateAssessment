@@ -8,7 +8,7 @@ import javax.persistence.*;
 @Data
 @Entity
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class QuestionAnswerOption {
+public class QuestionAnswer {
     @Id
     @GeneratedValue(strategy= GenerationType.AUTO)
     private Integer id;
@@ -21,6 +21,8 @@ public class QuestionAnswerOption {
 
     @OneToOne
     private Options options;
+
+    private Integer marks;
 
 
 
