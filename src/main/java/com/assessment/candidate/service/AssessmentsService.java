@@ -3,8 +3,11 @@ package com.assessment.candidate.service;
 import com.assessment.candidate.entity.Assessment;
 import com.assessment.candidate.entity.Candidate;
 import com.assessment.candidate.entity.CandidateAssessment;
+import com.assessment.candidate.entity.QuestionAnswerOption;
+import com.assessment.candidate.model.SubmitAssessmentQuestionAnswer;
 import com.assessment.candidate.repository.IAssessmentRepository;
 import com.assessment.candidate.repository.ICandidateRepository;
+import com.assessment.candidate.repository.IQuestionAnswerOptionRepository;
 import com.assessment.candidate.response.AssessmentDetailResponse;
 import com.assessment.candidate.response.AssessmentResponse;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,6 +28,8 @@ public class AssessmentsService {
     private ICandidateRepository candidateRepository;
     @Autowired
     private CandidateService candidateService;
+    @Autowired
+    private IQuestionAnswerOptionRepository questionAnswerOptionRepository;
 
     public AssessmentResponse getAssessments() {
         Iterable<Assessment> assessmentRepositoryAll = assessmentRepository.findAll();
@@ -63,7 +68,8 @@ public class AssessmentsService {
                 List<CandidateAssessment> candidateAssessments = candidate.getCandidateAssessments();
                 if (!CollectionUtils.isEmpty(candidateAssessments)) {
                     isAssessmentAvailable = candidateAssessments.stream().filter(ca -> ca.isActive())
-                            .filter(candidateAssessment -> candidateAssessment.getAssessment().getId() == assessmentId)
+                            .filter(candidateAssessment
+                                    -> candidateAssessment.getAssessment().getId() == assessmentId)
                             .findAny().isPresent();
                 }
                 if (isAssessmentAvailable) {
@@ -75,5 +81,13 @@ public class AssessmentsService {
             }
         }
         return assessmentDetailResponse;
+    }
+
+    public AssessmentDetailResponse submitAssessment(String emailId,
+                                                     SubmitAssessmentQuestionAnswer submitAssessmentQuestionAnswer) {
+        Optional<QuestionAnswerOption> allByAssessment = questionAnswerOptionRepository
+                .findAllByAssessmentId(submitAssessmentQuestionAnswer.getAssessmentId());
+        System.out.println(allByAssessment.get());
+        return null;
     }
 }

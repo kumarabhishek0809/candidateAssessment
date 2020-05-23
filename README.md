@@ -71,6 +71,18 @@ http://localhost:8080/processAssessmentForCandidate
 
 ==========================================================
 
+http://localhost:8080/submitAssessment?emailId=john.doe@gmail.com
+==========================================================
+
+{
+ "assessmentId": 1,
+ "questionAnswers"  : [
+	{"questionId" : 1 , "answerId" : 1}
+ ]
+}
+
+==========================================================
+
 http://localhost:8080/assessment/1?emailId=john.doe@gmail.com
 ==========================================================
 

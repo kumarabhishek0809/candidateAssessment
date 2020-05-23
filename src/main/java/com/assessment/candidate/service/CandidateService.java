@@ -128,11 +128,12 @@ public class CandidateService {
                 Email email = Email.builder().subject("Synechron invites you to take " + assessmentName + " Assessment")
                         .message("Dear " + candidateEntity.getFirstName() + ",\n" +
                                 "\n" +
-                                "You have been invited to take the assessment \" + assessmentName + \" Assessment. " +
-                                "The duration of this test is " + assessment.getDuration() + "mins. Before you proceed to take the assessment " +
+                                "You have been invited to take the assessment "+ assessmentName + " Assessment. " +
+                                "The duration of this test is " + assessment.getDuration() + " mins. Before you proceed to take the assessment " +
                                 "Please click on the link given below to start the test.\n" +
                                 "\n" +
                                 "http://localhost:8080/assessment/" + assessment.getId() + "?emailId=" + candidateEntity.getEmailAddress() + "\n" +
+                                ",\n" +
                                 "All the best!\n" +
                                 "\n" +
                                 "Regards ,\n" +
