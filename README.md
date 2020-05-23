@@ -86,20 +86,40 @@ http://localhost:8080/submitAssessment?emailId=john.doe@gmail.com
 http://localhost:8080/assessment/1?emailId=john.doe@gmail.com
 ==========================================================
 
-INSERT INTO `clientAssessmentPortal`.`answer_option` (`id`, `description`) VALUES ('1', 'Dubai Media City');
-INSERT INTO `clientAssessmentPortal`.`answer_option` (`id`, `description`) VALUES ('2', 'Dubai Business Bay');
-INSERT INTO `clientAssessmentPortal`.`answer_option` (`id`, `description`) VALUES ('3', 'Dubai JBR');
-
-INSERT INTO `clientAssessmentPortal`.`answer` (`id`, `description`, `header`) VALUES ('1', 'All answers are mandatory', 'Please read the answer carefuly');
-
-INSERT INTO `clientAssessmentPortal`.`answer_answer_options` (`answer_id`, `answer_options_id`) VALUES ('1', '1');
-INSERT INTO `clientAssessmentPortal`.`answer_answer_options` (`answer_id`, `answer_options_id`) VALUES ('1', '2');
-INSERT INTO `clientAssessmentPortal`.`answer_answer_options` (`answer_id`, `answer_options_id`) VALUES ('1', '3');
+INSERT INTO `clientassessmentportal`.`answer` (`id`, `description`, `header`) VALUES ('1', 'Ans Dec 1', 'Ans Hed 1');
+INSERT INTO `clientassessmentportal`.`answer` (`id`, `description`, `header`) VALUES ('2', 'Ans Dec 2', 'Ans Hed 2');
 
 
-INSERT INTO `clientAssessmentPortal`.`question` (`id`, `description`, `header`, `answer_id`) VALUES ('1', 'All Questions Are Mandatory', 'Please attmept Question carefully', '1');
+INSERT INTO `clientassessmentportal`.`options` (`id`, `description`) VALUES ('1', 'JLT');
+INSERT INTO `clientassessmentportal`.`options` (`id`, `description`) VALUES ('2', 'JBR');
+INSERT INTO `clientassessmentportal`.`options` (`id`, `description`) VALUES ('3', 'Media City');
+INSERT INTO `clientassessmentportal`.`options` (`id`, `description`) VALUES ('4', 'Business Bay');
+INSERT INTO `clientassessmentportal`.`options` (`id`, `description`) VALUES ('5', 'Meydan ');
+INSERT INTO `clientassessmentportal`.`options` (`id`, `description`) VALUES ('6', 'None Of These');
+
+INSERT INTO `clientAssessmentPortal`.`assessment` (`id`, `duration`, `name`, `technology`) VALUES ('1', '30', 'JAVA 101', 'JAVA');
+INSERT INTO `clientAssessmentPortal`.`assessment` (`id`, `duration`, `name`, `technology`) VALUES ('2', '40', 'SCALA', 'SCALA');
+INSERT INTO `clientAssessmentPortal`.`assessment` (`id`, `duration`, `name`, `technology`) VALUES ('3', '50 ', 'SPRING BOOT', 'JAVA');
+
+INSERT INTO `clientAssessmentPortal`.`question` (`id`, `description`, `header`, `answer_id`) VALUES ('1', 'QUES DESC 1', 'QUES HEAD 1', '1');
+INSERT INTO `clientAssessmentPortal`.`question` (`id`, `description`, `header`, `answer_id`) VALUES ('2', 'QUEST DESC 2', 'QUES HEAD 2', '2');
+
+INSERT INTO `clientAssessmentPortal`.`answer_options` (`answer_id`, `options_id`) VALUES ('1', '2');
+INSERT INTO `clientAssessmentPortal`.`answer_options` (`answer_id`, `options_id`) VALUES ('1', '3');
+INSERT INTO `clientAssessmentPortal`.`answer_options` (`answer_id`, `options_id`) VALUES ('1', '4');
+INSERT INTO `clientAssessmentPortal`.`answer_options` (`answer_id`, `options_id`) VALUES ('2', '1');
+INSERT INTO `clientAssessmentPortal`.`answer_options` (`answer_id`, `options_id`) VALUES ('2', '2');
+INSERT INTO `clientAssessmentPortal`.`answer_options` (`answer_id`, `options_id`) VALUES ('2', '3');
+COMMIT;
+
+
 INSERT INTO `clientAssessmentPortal`.`assessment_questions` (`assessment_id`, `questions_id`) VALUES ('1', '1');
-
+INSERT INTO `clientAssessmentPortal`.`assessment_questions` (`assessment_id`, `questions_id`) VALUES ('1', '2');
+INSERT INTO `clientAssessmentPortal`.`assessment_questions` (`assessment_id`, `questions_id`) VALUES ('2', '2');
+INSERT INTO `clientAssessmentPortal`.`assessment_questions` (`assessment_id`, `questions_id`) VALUES ('2', '1');
+INSERT INTO `clientAssessmentPortal`.`assessment_questions` (`assessment_id`, `questions_id`) VALUES ('3', '2');
+INSERT INTO `clientAssessmentPortal`.`assessment_questions` (`assessment_id`, `questions_id`) VALUES ('3', '1');
+COMMIT;
 ====================================================================
 SELECT * FROM clientAssessmentPortal.assessment;
 SELECT * FROM clientAssessmentPortal.candidate_assessment;

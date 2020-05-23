@@ -19,5 +19,7 @@ public class Answer {
     private String description;
 
     @OneToMany
-    private Set<AnswerOption> answerOptions;
+    private Set<Options> options ;
+
+
 }

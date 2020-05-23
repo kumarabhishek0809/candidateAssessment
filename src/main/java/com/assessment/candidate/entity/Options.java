@@ -11,7 +11,7 @@ import javax.persistence.Id;
 @Data
 @Entity
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class AnswerOption {
+public class Options {
 
     @Id
     @GeneratedValue(strategy= GenerationType.AUTO)
@@ -19,5 +19,5 @@ public class AnswerOption {
 
     private String description;
 
-    private Integer marks;
+
 }

@@ -20,7 +20,7 @@ public class QuestionAnswerOption {
     private Question question;
 
     @OneToOne
-    private AnswerOption answerOption;
+    private Options options;
 
 
 

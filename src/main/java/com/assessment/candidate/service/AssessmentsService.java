@@ -85,9 +85,12 @@ public class AssessmentsService {
 
     public AssessmentDetailResponse submitAssessment(String emailId,
                                                      SubmitAssessmentQuestionAnswer submitAssessmentQuestionAnswer) {
-        Optional<QuestionAnswerOption> allByAssessment = questionAnswerOptionRepository
+        Optional<List<QuestionAnswerOption>> allByAssessment = questionAnswerOptionRepository
                 .findAllByAssessmentId(submitAssessmentQuestionAnswer.getAssessmentId());
-        System.out.println(allByAssessment.get());
+        if(allByAssessment.isPresent()) {
+            List<QuestionAnswerOption> questionAnswerOptions = allByAssessment.get();
+            System.out.println(allByAssessment.get());
+        }
         return null;
     }
 }
