@@ -28,7 +28,7 @@ public class CandidateController {
         return candidateSearchResponse;
     }
 
-    @PostMapping(value = "/registerCandidate" )
+    @PutMapping(value = "/registerCandidate" )
     public GenericResponse registerCandidate(@RequestBody Candidate candidate){
         return candidateService.registerCandidate(candidate);
     }

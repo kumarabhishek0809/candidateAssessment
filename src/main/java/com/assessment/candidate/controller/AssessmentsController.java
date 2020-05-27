@@ -27,7 +27,7 @@ public class AssessmentsController {
     }
 
 
-    @PostMapping(value = "/submitAssessment", produces = MediaType.APPLICATION_JSON_VALUE)
+    @PutMapping(value = "/submitAssessment", produces = MediaType.APPLICATION_JSON_VALUE)
     public AssessmentDetailResponse submitAssessment(@RequestParam("emailId") String emailId,
                                                      @RequestBody SubmitAssessmentQuestionAnswer submitAssessmentQuestionAnswer
                                                    ){
