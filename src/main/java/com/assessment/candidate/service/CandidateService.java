@@ -12,6 +12,7 @@ import com.assessment.candidate.repository.ICandidateRepository;
 import com.assessment.candidate.response.CandidateSearchResponse;
 import com.assessment.candidate.response.GenericResponse;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
@@ -33,6 +34,9 @@ public class CandidateService {
     private AssessmentsService assessmentsService;
     @Autowired
     private EmailService emailService;
+
+    @Value("${instanceIPAddress}")
+    private String instanceIPAddress;
 
     String testLink = "";
 
@@ -132,7 +136,7 @@ public class CandidateService {
                                 "The duration of this test is " + assessment.getDuration() + " mins. Before you proceed to take the assessment " +
                                 "Please click on the link given below to start the test.\n" +
                                 "\n" +
-                                "http://localhost:8080/assessment/" + assessment.getId() + "?emailId=" + candidateEntity.getEmailAddress() + "\n" +
+                                "http://"+instanceIPAddress+":8080/assessment/" + assessment.getId() + "?emailId=" + candidateEntity.getEmailAddress() + "\n" +
                                 ",\n" +
                                 "All the best!\n" +
                                 "\n" +
