@@ -23,6 +23,8 @@ http://localhost:8080/registerCandidate
 =================================================
 
 http://localhost:8080/registerCandidateScheduleAssessment
+
+
 {
 	 "candidate" : {
 	  "firstName" : "Sample First Name",
@@ -42,6 +44,7 @@ http://localhost:8080/registerCandidateScheduleAssessment
 ===============================================
 
 http://localhost:8080/sendmail
+
 {
 	"toEmail" : "kumar.abhishek0809@gmail.com",
 	"subject" : "Good Luck You have cleared the test",
@@ -50,6 +53,7 @@ http://localhost:8080/sendmail
 ===============================================
 
 http://localhost:8080/sendmailAttachment
+
 {
 	"toEmail" : "kumar.abhishek0809@gmail.com",
 	"subject" : "Good Luck You have cleared the test",
@@ -60,6 +64,7 @@ http://localhost:8080/sendmailAttachment
 =================================================
 
 http://localhost:8080/processAssessmentForCandidate 
+
 {
    "emailAddress" : "john.doe@gmail.com",
     "candidateAssessments" : [{"id" : "15", "status" : true},{"id" : "14", "status" : true},{"id" : "12", "status" : false},{"id" : "13", "status" : false}]   
@@ -68,7 +73,7 @@ http://localhost:8080/processAssessmentForCandidate
 ================================================
 
 http://localhost:8080/submitAssessment?emailId=kumar.abhishek1@synechron.com
-=================================================
+
 {
  "assessmentId": 1,
  "questionAnswerReq"  : [
@@ -143,7 +148,8 @@ INSERT INTO `clientassessmentportal`.`question_answer` (`id`, `marks`, `assessme
 INSERT INTO `clientassessmentportal`.`question_answer` (`id`, `marks`, `assessment_id`, `options_id`, `question_id`) VALUES ('4', '3', '2', '3', '1');
 COMMIT;
 
-=========================================================
+=======================================================
+
 SELECT * FROM clientAssessmentPortal.assessment;
 SELECT * FROM clientAssessmentPortal.candidate_assessment;
 SELECT * FROM clientAssessmentPortal.candidate;
