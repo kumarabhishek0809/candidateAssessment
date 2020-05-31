@@ -89,21 +89,30 @@ http://localhost:8080/assessment/1?emailId=john.doe@gmail.com
 
  
 INSERT INTO `clientassessmentportal`.`answer` (`id`, `description`, `header`) VALUES ('1', 'Ans Dec 1', 'Ans Hed 1');
+
 INSERT INTO `clientassessmentportal`.`answer` (`id`, `description`, `header`) VALUES ('2', 'Ans Dec 2', 'Ans Hed 2');
 
 
 INSERT INTO `clientassessmentportal`.`options` (`id`, `description`) VALUES ('1', 'JLT');
+
 INSERT INTO `clientassessmentportal`.`options` (`id`, `description`) VALUES ('2', 'JBR');
+
 INSERT INTO `clientassessmentportal`.`options` (`id`, `description`) VALUES ('3', 'Media City');
+
 INSERT INTO `clientassessmentportal`.`options` (`id`, `description`) VALUES ('4', 'Business Bay');
+
 INSERT INTO `clientassessmentportal`.`options` (`id`, `description`) VALUES ('5', 'Meydan ');
+
 INSERT INTO `clientassessmentportal`.`options` (`id`, `description`) VALUES ('6', 'None Of These');
 
 INSERT INTO `clientAssessmentPortal`.`assessment` (`id`, `duration`, `name`, `technology`) VALUES ('1', '30', 'JAVA 101', 'JAVA');
+
 INSERT INTO `clientAssessmentPortal`.`assessment` (`id`, `duration`, `name`, `technology`) VALUES ('2', '40', 'SCALA', 'SCALA');
+
 INSERT INTO `clientAssessmentPortal`.`assessment` (`id`, `duration`, `name`, `technology`) VALUES ('3', '50 ', 'SPRING BOOT', 'JAVA');
 
 INSERT INTO `clientAssessmentPortal`.`question` (`id`, `description`, `header`, `answer_id`) VALUES ('1', 'QUES DESC 1', 'QUES HEAD 1', '1');
+
 INSERT INTO `clientAssessmentPortal`.`question` (`id`, `description`, `header`, `answer_id`) VALUES ('2', 'QUEST DESC 2', 'QUES HEAD 2', '2');
 
 drop table clientAssessmentPortal.answer_options;
@@ -117,10 +126,15 @@ CREATE TABLE clientAssessmentPortal.answer_options (
 );
 
 INSERT INTO `clientAssessmentPortal`.`answer_options` (`answer_id`, `options_id`) VALUES ('1', '2');
+
 INSERT INTO `clientAssessmentPortal`.`answer_options` (`answer_id`, `options_id`) VALUES ('1', '3');
+
 INSERT INTO `clientAssessmentPortal`.`answer_options` (`answer_id`, `options_id`) VALUES ('1', '4');
+
 INSERT INTO `clientAssessmentPortal`.`answer_options` (`answer_id`, `options_id`) VALUES ('2', '1');
+
 INSERT INTO `clientAssessmentPortal`.`answer_options` (`answer_id`, `options_id`) VALUES ('2', '2');
+
 INSERT INTO `clientAssessmentPortal`.`answer_options` (`answer_id`, `options_id`) VALUES ('2', '3');
 COMMIT;
 
@@ -135,29 +149,45 @@ CREATE TABLE clientAssessmentPortal.assessment_questions (
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 INSERT INTO `clientAssessmentPortal`.`assessment_questions` (`assessment_id`, `questions_id`) VALUES ('1', '1');
+
 INSERT INTO `clientAssessmentPortal`.`assessment_questions` (`assessment_id`, `questions_id`) VALUES ('1', '2');
+
 INSERT INTO `clientAssessmentPortal`.`assessment_questions` (`assessment_id`, `questions_id`) VALUES ('2', '2');
+
 INSERT INTO `clientAssessmentPortal`.`assessment_questions` (`assessment_id`, `questions_id`) VALUES ('2', '1');
+
 INSERT INTO `clientAssessmentPortal`.`assessment_questions` (`assessment_id`, `questions_id`) VALUES ('3', '2');
+
 INSERT INTO `clientAssessmentPortal`.`assessment_questions` (`assessment_id`, `questions_id`) VALUES ('3', '1');
 COMMIT;
 
 INSERT INTO `clientassessmentportal`.`question_answer` (`id`, `marks`, `assessment_id`, `options_id`, `question_id`) VALUES ('1', '5', '1', '2', '1');
+
 INSERT INTO `clientassessmentportal`.`question_answer` (`id`, `marks`, `assessment_id`, `options_id`, `question_id`) VALUES ('2', '1', '1', '1', '2');
+
 INSERT INTO `clientassessmentportal`.`question_answer` (`id`, `marks`, `assessment_id`, `options_id`, `question_id`) VALUES ('3', '4', '2', '2', '1');
+
 INSERT INTO `clientassessmentportal`.`question_answer` (`id`, `marks`, `assessment_id`, `options_id`, `question_id`) VALUES ('4', '3', '2', '3', '1');
 COMMIT;
 
 =======================================================
 
 SELECT * FROM clientAssessmentPortal.assessment;
+
 SELECT * FROM clientAssessmentPortal.candidate_assessment;
+
 SELECT * FROM clientAssessmentPortal.candidate;
+
 SELECT * FROM clientAssessmentPortal.question;
+
 SELECT * FROM clientAssessmentPortal.answer_option;
+
 SELECT * FROM clientAssessmentPortal.answer;
+
 SELECT * FROM clientAssessmentPortal.answer_answer_options;
+
 SELECT * FROM clientAssessmentPortal.question;
+
 SELECT * FROM clientassessmentportal.assessment_questions;
 
 ==========================================================
@@ -198,6 +228,8 @@ git clone https://github.com/kumarabhishek0809/candidateAssessment.git
 Setting UP DB
 
  create database clientAssessmentPortal; 
+ 
  create user 'clientAssessmentPortal' identified by 'July@2020'; 
+ 
  grant all on clientAssessmentPortal.* to 'clientAssessmentPortal';
  
