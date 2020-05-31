@@ -72,7 +72,7 @@ http://localhost:8080/processAssessmentForCandidate
 
 ================================================
 
-http://localhost:8080/submitAssessment?emailId=kumar.abhishek1@synechron.com
+http://localhost:8080/submitAssessment?emailId=kumar.abhishek1@gmail.com
 
 {
  "assessmentId": 1,
