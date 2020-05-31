@@ -1,12 +1,12 @@
 
  Java 
-======================================================== 
+================================================= 
 http://localhost:8080/valdiateLogin?loginId=Admin&password=UEBzc3cwciQ
-========================================================
+=================================================
 http://localhost:8080/candidateDetails?emailId=john.doe@gmail.com
-========================================================
+=================================================
 http://localhost:8080/assessments
-========================================================
+=================================================
 
 http://localhost:8080/registerCandidate
 
@@ -20,7 +20,7 @@ http://localhost:8080/registerCandidate
   "loginId": "john.doe2@gmail.com"
 }
 
-========================================================
+=================================================
 
 http://localhost:8080/registerCandidateScheduleAssessment
 {
@@ -39,7 +39,7 @@ http://localhost:8080/registerCandidateScheduleAssessment
 	}
 }
 
-========================================================
+===============================================
 
 http://localhost:8080/sendmail
 {
@@ -47,7 +47,7 @@ http://localhost:8080/sendmail
 	"subject" : "Good Luck You have cleared the test",
 	"message" : "Our Hiring Manager will getback to you."
 }
-========================================================
+===============================================
 
 http://localhost:8080/sendmailAttachment
 {
@@ -57,7 +57,7 @@ http://localhost:8080/sendmailAttachment
 	"pathToAttachment" : "/home/ec2-user/candidateAssessment/assessment.csv"
 }
 
-==========================================================
+=================================================
 
 http://localhost:8080/processAssessmentForCandidate 
 {
@@ -65,10 +65,10 @@ http://localhost:8080/processAssessmentForCandidate
     "candidateAssessments" : [{"id" : "15", "status" : true},{"id" : "14", "status" : true},{"id" : "12", "status" : false},{"id" : "13", "status" : false}]   
 }
 
-==========================================================
+================================================
 
 http://localhost:8080/submitAssessment?emailId=kumar.abhishek1@synechron.com
-==========================================================
+=================================================
 {
  "assessmentId": 1,
  "questionAnswerReq"  : [
@@ -77,10 +77,10 @@ http://localhost:8080/submitAssessment?emailId=kumar.abhishek1@synechron.com
  ]
 }
 
-==========================================================
+==============================================
 
 http://localhost:8080/assessment/1?emailId=john.doe@gmail.com
-==========================================================
+================================================
 
  
 INSERT INTO `clientassessmentportal`.`answer` (`id`, `description`, `header`) VALUES ('1', 'Ans Dec 1', 'Ans Hed 1');
@@ -143,7 +143,7 @@ INSERT INTO `clientassessmentportal`.`question_answer` (`id`, `marks`, `assessme
 INSERT INTO `clientassessmentportal`.`question_answer` (`id`, `marks`, `assessment_id`, `options_id`, `question_id`) VALUES ('4', '3', '2', '3', '1');
 COMMIT;
 
-====================================================================
+=========================================================
 SELECT * FROM clientAssessmentPortal.assessment;
 SELECT * FROM clientAssessmentPortal.candidate_assessment;
 SELECT * FROM clientAssessmentPortal.candidate;
@@ -154,7 +154,7 @@ SELECT * FROM clientAssessmentPortal.answer_answer_options;
 SELECT * FROM clientAssessmentPortal.question;
 SELECT * FROM clientassessmentportal.assessment_questions;
 
-=====================================================================
+==========================================================
 
 Intitial script
 #!/bin/sh
@@ -167,23 +167,23 @@ sudo yum install -y mysql-community-server
 
 sudo yum -y install java-1.8.0-openjdk-devel
 
-#############install mysql #############################
+###########   install mysql ##########
 sudo service mysqld start
 sudo service mysqld status
 sudo grep 'temporary password' /var/log/mysqld.log
 ====
 mysql -u root -p
 SET PASSWORD = PASSWORD('July@2020');
-############ Gradle ####################################
+############ Gradle ##################
 curl -s "https://get.sdkman.io" | bash 
 source "$HOME/.sdkman/bin/sdkman-init.sh"
 sdk install gradle
 
-############ Start Programing ##########################
+############ Start Programing ########
 git version
 git clone https://github.com/kumarabhishek0809/candidateAssessment.git
 
-################### Schema setup ########################
+############ Schema setup ############
 Setting UP DB
 
  create database clientAssessmentPortal; 
