@@ -156,7 +156,8 @@ SELECT * FROM clientassessmentportal.assessment_questions;
 
 ==========================================================
 
-Intitial script
+************Intitial script************
+
 #!/bin/sh
 
 sudo yum update -y
@@ -168,18 +169,22 @@ sudo yum install -y mysql-community-server
 sudo yum -y install java-1.8.0-openjdk-devel
 
 ###########   install mysql ##########
+
 sudo service mysqld start
 sudo service mysqld status
 sudo grep 'temporary password' /var/log/mysqld.log
 ====
 mysql -u root -p
 SET PASSWORD = PASSWORD('July@2020');
+
 ############ Gradle ##################
+
 curl -s "https://get.sdkman.io" | bash 
 source "$HOME/.sdkman/bin/sdkman-init.sh"
 sdk install gradle
 
 ############ Start Programing ########
+
 git version
 git clone https://github.com/kumarabhishek0809/candidateAssessment.git
 
