@@ -75,28 +75,28 @@ http://localhost:8080/submitAssessment?emailId=kumar.abhishek1@gmail.com
  ]
 }
 
-==============================================
+============================EXAM SUBMIT LINK =======
 
 http://localhost:8080/assessment/1?emailId=john.doe@gmail.com
 ================================================
 
  
-INSERT INTO `clientassessmentportal`.`answer` (`id`, `description`, `header`) VALUES ('1', 'Ans Dec 1', 'Ans Hed 1');
+INSERT INTO `clientAssessmentPortal`.`answer` (`id`, `description`, `header`) VALUES ('1', 'Ans Dec 1', 'Ans Hed 1');
 
-INSERT INTO `clientassessmentportal`.`answer` (`id`, `description`, `header`) VALUES ('2', 'Ans Dec 2', 'Ans Hed 2');
+INSERT INTO `clientAssessmentPortal`.`answer` (`id`, `description`, `header`) VALUES ('2', 'Ans Dec 2', 'Ans Hed 2');
 
 
-INSERT INTO `clientassessmentportal`.`options` (`id`, `description`) VALUES ('1', 'JLT');
+INSERT INTO `clientAssessmentPortal`.`options` (`id`, `description`) VALUES ('1', 'JLT');
 
-INSERT INTO `clientassessmentportal`.`options` (`id`, `description`) VALUES ('2', 'JBR');
+INSERT INTO `clientAssessmentPortal`.`options` (`id`, `description`) VALUES ('2', 'JBR');
 
-INSERT INTO `clientassessmentportal`.`options` (`id`, `description`) VALUES ('3', 'Media City');
+INSERT INTO `clientAssessmentPortal`.`options` (`id`, `description`) VALUES ('3', 'Media City');
 
-INSERT INTO `clientassessmentportal`.`options` (`id`, `description`) VALUES ('4', 'Business Bay');
+INSERT INTO `clientAssessmentPortal`.`options` (`id`, `description`) VALUES ('4', 'Business Bay');
 
-INSERT INTO `clientassessmentportal`.`options` (`id`, `description`) VALUES ('5', 'Meydan ');
+INSERT INTO `clientAssessmentPortal`.`options` (`id`, `description`) VALUES ('5', 'Meydan ');
 
-INSERT INTO `clientassessmentportal`.`options` (`id`, `description`) VALUES ('6', 'None Of These');
+INSERT INTO `clientAssessmentPortal`.`options` (`id`, `description`) VALUES ('6', 'None Of These');
 
 INSERT INTO `clientAssessmentPortal`.`assessment` (`id`, `duration`, `name`, `technology`) VALUES ('1', '30', 'JAVA 101', 'JAVA');
 
@@ -154,13 +154,13 @@ INSERT INTO `clientAssessmentPortal`.`assessment_questions` (`assessment_id`, `q
 INSERT INTO `clientAssessmentPortal`.`assessment_questions` (`assessment_id`, `questions_id`) VALUES ('3', '1');
 COMMIT;
 
-INSERT INTO `clientassessmentportal`.`question_answer` (`id`, `marks`, `assessment_id`, `options_id`, `question_id`) VALUES ('1', '5', '1', '2', '1');
+INSERT INTO `clientAssessmentPortal`.`question_answer` (`id`, `marks`, `assessment_id`, `options_id`, `question_id`) VALUES ('1', '5', '1', '2', '1');
 
-INSERT INTO `clientassessmentportal`.`question_answer` (`id`, `marks`, `assessment_id`, `options_id`, `question_id`) VALUES ('2', '1', '1', '1', '2');
+INSERT INTO `clientAssessmentPortal`.`question_answer` (`id`, `marks`, `assessment_id`, `options_id`, `question_id`) VALUES ('2', '1', '1', '1', '2');
 
-INSERT INTO `clientassessmentportal`.`question_answer` (`id`, `marks`, `assessment_id`, `options_id`, `question_id`) VALUES ('3', '4', '2', '2', '1');
+INSERT INTO `clientAssessmentPortal`.`question_answer` (`id`, `marks`, `assessment_id`, `options_id`, `question_id`) VALUES ('3', '4', '2', '2', '1');
 
-INSERT INTO `clientassessmentportal`.`question_answer` (`id`, `marks`, `assessment_id`, `options_id`, `question_id`) VALUES ('4', '3', '2', '3', '1');
+INSERT INTO `clientAssessmentPortal`.`question_answer` (`id`, `marks`, `assessment_id`, `options_id`, `question_id`) VALUES ('4', '3', '2', '3', '1');
 COMMIT;
 
 =======================================================
@@ -181,7 +181,7 @@ SELECT * FROM clientAssessmentPortal.answer_answer_options;
 
 SELECT * FROM clientAssessmentPortal.question;
 
-SELECT * FROM clientassessmentportal.assessment_questions;
+SELECT * FROM clientAssessmentPortal.assessment_questions;
 
 ==========================================================
 
@@ -206,6 +206,12 @@ sudo grep 'temporary password' /var/log/mysqld.log
 mysql -u root -p
 SET PASSWORD = PASSWORD('July@2020');
 
+create database clientAssessmentPortal; 
+
+create user 'clientAssessmentPortal' identified by 'July@2020'; 
+
+grant all on clientAssessmentPortal.* to 'clientAssessmentPortal';
+
 ############ Gradle ##################
 
 curl -s "https://get.sdkman.io" | bash 
@@ -217,12 +223,4 @@ sdk install gradle
 git version
 git clone https://github.com/kumarabhishek0809/candidateAssessment.git
 
-############ Schema setup ############
-Setting UP DB
-
- create database clientAssessmentPortal; 
- 
- create user 'clientAssessmentPortal' identified by 'July@2020'; 
- 
- grant all on clientAssessmentPortal.* to 'clientAssessmentPortal';
  

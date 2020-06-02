@@ -12,11 +12,12 @@ import com.assessment.candidate.repository.ICandidateRepository;
 import com.assessment.candidate.response.CandidateSearchResponse;
 import com.assessment.candidate.response.GenericResponse;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -34,9 +35,6 @@ public class CandidateService {
     private AssessmentsService assessmentsService;
     @Autowired
     private EmailService emailService;
-
-    @Value("${instanceIPAddress}")
-    private String instanceIPAddress;
 
     String testLink = "";
 
@@ -92,7 +90,7 @@ public class CandidateService {
         return genericResponse;
     }
 
-    public GenericResponse registerCandidateAndScheduleAssessment(CandidateAssessmentRequest candidateAssessmentRequest) {
+    public GenericResponse registerCandidateAndScheduleAssessment(CandidateAssessmentRequest candidateAssessmentRequest) throws UnknownHostException {
         GenericResponse genericResponse = new GenericResponse();
         genericResponse.setDataAvailable(true);
         String assessmentName = "Technical";
@@ -127,6 +125,11 @@ public class CandidateService {
                 System.out.println(assessment.getId());
             }
 
+
+            InetAddress inetAddress = InetAddress.getLocalHost();
+            System.out.println("IP Address:- " + inetAddress.getHostAddress());
+            System.out.println("Host Name:- " + inetAddress.getHostName());
+
             //Send Email,
             if (candidateEntity != null && assessment != null) {
                 Email email = Email.builder().subject("Synechron invites you to take " + assessmentName + " Assessment")
@@ -136,7 +139,7 @@ public class CandidateService {
                                 "The duration of this test is " + assessment.getDuration() + " mins. Before you proceed to take the assessment " +
                                 "Please click on the link given below to start the test.\n" +
                                 "\n" +
-                                "http://"+instanceIPAddress+":8080/assessment/" + assessment.getId() + "?emailId=" + candidateEntity.getEmailAddress() + "\n" +
+                                "http://"+inetAddress.getHostAddress()+":8080/assessment/" + assessment.getId() + "?emailId=" + candidateEntity.getEmailAddress() + "\n" +
                                 ",\n" +
                                 "All the best!\n" +
                                 "\n" +
