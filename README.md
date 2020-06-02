@@ -23,16 +23,9 @@ http://localhost:8080/registerCandidate
 =================================================
 
 http://localhost:8080/registerCandidateScheduleAssessment
-
-
 {
 	 "candidate" : {
-	  "firstName" : "Sample First Name",
-	  "lastName" : "Sample Last Name",
-	  "emailAddress" : "john.doe@gmail.com",
-	  "dateOfBirth" : "1982-07-20",
-	  "countryCode" : "971",
-	  "mobileNo" : "523083264"
+	  emailAddress" : "john.doe@gmail.com"
 	},
 	"candidateAssessment" : {
 		"assessment" : {
