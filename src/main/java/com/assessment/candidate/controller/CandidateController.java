@@ -11,6 +11,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
+import java.net.UnknownHostException;
+
 @RestController
 public class CandidateController {
 
@@ -39,7 +41,7 @@ public class CandidateController {
     }
 
     @PostMapping(value = "/registerCandidateScheduleAssessment" )
-    public GenericResponse registerCandidateAndScheduleAssessment(@RequestBody CandidateAssessmentRequest candidate){
+    public GenericResponse registerCandidateAndScheduleAssessment(@RequestBody CandidateAssessmentRequest candidate) throws UnknownHostException {
         if(candidate == null || candidate.getCandidate() == null || candidate.getCandidate().getEmailAddress() == null){
             throw new RuntimeException();
         }
