@@ -56,7 +56,7 @@ public class CandidateService {
             candidateProfiles.addAll(candidateAssessments.stream().map(candidateAssessment -> {
                 return CandidatesSearchResponse.CandidateProfile.builder()
                         .name(candidateAssessment.getAssessment().getName())
-                        .id(candidateEntity.getId())
+                        .id(candidateAssessment.getId())
                         .firstName(candidateEntity.getFirstName())
                         .lastName(candidateEntity.getLastName())
                         .emailAddress(candidateEntity.getEmailAddress())
