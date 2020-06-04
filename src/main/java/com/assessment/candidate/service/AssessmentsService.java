@@ -15,6 +15,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 
+import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -148,6 +149,8 @@ public class AssessmentsService {
                 }
                 candidateAssessment1.setActive(false);
                 candidateAssessment1.setResult("Attended");
+                candidateAssessment1.setAttemptedDate(ZonedDateTime.now());
+                candidateAssessment1.setPassFail(totalPercentage > 60);
                 CandidateAssessment canAssessment = candidateAssessmentRepository.save(candidateAssessment1);
             }
 

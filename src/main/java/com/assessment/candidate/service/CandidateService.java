@@ -10,15 +10,19 @@ import com.assessment.candidate.repository.IAssessmentRepository;
 import com.assessment.candidate.repository.ICandidateAssessmentRepository;
 import com.assessment.candidate.repository.ICandidateRepository;
 import com.assessment.candidate.response.CandidateSearchResponse;
+import com.assessment.candidate.response.CandidatesSearchResponse;
 import com.assessment.candidate.response.GenericResponse;
+import com.assessment.candidate.util.DateUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 @Service
@@ -38,7 +42,40 @@ public class CandidateService {
     @Value("${instanceIPAddress}")
     private String instanceIPAddress;
 
-    String testLink = "";
+
+    public CandidatesSearchResponse findCandidateDetails() {
+        CandidatesSearchResponse candidateSearchResponse = CandidatesSearchResponse.builder().build();
+        candidateSearchResponse.setCandidates(new ArrayList<>());
+        List<com.assessment.candidate.model.Candidate> candidates = candidateSearchResponse.getCandidates();
+        Iterable<Candidate> candidateRepositoryAll = candidateRepository.findAll();
+        candidateSearchResponse.setDataAvailable(true);
+
+        candidateRepositoryAll.forEach( candidateEntity ->
+            {
+                List<CandidateAssessment> candidateAssessments = candidateEntity.getCandidateAssessments();
+                List<com.assessment.candidate.model.CandidateAssessment> assessments = candidateAssessments.stream()
+                        .map(getCandidateAssessmentCandidateAssessmentFunction()
+                        ).collect(Collectors.toList());
+
+                candidates.add(mapEntityToModel(candidateEntity, assessments));
+            });
+        return candidateSearchResponse;
+    }
+
+    private Function<CandidateAssessment, com.assessment.candidate.model.CandidateAssessment> getCandidateAssessmentCandidateAssessmentFunction() {
+        return candidateAssessment ->
+                com.assessment.candidate.model.CandidateAssessment.builder()
+                        .assessment(assessmentsService.mapEntityToModel(candidateAssessment.getAssessment()))
+                        .action(candidateAssessment.getAction())
+                        .id(candidateAssessment.getId())
+                        .percentage(candidateAssessment.getPercentage())
+                        .result(candidateAssessment.getResult())
+                        .active(candidateAssessment.isActive())
+                        .inviteDate(DateUtils.getStringDate(candidateAssessment.getInviteDate()))
+                        .attemptedDate(DateUtils.getStringDate(candidateAssessment.getAttemptedDate()))
+                        .passFail(candidateAssessment.isPassFail())
+                        .build();
+    }
 
     public CandidateSearchResponse findCandidateDetailsByEmail(String emailId) {
         CandidateSearchResponse candidateSearchResponse = CandidateSearchResponse.builder().build();
@@ -50,15 +87,7 @@ public class CandidateService {
                 List<CandidateAssessment> candidateAssessments = candidate.getCandidateAssessments();
                 List<com.assessment.candidate.model.CandidateAssessment> assessments = candidateAssessments.stream()
                         .filter(candidateAssessment -> candidateAssessment.isActive() == true)
-                        .map(candidateAssessment ->
-                                com.assessment.candidate.model.CandidateAssessment.builder()
-                                .assessment(assessmentsService.mapEntityToModel(candidateAssessment.getAssessment()))
-                                .action(candidateAssessment.getAction())
-                                .id(candidateAssessment.getId())
-                                .percentage(candidateAssessment.getPercentage())
-                                .result(candidateAssessment.getResult())
-                                .active(candidateAssessment.isActive())
-                                .build()
+                        .map(getCandidateAssessmentCandidateAssessmentFunction()
                         ).collect(Collectors.toList());
 
                 candidateSearchResponse = CandidateSearchResponse.builder()
@@ -87,6 +116,7 @@ public class CandidateService {
     public GenericResponse registerCandidate(Candidate candidate) {
         GenericResponse genericResponse = new GenericResponse();
         genericResponse.setDataAvailable(true);
+        //candidate.getCandidateAssessments().forEach(  candidateAssessment -> candidateAssessment.setInviteDate(ZonedDateTime.now()));
         com.assessment.candidate.entity.Candidate candidateEntity = candidateRepository.save(candidate);
         System.out.println(candidateEntity.getId());
         return genericResponse;

@@ -1,9 +1,10 @@
 package com.assessment.candidate.controller;
 
 import com.assessment.candidate.entity.Candidate;
-import com.assessment.candidate.model.ProcessAssessments;
 import com.assessment.candidate.model.CandidateAssessmentRequest;
+import com.assessment.candidate.model.ProcessAssessments;
 import com.assessment.candidate.response.CandidateSearchResponse;
+import com.assessment.candidate.response.CandidatesSearchResponse;
 import com.assessment.candidate.response.GenericResponse;
 import com.assessment.candidate.service.CandidateService;
 import io.micrometer.core.instrument.util.StringUtils;
@@ -21,12 +22,19 @@ public class CandidateController {
 
 
 
-    @GetMapping(value = "/candidateDetails", produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(value = "/candidateDetail", produces = MediaType.APPLICATION_JSON_VALUE)
     public CandidateSearchResponse getCandidate(@RequestParam("emailId") String emailId){
         CandidateSearchResponse candidateSearchResponse = null;
         if(StringUtils.isNotBlank(emailId)) {
             candidateSearchResponse = candidateService.findCandidateDetailsByEmail(emailId);
         }
+        return candidateSearchResponse;
+    }
+
+    @GetMapping(value = "/candidateDetails", produces = MediaType.APPLICATION_JSON_VALUE)
+    public CandidatesSearchResponse getCandidateDetails(){
+        CandidatesSearchResponse candidateSearchResponse = null;
+        candidateSearchResponse = candidateService.findCandidateDetails();
         return candidateSearchResponse;
     }
 

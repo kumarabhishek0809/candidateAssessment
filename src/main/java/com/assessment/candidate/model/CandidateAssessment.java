@@ -16,5 +16,9 @@ public class CandidateAssessment {
     private String percentage;
     private String action;
     private boolean active;
+    private boolean passFail;
     private Assessment assessment;
+
+    private String inviteDate;
+    private String attemptedDate;
 }

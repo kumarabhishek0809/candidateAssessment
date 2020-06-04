@@ -3,9 +3,13 @@
 ================================================= 
 http://localhost:8080/valdiateLogin?loginId=Admin&password=UEBzc3cwciQ
 =================================================
-http://localhost:8080/candidateDetails?emailId=john.doe@gmail.com
+http://localhost:8080/candidateDetail?emailId=john.doe@gmail.com
 =================================================
 http://localhost:8080/assessments
+=================================================
+
+http://localhost:8080/candidateDetails
+
 =================================================
 
 http://localhost:8080/registerCandidate
@@ -223,6 +227,6 @@ sdk install gradle
 git version
 git clone https://github.com/kumarabhishek0809/candidateAssessment.git
 
- java -jar -Xmx512m -Xms256m candidate-0.0.1.jar
+ nohup java -jar -Xmx512m -Xms256m candidate-0.0.1.jar &
  
  
