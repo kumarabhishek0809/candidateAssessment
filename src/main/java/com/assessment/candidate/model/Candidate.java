@@ -21,4 +21,5 @@ public class Candidate {
     private String mobileNo;
 
     private List<CandidateAssessment> candidateAssessments;
+
 }

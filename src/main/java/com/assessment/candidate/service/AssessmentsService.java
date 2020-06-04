@@ -80,7 +80,7 @@ public class AssessmentsService {
                 assessmentDetailResponse.setCandidate(candidateService.mapEntityToModel(candidate, null));
                 List<CandidateAssessment> candidateAssessments = candidate.getCandidateAssessments();
                 if (!CollectionUtils.isEmpty(candidateAssessments)) {
-                    isAssessmentAvailable = candidateAssessments.stream().filter(ca -> ca.isActive())
+                    isAssessmentAvailable = candidateAssessments.stream().filter(ca -> !ca.isAttempted())
                             .filter(candidateAssessment
                                     -> candidateAssessment.getAssessment().getId() == assessmentId)
                             .findAny().isPresent();
@@ -147,7 +147,7 @@ public class AssessmentsService {
                 } else {
                     candidateAssessment1.setPercentage("" + 0l);
                 }
-                candidateAssessment1.setActive(false);
+                candidateAssessment1.setAttempted(true);
                 candidateAssessment1.setResult("Attended");
                 candidateAssessment1.setAttemptedDate(ZonedDateTime.now());
                 candidateAssessment1.setPassFail(totalPercentage > 60);

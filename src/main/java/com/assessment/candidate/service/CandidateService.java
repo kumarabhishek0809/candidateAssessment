@@ -46,19 +46,33 @@ public class CandidateService {
     public CandidatesSearchResponse findCandidateDetails() {
         CandidatesSearchResponse candidateSearchResponse = CandidatesSearchResponse.builder().build();
         candidateSearchResponse.setCandidates(new ArrayList<>());
-        List<com.assessment.candidate.model.Candidate> candidates = candidateSearchResponse.getCandidates();
+        List<CandidatesSearchResponse.CandidateProfile> candidateProfiles = candidateSearchResponse.getCandidates();
         Iterable<Candidate> candidateRepositoryAll = candidateRepository.findAll();
         candidateSearchResponse.setDataAvailable(true);
 
-        candidateRepositoryAll.forEach( candidateEntity ->
-            {
-                List<CandidateAssessment> candidateAssessments = candidateEntity.getCandidateAssessments();
-                List<com.assessment.candidate.model.CandidateAssessment> assessments = candidateAssessments.stream()
-                        .map(getCandidateAssessmentCandidateAssessmentFunction()
-                        ).collect(Collectors.toList());
-
-                candidates.add(mapEntityToModel(candidateEntity, assessments));
-            });
+        candidateRepositoryAll.forEach(candidateEntity ->
+        {
+            List<CandidateAssessment> candidateAssessments = candidateEntity.getCandidateAssessments();
+            candidateProfiles.addAll(candidateAssessments.stream().map(candidateAssessment -> {
+                return CandidatesSearchResponse.CandidateProfile.builder()
+                        .name(candidateAssessment.getAssessment().getName())
+                        .id(candidateEntity.getId())
+                        .firstName(candidateEntity.getFirstName())
+                        .lastName(candidateEntity.getLastName())
+                        .emailAddress(candidateEntity.getEmailAddress())
+                        .countryCode(candidateEntity.getCountryCode())
+                        .dateOfBirth(candidateEntity.getDateOfBirth())
+                        .mobileNo(candidateEntity.getMobileNo())
+                        .inviteDate(DateUtils.getStringDate(candidateAssessment.getInviteDate()))
+                        .attemptedDate(DateUtils.getStringDate(candidateAssessment.getAttemptedDate()))
+                        .action(candidateAssessment.getAction())
+                        .percentage(candidateAssessment.getPercentage())
+                        .result(candidateAssessment.getResult())
+                        .attempted(candidateAssessment.isAttempted())
+                        .passFail(candidateAssessment.isPassFail())
+                        .build();
+            }).collect(Collectors.toList()));
+        });
         return candidateSearchResponse;
     }
 
@@ -70,7 +84,7 @@ public class CandidateService {
                         .id(candidateAssessment.getId())
                         .percentage(candidateAssessment.getPercentage())
                         .result(candidateAssessment.getResult())
-                        .active(candidateAssessment.isActive())
+                        .attempted(candidateAssessment.isAttempted())
                         .inviteDate(DateUtils.getStringDate(candidateAssessment.getInviteDate()))
                         .attemptedDate(DateUtils.getStringDate(candidateAssessment.getAttemptedDate()))
                         .passFail(candidateAssessment.isPassFail())
@@ -86,7 +100,7 @@ public class CandidateService {
 
                 List<CandidateAssessment> candidateAssessments = candidate.getCandidateAssessments();
                 List<com.assessment.candidate.model.CandidateAssessment> assessments = candidateAssessments.stream()
-                        .filter(candidateAssessment -> candidateAssessment.isActive() == true)
+                        .filter(candidateAssessment -> !candidateAssessment.isAttempted())
                         .map(getCandidateAssessmentCandidateAssessmentFunction()
                         ).collect(Collectors.toList());
 
@@ -100,7 +114,18 @@ public class CandidateService {
         return candidateSearchResponse;
     }
 
-    public com.assessment.candidate.model.Candidate mapEntityToModel(Candidate candidate, List<com.assessment.candidate.model.CandidateAssessment> assessments) {
+    public com.assessment.candidate.model.Candidate mapEntityToModel(Candidate candidate,
+                                                                     List<com.assessment.candidate.model.CandidateAssessment> assessments) {
+
+        String inviteDate = "";
+        String attemptedDate = "";
+
+        if (!CollectionUtils.isEmpty(assessments)) {
+            com.assessment.candidate.model.CandidateAssessment candidateAssessment = assessments.get(0);
+            inviteDate = candidateAssessment.getInviteDate();
+            attemptedDate = candidateAssessment.getAttemptedDate();
+        }
+
         return com.assessment.candidate.model.Candidate.builder()
                 .mobileNo(candidate.getMobileNo())
                 .countryCode(candidate.getCountryCode())
@@ -145,7 +170,7 @@ public class CandidateService {
         System.out.println(candidateEntity.getId());
 
         CandidateAssessment candidateAssessment = candidateAssessmentRequest.getCandidateAssessment();
-        if(candidateAssessment != null && candidateAssessment.getAssessment() != null && candidateAssessment.getAssessment().getId() != null) {
+        if (candidateAssessment != null && candidateAssessment.getAssessment() != null && candidateAssessment.getAssessment().getId() != null) {
             Optional<Assessment> byId = assessmentRepository.findById(candidateAssessment.getAssessment().getId());
             if (byId.isPresent()) {
                 assessment = byId.get();
@@ -162,11 +187,11 @@ public class CandidateService {
                 Email email = Email.builder().subject("Synechron invites you to take " + assessmentName + " Assessment")
                         .message("Dear " + candidateEntity.getFirstName() + ",\n" +
                                 "\n" +
-                                "You have been invited to take the assessment "+ assessmentName + " Assessment. " +
+                                "You have been invited to take the assessment " + assessmentName + " Assessment. " +
                                 "The duration of this test is " + assessment.getDuration() + " mins. Before you proceed to take the assessment " +
                                 "Please click on the link given below to start the test.\n" +
                                 "\n" +
-                                "http://"+instanceIPAddress+":8080/assessment/" + assessment.getId() + "?emailId=" + candidateEntity.getEmailAddress() + "\n" +
+                                "http://" + instanceIPAddress + ":8080/assessment/" + assessment.getId() + "?emailId=" + candidateEntity.getEmailAddress() + "\n" +
                                 ",\n" +
                                 "All the best!\n" +
                                 "\n" +
@@ -195,8 +220,8 @@ public class CandidateService {
 
                     for (CandidateAssessment candidateAssessment : dbCandidateAssessments) {
                         if (candidateAssessment.getId() == assessmentStatus.getId()
-                                && candidateAssessment.isActive() != assessmentStatus.isStatus()) {
-                            candidateAssessment.setActive(assessmentStatus.isStatus());
+                                && candidateAssessment.isAttempted() != assessmentStatus.isStatus()) {
+                            candidateAssessment.setAttempted(assessmentStatus.isStatus());
                         }
                     }
                 }
