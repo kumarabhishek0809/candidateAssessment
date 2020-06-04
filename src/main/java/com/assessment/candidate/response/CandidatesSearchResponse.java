@@ -1,5 +1,6 @@
 package com.assessment.candidate.response;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Builder;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -9,6 +10,7 @@ import java.util.List;
 @Data
 @Builder
 @EqualsAndHashCode(callSuper = false)
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class CandidatesSearchResponse extends GenericResponse {
 
     private List<CandidateProfile> candidates;
@@ -16,6 +18,7 @@ public class CandidatesSearchResponse extends GenericResponse {
     @Data
     @Builder
     @EqualsAndHashCode(callSuper = false)
+    @JsonInclude(JsonInclude.Include.NON_NULL)
     public static class CandidateProfile {
 
         private Integer id;

@@ -227,6 +227,6 @@ sdk install gradle
 git version
 git clone https://github.com/kumarabhishek0809/candidateAssessment.git
 
- nohup java -jar -Xmx512m -Xms256m candidate-0.0.1.jar &
+nohup java -jar -Xmx512m -Xms256m candidate-0.0.1.jar &
  
  
