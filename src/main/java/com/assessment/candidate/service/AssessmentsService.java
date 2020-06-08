@@ -150,7 +150,7 @@ public class AssessmentsService {
                 candidateAssessment1.setAttempted(true);
                 candidateAssessment1.setResult("Attended");
                 candidateAssessment1.setAttemptedDate(ZonedDateTime.now());
-                candidateAssessment1.setPassFail(totalPercentage > 60);
+                candidateAssessment1.setStatus(totalPercentage > 60);
                 CandidateAssessment canAssessment = candidateAssessmentRepository.save(candidateAssessment1);
             }
 

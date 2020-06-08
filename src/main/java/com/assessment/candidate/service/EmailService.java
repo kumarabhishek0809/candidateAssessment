@@ -21,13 +21,14 @@ public class EmailService {
     }
 
     public void sendMail(Email email) {
-
+        System.out.println("Inside Send Email");
         SimpleMailMessage mailMessage = new SimpleMailMessage();
         mailMessage.setTo(email.getToEmail());
         mailMessage.setSubject(email.getSubject());
         mailMessage.setText(email.getMessage());
         mailMessage.setFrom("noreply@example.com");
         javaMailSender.send(mailMessage);
+        System.out.println("Exit Send Email");
     }
 
     public void sendMessageWithAttachment(Email email) throws MessagingException {

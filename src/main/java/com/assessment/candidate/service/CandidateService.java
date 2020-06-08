@@ -69,7 +69,7 @@ public class CandidateService {
                         .percentage(candidateAssessment.getPercentage())
                         .result(candidateAssessment.getResult())
                         .attempted(candidateAssessment.isAttempted())
-                        .passFail(candidateAssessment.isPassFail())
+                        .status(candidateAssessment.isStatus())
                         .build();
             }).collect(Collectors.toList()));
         });
@@ -87,7 +87,7 @@ public class CandidateService {
                         .attempted(candidateAssessment.isAttempted())
                         .inviteDate(DateUtils.getStringDate(candidateAssessment.getInviteDate()))
                         .attemptedDate(DateUtils.getStringDate(candidateAssessment.getAttemptedDate()))
-                        .passFail(candidateAssessment.isPassFail())
+                        .status(candidateAssessment.isStatus())
                         .build();
     }
 

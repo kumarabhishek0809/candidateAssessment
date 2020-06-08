@@ -41,6 +41,6 @@ public class CandidateAssessment {
     @Builder.Default
     private ZonedDateTime inviteDate = ZonedDateTime.now();
     @Builder.Default
-    private boolean passFail = false;
+    private boolean status = false;
     private ZonedDateTime attemptedDate;
 }
