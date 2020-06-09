@@ -163,7 +163,6 @@ public class AssessmentsService {
                 candidateAssessment1.setAttemptedDate(ZonedDateTime.now());
                 candidateAssessment1.setStatus(totalPercentage > 60);
                 CandidateAssessment canAssessment = candidateAssessmentRepository.save(candidateAssessment1);
-                System.out.println(canAssessment);
             }
 
             //Send Email,

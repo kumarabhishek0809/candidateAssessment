@@ -12,7 +12,6 @@ import java.time.ZonedDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 @JsonInclude(JsonInclude.Include.NON_NULL)
-@ToString
 public class CandidateAssessment {
 
     @Id
