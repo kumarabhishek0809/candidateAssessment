@@ -192,7 +192,8 @@ public class CandidateService {
                                 "Please click on the link given below to start the test.\n" +
                                 "\n" +
                                 "http://" + instanceIPAddress + ":3000/admin/question-management/" + assessment.getId() + "?emailId=" + candidateEntity.getEmailAddress() + "\n" +
-                                ",\n" +
+                                "\n" +
+                                "\n" +
                                 "All the best!\n" +
                                 "\n" +
                                 "Regards ,\n" +
