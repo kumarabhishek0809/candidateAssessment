@@ -168,7 +168,8 @@ public class AssessmentsService {
             //Send Email,
             if (candidateEntity != null && emailId != null && submitAssessmentQuestionAnswer.getAssessmentId() != null) {
                 Email email = Email.builder()
-                        .subject("Candidate " + candidateEntity.getFirstName() + " " + candidateEntity.getLastName() + " completed Assessement " + submitAssessmentQuestionAnswer.getAssessmentId())
+                        .subject("Candidate " + candidateEntity.getFirstName() + " " + candidateEntity.getLastName() + " completed Assessement " +
+                                submitAssessmentQuestionAnswer.getAssessmentId())
                         .message("Dear Team" +
                                 ",\n \n" +
                                 candidateEntity.getFirstName() + " " + candidateEntity.getLastName() + "[ " + emailId + " ] has completed his assessment " +

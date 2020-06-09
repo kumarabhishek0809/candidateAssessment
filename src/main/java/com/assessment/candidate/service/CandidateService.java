@@ -191,7 +191,7 @@ public class CandidateService {
                                 "The duration of this test is " + assessment.getDuration() + " mins. Before you proceed to take the assessment " +
                                 "Please click on the link given below to start the test.\n" +
                                 "\n" +
-                                "http://" + instanceIPAddress + ":8080/assessment/" + assessment.getId() + "?emailId=" + candidateEntity.getEmailAddress() + "\n" +
+                                "http://" + instanceIPAddress + ":3000/admin/question-management/" + assessment.getId() + "?emailId=" + candidateEntity.getEmailAddress() + "\n" +
                                 ",\n" +
                                 "All the best!\n" +
                                 "\n" +
