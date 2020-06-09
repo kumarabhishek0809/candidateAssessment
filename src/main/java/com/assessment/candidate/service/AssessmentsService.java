@@ -103,6 +103,7 @@ public class AssessmentsService {
         float totalMarksObtained = 0;
         float totalPercentage = 0;
         Candidate candidateEntity = null;
+        CandidateAssessment candidateAssessment = null;
         Assessment assessment = null;
 
         //Validate If candiate has this assessment.
@@ -110,9 +111,9 @@ public class AssessmentsService {
         if (byEmailAddress.isPresent()) {
             Candidate candidateDb = byEmailAddress.get();
             List<CandidateAssessment> dbCandidateAssessments = candidateDb.getCandidateAssessments();
-            long count = dbCandidateAssessments.stream().filter(candidateAssessment
-                    -> !candidateAssessment.isStatus() && candidateAssessment.getAssessment().getId() == submitAssessmentQuestionAnswer.getAssessmentId()).count();
-            if (count == 0) {
+            candidateAssessment = dbCandidateAssessments.stream().filter(ca
+                    -> !ca.isStatus() && ca.getAssessment().getId() == submitAssessmentQuestionAnswer.getAssessmentId()).findFirst().orElse(null);
+            if (candidateAssessment == null) {
                 assessmentDetailResponse.setDataAvailable(false);
                 return assessmentDetailResponse;
             }
@@ -144,25 +145,20 @@ public class AssessmentsService {
         }
         ///
         if (byEmailAddress.isPresent()) {
-            candidateEntity = byEmailAddress.get();
-            Optional<CandidateAssessment> candidateAssessment = candidateEntity.getCandidateAssessments()
-                    .stream().filter(ca ->
-                            (ca.getAssessment().getId() == submitAssessmentQuestionAnswer.getAssessmentId() && !ca.isStatus())).findFirst();
-            if (candidateAssessment.isPresent()) {
-                CandidateAssessment candidateAssessment1 = candidateAssessment.get();
-                candidateAssessment1.setTotalMarksObtained(totalMarksObtained);
-                candidateAssessment1.setTotalAssessmentScore(totalAssessmentScore);
+            if (candidateAssessment !=null) {
+                candidateAssessment.setTotalMarksObtained(totalMarksObtained);
+                candidateAssessment.setTotalAssessmentScore(totalAssessmentScore);
                 if (totalAssessmentScore != 0 && totalMarksObtained != 0) {
                     totalPercentage = 100 * (totalMarksObtained / totalAssessmentScore);
-                    candidateAssessment1.setPercentage("" + totalPercentage);
+                    candidateAssessment.setPercentage("" + totalPercentage);
                 } else {
-                    candidateAssessment1.setPercentage("" + 0l);
+                    candidateAssessment.setPercentage("" + 0l);
                 }
-                candidateAssessment1.setStatus(true);
-                candidateAssessment1.setResult("Attended");
-                candidateAssessment1.setAttemptedDate(ZonedDateTime.now());
-                candidateAssessment1.setStatus(totalPercentage > 60);
-                CandidateAssessment canAssessment = candidateAssessmentRepository.save(candidateAssessment1);
+                candidateAssessment.setStatus(true);
+                candidateAssessment.setResult("Attended");
+                candidateAssessment.setAttemptedDate(ZonedDateTime.now());
+                candidateAssessment.setStatus(totalPercentage > 60);
+                CandidateAssessment canAssessment = candidateAssessmentRepository.save(candidateAssessment);
             }
 
             //Send Email,

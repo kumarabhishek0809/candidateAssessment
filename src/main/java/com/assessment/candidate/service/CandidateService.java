@@ -141,7 +141,7 @@ public class CandidateService {
     public GenericResponse registerCandidate(Candidate candidate) {
         GenericResponse genericResponse = new GenericResponse();
         genericResponse.setDataAvailable(true);
-        candidate.getCandidateAssessments().forEach(  candidateAssessment -> candidateAssessment.setInviteDate(ZonedDateTime.now()));
+        candidate.getCandidateAssessments().forEach(candidateAssessment -> candidateAssessment.setInviteDate(ZonedDateTime.now()));
         com.assessment.candidate.entity.Candidate candidateEntity = candidateRepository.save(candidate);
         System.out.println(candidateEntity.getId());
         return genericResponse;
@@ -218,15 +218,14 @@ public class CandidateService {
             if (!CollectionUtils.isEmpty(dbCandidateAssessments)) {
                 for (ProcessAssessments.AssessmentStatus assessmentStatus : assessmentStatusRequest) {
 
-                    for (CandidateAssessment candidateAssessment : dbCandidateAssessments) {
-                        if (candidateAssessment.getId() == assessmentStatus.getId()
-                                && candidateAssessment.isStatus() != assessmentStatus.isStatus()) {
-                            candidateAssessment.setAttemptedDate(ZonedDateTime.now());
-                            candidateAssessment.setPercentage(Optional.ofNullable(candidateAssessment.getPercentage()).orElse("0"));
-                            candidateAssessment.setAction(Optional.ofNullable(candidateAssessment.getAction()).orElse("Completed"));
-                            candidateAssessment.setStatus(assessmentStatus.isStatus());
-                        }
-                    }
+                    dbCandidateAssessments.stream().filter(candidateAssessment -> (candidateAssessment.getId() == assessmentStatus.getId()
+                            && candidateAssessment.isStatus() != assessmentStatus.isStatus())).forEach(candidateAssessment ->
+                    {
+                        candidateAssessment.setAttemptedDate(ZonedDateTime.now());
+                        candidateAssessment.setPercentage(Optional.ofNullable(candidateAssessment.getPercentage()).orElse("0"));
+                        candidateAssessment.setAction(Optional.ofNullable(candidateAssessment.getAction()).orElse(assessmentStatus.isStatus() ? "Completed By HR" : "Reassigned By HR"));
+                        candidateAssessment.setStatus(assessmentStatus.isStatus());
+                    });
                 }
             }
             candidateAssessmentRepository.saveAll(dbCandidateAssessments);
