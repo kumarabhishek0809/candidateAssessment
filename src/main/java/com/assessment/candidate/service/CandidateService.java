@@ -222,6 +222,9 @@ public class CandidateService {
                     for (CandidateAssessment candidateAssessment : dbCandidateAssessments) {
                         if (candidateAssessment.getId() == assessmentStatus.getId()
                                 && candidateAssessment.isAttempted() != assessmentStatus.isStatus()) {
+                            candidateAssessment.setAttemptedDate(ZonedDateTime.now());
+                            candidateAssessment.setPercentage(Optional.ofNullable(candidateAssessment.getPercentage()).orElse("0"));
+                            candidateAssessment.setAction(Optional.ofNullable(candidateAssessment.getAction()).orElse("Completed"));
                             candidateAssessment.setAttempted(assessmentStatus.isStatus());
                         }
                     }
