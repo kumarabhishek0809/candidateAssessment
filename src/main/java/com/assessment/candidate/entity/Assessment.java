@@ -19,6 +19,7 @@ public class Assessment {
     private String duration;
     private String name;
     private String technology;
+    private Integer passingPercentage;
 
     @OneToMany
     private Set<Question> questions;

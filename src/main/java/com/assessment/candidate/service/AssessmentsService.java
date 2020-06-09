@@ -104,7 +104,6 @@ public class AssessmentsService {
         float totalPercentage = 0;
         Candidate candidateEntity = null;
         CandidateAssessment candidateAssessment = null;
-        Assessment assessment = null;
 
         //Validate If candiate has this assessment.
         Optional<Candidate> byEmailAddress = candidateRepository.findByEmailAddress(emailId);
@@ -154,10 +153,14 @@ public class AssessmentsService {
                 } else {
                     candidateAssessment.setPercentage("" + 0l);
                 }
-                candidateAssessment.setStatus(true);
+                candidateAssessment.setStatus(Boolean.TRUE);
                 candidateAssessment.setResult("Attended");
                 candidateAssessment.setAttemptedDate(ZonedDateTime.now());
-                candidateAssessment.setStatus(totalPercentage > 60);
+
+                Assessment assessment = candidateAssessment.getAssessment();
+                Integer passingPercentage = Optional.ofNullable(assessment.getPassingPercentage()).orElse(60);
+                candidateAssessment.setResult( totalPercentage > passingPercentage ? "Pass" : "Fail");
+
                 CandidateAssessment canAssessment = candidateAssessmentRepository.save(candidateAssessment);
             }
 
