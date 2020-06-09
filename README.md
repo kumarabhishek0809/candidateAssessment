@@ -217,7 +217,7 @@ create user 'clientAssessmentPortal' identified by 'July@2020';
 grant all on clientAssessmentPortal.* to 'clientAssessmentPortal';
 
 ############ Gradle ##################
-
+    
 curl -s "https://get.sdkman.io" | bash 
 source "$HOME/.sdkman/bin/sdkman-init.sh"
 sdk install gradle

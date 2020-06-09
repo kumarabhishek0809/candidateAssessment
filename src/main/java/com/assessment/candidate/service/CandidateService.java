@@ -19,6 +19,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 
+import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -141,7 +142,7 @@ public class CandidateService {
     public GenericResponse registerCandidate(Candidate candidate) {
         GenericResponse genericResponse = new GenericResponse();
         genericResponse.setDataAvailable(true);
-        //candidate.getCandidateAssessments().forEach(  candidateAssessment -> candidateAssessment.setInviteDate(ZonedDateTime.now()));
+        candidate.getCandidateAssessments().forEach(  candidateAssessment -> candidateAssessment.setInviteDate(ZonedDateTime.now()));
         com.assessment.candidate.entity.Candidate candidateEntity = candidateRepository.save(candidate);
         System.out.println(candidateEntity.getId());
         return genericResponse;
