@@ -145,8 +145,9 @@ public class AssessmentsService {
         ///
         if (byEmailAddress.isPresent()) {
             candidateEntity = byEmailAddress.get();
-            Optional<CandidateAssessment> candidateAssessment = candidateEntity.getCandidateAssessments().stream().filter(ca -> ca.getAssessment().getId()
-                    == submitAssessmentQuestionAnswer.getAssessmentId()).findFirst();
+            Optional<CandidateAssessment> candidateAssessment = candidateEntity.getCandidateAssessments()
+                    .stream().filter(ca ->
+                            (ca.getAssessment().getId() == submitAssessmentQuestionAnswer.getAssessmentId() && !ca.isStatus())).findFirst();
             if (candidateAssessment.isPresent()) {
                 CandidateAssessment candidateAssessment1 = candidateAssessment.get();
                 candidateAssessment1.setTotalMarksObtained(totalMarksObtained);
