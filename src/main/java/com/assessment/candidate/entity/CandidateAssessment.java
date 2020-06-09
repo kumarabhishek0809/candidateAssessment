@@ -1,10 +1,7 @@
 package com.assessment.candidate.entity;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import javax.persistence.*;
 import java.time.ZonedDateTime;
@@ -15,6 +12,7 @@ import java.time.ZonedDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 @JsonInclude(JsonInclude.Include.NON_NULL)
+@ToString
 public class CandidateAssessment {
 
     @Id
@@ -39,7 +37,6 @@ public class CandidateAssessment {
     @Builder.Default
     private ZonedDateTime inviteDate = ZonedDateTime.now();
 
-    @Builder.Default
     private boolean status = false;
     private ZonedDateTime attemptedDate;
 }
