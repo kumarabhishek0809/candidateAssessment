@@ -108,6 +108,9 @@ INSERT INTO `clientAssessmentPortal`.`assessment` (`id`, `duration`, `name`, `te
 
 INSERT INTO `clientAssessmentPortal`.`assessment` (`id`, `duration`, `name`, `technology`) VALUES ('3', '50 ', 'SPRING BOOT', 'JAVA');
 
+INSERT INTO `clientAssessmentPortal`.`question_type` (`id`, `description`) VALUES ('1', 'MCSA');
+
+
 INSERT INTO `clientAssessmentPortal`.`question` (`id`, `description`, `header`, `answer_id`) VALUES ('1', 'QUES DESC 1', 'QUES HEAD 1', '1');
 
 INSERT INTO `clientAssessmentPortal`.`question` (`id`, `description`, `header`, `answer_id`) VALUES ('2', 'QUEST DESC 2', 'QUES HEAD 2', '2');
