@@ -38,9 +38,6 @@ public class AssessmentsService {
     private String adminEmailId;
 
 
-
-
-
     @Autowired
     private EmailService emailService;
 
@@ -80,7 +77,7 @@ public class AssessmentsService {
                 assessmentDetailResponse.setCandidate(candidateService.mapEntityToModel(candidate, null));
                 List<CandidateAssessment> candidateAssessments = candidate.getCandidateAssessments();
                 if (!CollectionUtils.isEmpty(candidateAssessments)) {
-                    isAssessmentAvailable = candidateAssessments.stream().filter(ca -> !ca.isAttempted())
+                    isAssessmentAvailable = candidateAssessments.stream().filter(ca -> !ca.isStatus())
                             .filter(candidateAssessment
                                     -> candidateAssessment.getAssessment().getId() == assessmentId)
                             .findAny().isPresent();
@@ -108,6 +105,20 @@ public class AssessmentsService {
         Candidate candidateEntity = null;
         Assessment assessment = null;
 
+        //Validate If candiate has this assessment.
+        Optional<Candidate> byEmailAddress = candidateRepository.findByEmailAddress(emailId);
+        if (byEmailAddress.isPresent()) {
+            Candidate candidateDb = byEmailAddress.get();
+            List<CandidateAssessment> dbCandidateAssessments = candidateDb.getCandidateAssessments();
+            long count = dbCandidateAssessments.stream().filter(candidateAssessment
+                    -> !candidateAssessment.isStatus() && candidateAssessment.getAssessment().getId() == submitAssessmentQuestionAnswer.getAssessmentId()).count();
+            if (count == 0) {
+                assessmentDetailResponse.setDataAvailable(false);
+                return assessmentDetailResponse;
+            }
+        }
+
+        //Process Question Answer
         Optional<List<QuestionAnswer>> assessmentQueAnsScoreByAssesmentId = questionAnswerOptionRepository
                 .findAllByAssessmentId(submitAssessmentQuestionAnswer.getAssessmentId());
 
@@ -132,7 +143,6 @@ public class AssessmentsService {
             System.out.println(assessmentQueAnsScoreByAssesmentId.get());
         }
         ///
-        Optional<Candidate> byEmailAddress = candidateRepository.findByEmailAddress(emailId);
         if (byEmailAddress.isPresent()) {
             candidateEntity = byEmailAddress.get();
             Optional<CandidateAssessment> candidateAssessment = candidateEntity.getCandidateAssessments().stream().filter(ca -> ca.getAssessment().getId()
@@ -147,7 +157,7 @@ public class AssessmentsService {
                 } else {
                     candidateAssessment1.setPercentage("" + 0l);
                 }
-                candidateAssessment1.setAttempted(true);
+                candidateAssessment1.setStatus(true);
                 candidateAssessment1.setResult("Attended");
                 candidateAssessment1.setAttemptedDate(ZonedDateTime.now());
                 candidateAssessment1.setStatus(totalPercentage > 60);

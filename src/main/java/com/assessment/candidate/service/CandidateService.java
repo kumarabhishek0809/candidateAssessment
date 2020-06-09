@@ -69,7 +69,6 @@ public class CandidateService {
                         .action(candidateAssessment.getAction())
                         .percentage(candidateAssessment.getPercentage())
                         .result(candidateAssessment.getResult())
-                        .attempted(candidateAssessment.isAttempted())
                         .status(candidateAssessment.isStatus())
                         .build();
             }).collect(Collectors.toList()));
@@ -85,7 +84,7 @@ public class CandidateService {
                         .id(candidateAssessment.getId())
                         .percentage(candidateAssessment.getPercentage())
                         .result(candidateAssessment.getResult())
-                        .attempted(candidateAssessment.isAttempted())
+                        .attempted(candidateAssessment.isStatus())
                         .inviteDate(DateUtils.getStringDate(candidateAssessment.getInviteDate()))
                         .attemptedDate(DateUtils.getStringDate(candidateAssessment.getAttemptedDate()))
                         .status(candidateAssessment.isStatus())
@@ -101,7 +100,7 @@ public class CandidateService {
 
                 List<CandidateAssessment> candidateAssessments = candidate.getCandidateAssessments();
                 List<com.assessment.candidate.model.CandidateAssessment> assessments = candidateAssessments.stream()
-                        .filter(candidateAssessment -> !candidateAssessment.isAttempted())
+                        .filter(candidateAssessment -> !candidateAssessment.isStatus())
                         .map(getCandidateAssessmentCandidateAssessmentFunction()
                         ).collect(Collectors.toList());
 
@@ -221,11 +220,11 @@ public class CandidateService {
 
                     for (CandidateAssessment candidateAssessment : dbCandidateAssessments) {
                         if (candidateAssessment.getId() == assessmentStatus.getId()
-                                && candidateAssessment.isAttempted() != assessmentStatus.isStatus()) {
+                                && candidateAssessment.isStatus() != assessmentStatus.isStatus()) {
                             candidateAssessment.setAttemptedDate(ZonedDateTime.now());
                             candidateAssessment.setPercentage(Optional.ofNullable(candidateAssessment.getPercentage()).orElse("0"));
                             candidateAssessment.setAction(Optional.ofNullable(candidateAssessment.getAction()).orElse("Completed"));
-                            candidateAssessment.setAttempted(assessmentStatus.isStatus());
+                            candidateAssessment.setStatus(assessmentStatus.isStatus());
                         }
                     }
                 }
