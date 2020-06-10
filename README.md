@@ -132,6 +132,6 @@ nohup java -jar -Xmx512m -Xms256m candidate-0.0.1.jar &
 
 Question Set
 https://www.sanfoundry.com/java-mcqs-integer-floating-data-types/
-
+https://angular-quiz.surge.sh/ 
  
  

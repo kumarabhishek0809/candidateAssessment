@@ -100,8 +100,8 @@ public class AssessmentsService {
         AssessmentDetailResponse assessmentDetailResponse = AssessmentDetailResponse.builder().build();
         assessmentDetailResponse.setDataAvailable(true);
 
-        float totalAssessmentScore = 0;
-        float totalMarksObtained = 0;
+        Integer totalAssessmentScore = 0;
+        Integer totalMarksObtained = 0;
         float totalPercentage = 0;
         Candidate candidateDb = null;
         CandidateAssessment candidateAssessment = null;
@@ -128,7 +128,8 @@ public class AssessmentsService {
         List<SubmitAssessmentQuestionAnswer.QuestionAnswerReq> questionAnswersRequestReq = submitAssessmentQuestionAnswer.getQuestionAnswerReq();
         if (assessmentQueAnsScoreByAssesmentId.isPresent()) {
             List<EvaluationQuestionAnswer> evaluationQuestionAnswersDB = assessmentQueAnsScoreByAssesmentId.get();
-            totalAssessmentScore = evaluationQuestionAnswersDB.stream().mapToLong(evaluationQuestionAnswer -> Optional.ofNullable(evaluationQuestionAnswer.getMarks()).orElse(5)).sum();
+            totalAssessmentScore = evaluationQuestionAnswersDB.stream()
+                    .mapToInt(evaluationQuestionAnswer -> Optional.ofNullable(evaluationQuestionAnswer.getMarks()).orElse(5)).sum();
             for (EvaluationQuestionAnswer evaluationQuestionAnswerDB : evaluationQuestionAnswersDB) {
                 Question question = evaluationQuestionAnswerDB.getQuestion();
                 if (question != null) {

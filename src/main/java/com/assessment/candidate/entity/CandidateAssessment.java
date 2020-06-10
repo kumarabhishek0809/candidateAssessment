@@ -31,9 +31,9 @@ public class CandidateAssessment {
     private Candidate candidate;
 
     @Builder.Default
-    private float totalAssessmentScore = 0;
+    private Integer totalAssessmentScore = 0;
     @Builder.Default
-    private float totalMarksObtained = 0;
+    private Integer totalMarksObtained = 0;
 
     @Builder.Default
     private ZonedDateTime inviteDate = ZonedDateTime.now();
