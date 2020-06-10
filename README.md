@@ -85,39 +85,7 @@ http://localhost:8080/assessment/1?emailId=john.doe@gmail.com
 http://18.223.111.230:8080/assessment/3?emailId=dfdf
 ================================================
 
-
-drop table clientAssessmentPortal.question_options;
-
-CREATE TABLE clientAssessmentPortal.question_options (
-  `question_id` int(11) NOT NULL,
-  `options_id` int(11) NOT NULL,
-  CONSTRAINT `FK18p5p89dis3ma9g5kveiwltmq` FOREIGN KEY (`options_id`) REFERENCES `options` (`id`),
-  CONSTRAINT `FKjk4v42xhyfv4ca1yyhorsg5tv` FOREIGN KEY (`question_id`) REFERENCES `question` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-
-
-
-commit;
-
-drop table clientAssessmentPortal.assessment_questions;
-
-CREATE TABLE clientAssessmentPortal.assessment_questions (
-  `assessment_id` int(11) NOT NULL,
-  `questions_id` int(11) NOT NULL,
-  CONSTRAINT `FKaf20224e4jochperimgguvnuw` FOREIGN KEY (`assessment_id`) REFERENCES `assessment` (`id`),
-  CONSTRAINT `FKbsio8xaewqfgk6w24cydb5be8` FOREIGN KEY (`questions_id`) REFERENCES `question` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-
-
-=======================================================
-
-SELECT * FROM clientAssessmentPortal.question;
-SELECT * FROM clientAssessmentPortal.options;
-SELECT * FROM clientAssessmentPortal.question_options;
-SELECT * FROM clientAssessmentPortal.answer;
-SELECT * FROM clientAssessmentPortal.assessment;
-SELECT * FROM clientAssessmentPortal.assessment_questions;
-SELECT * FROM clientAssessmentPortal.evaluation_question_answer;
+For SQL Please follow folder resource/sql inside src/main
 
 ==========================================================
 

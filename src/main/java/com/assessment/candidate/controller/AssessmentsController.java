@@ -8,6 +8,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
+import javax.mail.MessagingException;
+
 @RestController
 public class AssessmentsController {
 
@@ -30,7 +32,7 @@ public class AssessmentsController {
     @PutMapping(value = "/submitAssessment", produces = MediaType.APPLICATION_JSON_VALUE)
     public AssessmentDetailResponse submitAssessment(@RequestParam("emailId") String emailId,
                                                      @RequestBody SubmitAssessmentQuestionAnswer submitAssessmentQuestionAnswer
-                                                   ){
+                                                   ) throws MessagingException {
         return assessmentsService.submitAssessment(emailId,submitAssessmentQuestionAnswer);
     }
 }

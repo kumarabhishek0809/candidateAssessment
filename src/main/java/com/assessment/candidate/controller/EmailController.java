@@ -16,7 +16,7 @@ public class EmailController {
     private EmailService emailService;
 
     @PostMapping(value = "/sendmail")
-    public String sendmail(@RequestBody Email email) {
+    public String sendmail(@RequestBody Email email) throws MessagingException {
         emailService.sendMail(email);
         return "emailsent";
     }

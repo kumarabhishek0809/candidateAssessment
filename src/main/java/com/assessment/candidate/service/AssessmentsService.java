@@ -15,6 +15,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 
+import javax.mail.MessagingException;
 import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -94,7 +95,7 @@ public class AssessmentsService {
     }
 
     public AssessmentDetailResponse submitAssessment(String emailId,
-                                                     SubmitAssessmentQuestionAnswer submitAssessmentQuestionAnswer) {
+                                                     SubmitAssessmentQuestionAnswer submitAssessmentQuestionAnswer) throws MessagingException {
 
         AssessmentDetailResponse assessmentDetailResponse = AssessmentDetailResponse.builder().build();
         assessmentDetailResponse.setDataAvailable(true);
@@ -102,13 +103,14 @@ public class AssessmentsService {
         float totalAssessmentScore = 0;
         float totalMarksObtained = 0;
         float totalPercentage = 0;
-        Candidate candidateEntity = null;
+        Candidate candidateDb = null;
         CandidateAssessment candidateAssessment = null;
+        Assessment assessment = null;
 
         //Validate If candiate has this assessment.
         Optional<Candidate> byEmailAddress = candidateRepository.findByEmailAddress(emailId);
         if (byEmailAddress.isPresent()) {
-            Candidate candidateDb = byEmailAddress.get();
+            candidateDb = byEmailAddress.get();
             List<CandidateAssessment> dbCandidateAssessments = candidateDb.getCandidateAssessments();
             candidateAssessment = dbCandidateAssessments.stream().filter(ca
                     -> !ca.isStatus() && ca.getAssessment().getId() == submitAssessmentQuestionAnswer.getAssessmentId()).findFirst().orElse(null);
@@ -140,11 +142,10 @@ public class AssessmentsService {
                     }
                 }
             }
-            System.out.println(assessmentQueAnsScoreByAssesmentId.get());
         }
         ///
         if (byEmailAddress.isPresent()) {
-            if (candidateAssessment !=null) {
+            if (candidateAssessment != null) {
                 candidateAssessment.setTotalMarksObtained(totalMarksObtained);
                 candidateAssessment.setTotalAssessmentScore(totalAssessmentScore);
                 if (totalAssessmentScore != 0 && totalMarksObtained != 0) {
@@ -158,26 +159,50 @@ public class AssessmentsService {
                 candidateAssessment.setResult("Attended");
                 candidateAssessment.setAttemptedDate(ZonedDateTime.now());
 
-                Assessment assessment = candidateAssessment.getAssessment();
+                assessment = candidateAssessment.getAssessment();
                 Integer passingPercentage = Optional.ofNullable(assessment.getPassingPercentage()).orElse(60);
-                candidateAssessment.setResult( totalPercentage > passingPercentage ? "Pass" : "Fail");
+                candidateAssessment.setResult(totalPercentage > passingPercentage ? "Pass" : "Fail");
 
                 CandidateAssessment canAssessment = candidateAssessmentRepository.save(candidateAssessment);
             }
 
             //Send Email,
-            if (candidateEntity != null && emailId != null && submitAssessmentQuestionAnswer.getAssessmentId() != null) {
+            if (candidateDb != null && emailId != null && assessment != null && candidateAssessment != null) {
+                String subject = "Candidate " + candidateDb.getFirstName() + " " + candidateDb.getLastName() + " completed Assessement " + assessment.getName();
                 Email email = Email.builder()
-                        .subject("Candidate " + candidateEntity.getFirstName() + " " + candidateEntity.getLastName() + " completed Assessement " +
-                                submitAssessmentQuestionAnswer.getAssessmentId())
-                        .message("Dear Team" +
-                                ",\n \n" +
-                                candidateEntity.getFirstName() + " " + candidateEntity.getLastName() + "[ " + emailId + " ] has completed his assessment " +
-                                "and scored " + totalMarksObtained + " marks out of " + totalAssessmentScore + " thus percentage is " + totalPercentage +
-                                "\n" +
-                                ",\n \n" +
-                                "Regards ,\n" +
-                                ",\n \n" +
+                        .subject(subject)
+                        .message("" +
+                                "<i> Dear Team Greetings!</i><br>" +
+                                "<b> Wish you a nice day! </b><br> <br> <br>" +
+                                "<b><font color=red> " + subject + "</font> </b><br><br><br><br>" +
+                                "<style>\n" +
+                                "table, th, td {\n" +
+                                "  border: 1px solid black;\n" +
+                                "}\n" +
+                                "</style>" +
+                                "<table style=\"width:100%\"> " +
+                                "  <tr> " +
+                                "    <th>Candidate Name</th> " +
+                                "    <th>Candidate Email Id</th> " +
+                                "    <th>Assessment Attempted</th> " +
+                                "    <th>Score Obtained</th> " +
+                                "    <th>Total Score</th> " +
+                                "    <th>Percentage</th> " +
+                                "    <th>Result</th> " +
+                                "  </tr> " +
+                                "  <tr> " +
+                                "    <td> " + candidateDb.getFirstName() + " " + candidateDb.getLastName() + "</td>" +
+                                "    <td> " + emailId + " </td>" +
+                                "    <td> " + assessment.getName() + " </td>" +
+                                "    <td> " + candidateAssessment.getTotalMarksObtained() + "</td>" +
+                                "    <td> " + candidateAssessment.getTotalAssessmentScore() + " </td>" +
+                                "    <td> " + candidateAssessment.getPercentage() + " </th> " +
+                                "    <td> " + candidateAssessment.getResult() + " </td> " +
+                                "  </tr> " +
+                                "</table>" +
+
+                                "<br><br><br>" +
+                                "Regards ,<br>" +
                                 "Synechron ")
                         .toEmail(adminEmailId)
                         .build();

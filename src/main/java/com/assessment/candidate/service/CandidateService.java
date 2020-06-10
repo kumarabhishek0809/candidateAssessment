@@ -19,6 +19,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 
+import javax.mail.MessagingException;
 import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -147,10 +148,11 @@ public class CandidateService {
         return genericResponse;
     }
 
-    public GenericResponse registerCandidateAndScheduleAssessment(CandidateAssessmentRequest candidateAssessmentRequest) {
+    public GenericResponse registerCandidateAndScheduleAssessment(CandidateAssessmentRequest candidateAssessmentRequest) throws MessagingException {
         GenericResponse genericResponse = new GenericResponse();
         genericResponse.setDataAvailable(true);
         String assessmentName = "Technical";
+
         //FindCandidate if not then save
         Candidate candidateEntity = null;
         Assessment assessment = null;
@@ -184,20 +186,30 @@ public class CandidateService {
 
             //Send Email,
             if (candidateEntity != null && assessment != null) {
+                String testLink = "http://" + instanceIPAddress + ":3000/admin/question-management/" + assessment.getId() + "?emailId=" + candidateEntity.getEmailAddress();
                 Email email = Email.builder().subject("Synechron invites you to take " + assessmentName + " Assessment")
-                        .message("Dear " + candidateEntity.getFirstName() + ",\n" +
-                                "\n" +
-                                "You have been invited to take the assessment " + assessmentName + " Assessment. " +
-                                "The duration of this test is " + assessment.getDuration() + " mins. Before you proceed to take the assessment " +
-                                "Please click on the link given below to start the test.\n" +
-                                "\n" +
-                                "http://" + instanceIPAddress + ":3000/admin/question-management/" + assessment.getId() + "?emailId=" + candidateEntity.getEmailAddress() + "\n" +
-                                "\n" +
-                                "\n" +
-                                "All the best!\n" +
-                                "\n" +
-                                "Regards ,\n" +
-                                "Synechron ")
+                        .message(
+
+                                "<i> Dear  <b>" + candidateEntity.getFirstName() + " </b> Greetings!</i><br>" +
+                                        "<b> Wish you a nice day! </b> <br> <br>" +
+                                        "<h3>" +
+                                        "Please to inform, your profile is shortlisted for Next Level…. Congratulation !!!!" + "<br><br>" +
+                                        "As a of recruitment process, request you to please complete the Assessment <b>" + assessmentName + " <b> <br>" +
+                                        "Test Link:  <a href=" + testLink + "> Assessment Link </a>  <br> <br> <br> <br>" +
+                                        "Instructions to follow :" + "<br> <br>" +
+                                        "Once you get the test link please login with your credentials.  <br>  " +
+                                        "It’s a " + assessment.getDuration() + "  Min Online Test.<br>" +
+
+                                        "To ensure an uninterrupted test taking experience , you may close all chat windows, Screen savers, multiple windows etc. before starting the test. <br> " +
+                                        "Please do not press “F5” during the test. This will finish your test and you will not be able to re-open the test.   <br>" +
+                                        "Once you complete the test, please revert us to get your result. <br><br><br>" +
+
+                                        "<b><font color=red>Note : Please DO NOT try to copy anything as an automated flag will be raised against your name and you will get dis-qualified. </font> </b> <br>" +
+
+
+                                        "</h3>" +
+                                        "Regards , <br>" +
+                                        "Synechron ")
                         .toEmail(candidateEntity.getEmailAddress())
                         .build();
                 emailService.sendMail(email);
