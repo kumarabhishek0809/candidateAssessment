@@ -1,5 +1,3 @@
-CREATE DATABASE  IF NOT EXISTS `clientAssessmentPortal` /*!40100 DEFAULT CHARACTER SET latin1 */;
-USE `clientAssessmentPortal`;
 -- MySQL dump 10.13  Distrib 8.0.20, for Win64 (x86_64)
 --
 -- Host: 18.223.111.230    Database: clientAssessmentPortal
@@ -51,6 +49,16 @@ INSERT INTO `evaluation_question_answer` VALUES (2,5,1,19,2);
 INSERT INTO `evaluation_question_answer` VALUES (3,5,1,8,3);
 INSERT INTO `evaluation_question_answer` VALUES (4,5,1,7,4);
 INSERT INTO `evaluation_question_answer` VALUES (5,5,1,15,5);
+INSERT INTO `evaluation_question_answer` VALUES (6,5,2,21,6);
+INSERT INTO `evaluation_question_answer` VALUES (7,5,2,20,7);
+INSERT INTO `evaluation_question_answer` VALUES (8,NULL,2,25,8);
+INSERT INTO `evaluation_question_answer` VALUES (9,NULL,2,28,9);
+INSERT INTO `evaluation_question_answer` VALUES (10,5,2,33,10);
+INSERT INTO `evaluation_question_answer` VALUES (11,5,3,34,11);
+INSERT INTO `evaluation_question_answer` VALUES (12,5,3,37,12);
+INSERT INTO `evaluation_question_answer` VALUES (13,5,3,39,13);
+INSERT INTO `evaluation_question_answer` VALUES (14,5,3,42,14);
+INSERT INTO `evaluation_question_answer` VALUES (15,5,3,46,15);
 /*!40000 ALTER TABLE `evaluation_question_answer` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -63,4 +71,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2020-06-10 11:16:48
+-- Dump completed on 2020-06-10 14:26:22

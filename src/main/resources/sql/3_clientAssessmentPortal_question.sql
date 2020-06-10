@@ -1,5 +1,3 @@
-CREATE DATABASE  IF NOT EXISTS `clientAssessmentPortal` /*!40100 DEFAULT CHARACTER SET latin1 */;
-USE `clientAssessmentPortal`;
 -- MySQL dump 10.13  Distrib 8.0.20, for Win64 (x86_64)
 --
 -- Host: 18.223.111.230    Database: clientAssessmentPortal
@@ -29,6 +27,7 @@ CREATE TABLE `question` (
   `header` varchar(255) DEFAULT NULL,
   `answer_id` int(11) DEFAULT NULL,
   `question_type_id` int(11) DEFAULT NULL,
+  `technology` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `FK2w9qd6mx9oh2vchntaokhlj4f` (`answer_id`),
   KEY `FK7svspov4rexjawqdvi2jni81u` (`question_type_id`),
@@ -43,11 +42,21 @@ CREATE TABLE `question` (
 
 LOCK TABLES `question` WRITE;
 /*!40000 ALTER TABLE `question` DISABLE KEYS */;
-INSERT INTO `question` VALUES (1,'An expression involving byte, int, and literal numbers is promoted to which of these',1,1);
-INSERT INTO `question` VALUES (2,'Which of these literals can be contained in float data type variable?',1,1);
-INSERT INTO `question` VALUES (3,'What is the range of short data type in Java ?',1,1);
-INSERT INTO `question` VALUES (4,'What is the range of byte data type in Java ?',1,1);
-INSERT INTO `question` VALUES (5,'Which data type value is returned by all transcendental math functions?',1,1);
+INSERT INTO `question` VALUES (1,'An expression involving byte, int, and literal numbers is promoted to which of these',1,1,'Java');
+INSERT INTO `question` VALUES (2,'Which of these literals can be contained in float data type variable?',1,1,'Java');
+INSERT INTO `question` VALUES (3,'What is the range of short data type in Java ?',1,1,'Java');
+INSERT INTO `question` VALUES (4,'What is the range of byte data type in Java ?',1,1,'Java');
+INSERT INTO `question` VALUES (5,'Which data type value is returned by all transcendental math functions?',1,1,'Java');
+INSERT INTO `question` VALUES (6,'In Angular, you can pass data from parent component to child component using',1,1,'Angular');
+INSERT INTO `question` VALUES (7,'In Angular, you can pass data from child component to parent component using',1,1,'Angular');
+INSERT INTO `question` VALUES (8,'You can create local HTML reference of HTML tag using variable which starts with character',1,1,'Angular');
+INSERT INTO `question` VALUES (9,'A directive which modifies DOM hierarchy is called',1,1,'Angular');
+INSERT INTO `question` VALUES (10,'Select correct form control class name which is set to true via [(ngModel)] whenever value is modified',1,1,'Angular');
+INSERT INTO `question` VALUES (11,'React is a',1,1,'React');
+INSERT INTO `question` VALUES (12,'ReactJS covers',1,1,'React');
+INSERT INTO `question` VALUES (13,'ReactJS uses _____ to increase performance',1,1,'React');
+INSERT INTO `question` VALUES (14,'Number of elements, a valid react component can return ',1,1,'React');
+INSERT INTO `question` VALUES (15,'State in react is________',1,1,'React');
 /*!40000 ALTER TABLE `question` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -60,4 +69,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2020-06-10 11:16:22
+-- Dump completed on 2020-06-10 14:25:57

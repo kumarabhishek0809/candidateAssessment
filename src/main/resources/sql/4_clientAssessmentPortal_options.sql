@@ -1,5 +1,3 @@
-CREATE DATABASE  IF NOT EXISTS `clientAssessmentPortal` /*!40100 DEFAULT CHARACTER SET latin1 */;
-USE `clientAssessmentPortal`;
 -- MySQL dump 10.13  Distrib 8.0.20, for Win64 (x86_64)
 --
 -- Host: 18.223.111.230    Database: clientAssessmentPortal
@@ -56,6 +54,33 @@ INSERT INTO `options` VALUES (16,'-1.7e+308');
 INSERT INTO `options` VALUES (17,'-3.4e+038\n');
 INSERT INTO `options` VALUES (18,'+1.7e+308');
 INSERT INTO `options` VALUES (19,'-3.4e+050');
+INSERT INTO `options` VALUES (20,'@Output()');
+INSERT INTO `options` VALUES (21,'@Input()');
+INSERT INTO `options` VALUES (22,'Input');
+INSERT INTO `options` VALUES (23,'Output');
+INSERT INTO `options` VALUES (24,'@');
+INSERT INTO `options` VALUES (25,'#');
+INSERT INTO `options` VALUES (26,'*');
+INSERT INTO `options` VALUES (27,'&');
+INSERT INTO `options` VALUES (28,'Structural directive');
+INSERT INTO `options` VALUES (29,'Attribute directive');
+INSERT INTO `options` VALUES (30,'.ng-invalid');
+INSERT INTO `options` VALUES (31,'.ng-pending');
+INSERT INTO `options` VALUES (32,'.ng-pristine');
+INSERT INTO `options` VALUES (33,'.ng-dirty');
+INSERT INTO `options` VALUES (34,'Javascript library');
+INSERT INTO `options` VALUES (35,'Javascript framework');
+INSERT INTO `options` VALUES (36,'Both of above');
+INSERT INTO `options` VALUES (37,'User Interface layer in an application');
+INSERT INTO `options` VALUES (38,'Data layer in an application');
+INSERT INTO `options` VALUES (39,'Virtual DOM');
+INSERT INTO `options` VALUES (40,'Original DOM');
+INSERT INTO `options` VALUES (41,'Component based');
+INSERT INTO `options` VALUES (42,'1');
+INSERT INTO `options` VALUES (43,'2');
+INSERT INTO `options` VALUES (44,'3');
+INSERT INTO `options` VALUES (45,'A permanent storage');
+INSERT INTO `options` VALUES (46,'Internal storage of the component');
 /*!40000 ALTER TABLE `options` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -68,4 +93,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2020-06-10 11:17:07
+-- Dump completed on 2020-06-10 14:26:41
