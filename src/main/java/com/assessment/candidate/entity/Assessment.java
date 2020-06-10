@@ -4,7 +4,7 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Data;
 
 import javax.persistence.*;
-import java.util.Set;
+import java.util.List;
 
 @Data
 @Entity
@@ -22,5 +22,5 @@ public class Assessment {
     private Integer passingPercentage;
 
     @OneToMany
-    private Set<Question> questions;
+    private List<Question> questions;
 }

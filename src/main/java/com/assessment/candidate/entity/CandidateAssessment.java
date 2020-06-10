@@ -30,12 +30,15 @@ public class CandidateAssessment {
     @ManyToOne
     private Candidate candidate;
 
+    @Builder.Default
     private float totalAssessmentScore = 0;
+    @Builder.Default
     private float totalMarksObtained = 0;
 
     @Builder.Default
     private ZonedDateTime inviteDate = ZonedDateTime.now();
 
+    @Builder.Default
     private boolean status = false;
     private ZonedDateTime attemptedDate;
 }

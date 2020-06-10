@@ -3,8 +3,10 @@ package com.assessment.candidate.entity;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Data;
 
-import javax.persistence.*;
-import java.util.Set;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
 
 @Data
 @Entity
@@ -16,10 +18,4 @@ public class Answer {
     private Integer id;
 
     private String header;
-    private String description;
-
-    @OneToMany
-    private Set<Options> options ;
-
-
 }

@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Data;
 
 import javax.persistence.*;
+import java.util.Set;
 
 @Data
 @Entity
@@ -15,10 +16,12 @@ public class Question {
     private Integer id;
 
     private String header;
-    private String description;
 
     @OneToOne
     private Answer answer;
+
+    @OneToMany
+    private Set<Options> options ;
 
     @OneToOne
     private QuestionType questionType;

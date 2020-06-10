@@ -82,93 +82,43 @@ http://localhost:8080/submitAssessment?emailId=kumar.abhishek1@gmail.com
 ============================EXAM SUBMIT LINK =======
 
 http://localhost:8080/assessment/1?emailId=john.doe@gmail.com
+http://18.223.111.230:8080/assessment/3?emailId=dfdf
 ================================================
 
- 
-INSERT INTO `clientAssessmentPortal`.`answer` (`id`, `description`, `header`) VALUES ('1', 'Ans Dec 1', 'Ans Hed 1');
 
-INSERT INTO `clientAssessmentPortal`.`answer` (`id`, `description`, `header`) VALUES ('2', 'Ans Dec 2', 'Ans Hed 2');
+drop table clientAssessmentPortal.question_options;
 
-
-INSERT INTO `clientAssessmentPortal`.`options` (`id`, `description`) VALUES ('1', 'JLT');
-
-INSERT INTO `clientAssessmentPortal`.`options` (`id`, `description`) VALUES ('2', 'JBR');
-
-INSERT INTO `clientAssessmentPortal`.`options` (`id`, `description`) VALUES ('3', 'Media City');
-
-INSERT INTO `clientAssessmentPortal`.`options` (`id`, `description`) VALUES ('4', 'Business Bay');
-
-INSERT INTO `clientAssessmentPortal`.`options` (`id`, `description`) VALUES ('5', 'Meydan ');
-
-INSERT INTO `clientAssessmentPortal`.`options` (`id`, `description`) VALUES ('6', 'None Of These');
-
-INSERT INTO `clientAssessmentPortal`.`assessment` (`id`, `duration`, `name`, `technology`) VALUES ('1', '30', 'JAVA 101', 'JAVA');
-
-INSERT INTO `clientAssessmentPortal`.`assessment` (`id`, `duration`, `name`, `technology`) VALUES ('2', '40', 'SCALA', 'SCALA');
-
-INSERT INTO `clientAssessmentPortal`.`assessment` (`id`, `duration`, `name`, `technology`) VALUES ('3', '50 ', 'SPRING BOOT', 'JAVA');
-
-INSERT INTO `clientAssessmentPortal`.`question_type` (`id`, `description`) VALUES ('1', 'MCSA');
-
-
-INSERT INTO `clientAssessmentPortal`.`question` (`id`, `description`, `header`, `answer_id`) VALUES ('1', 'QUES DESC 1', 'QUES HEAD 1', '1');
-
-INSERT INTO `clientAssessmentPortal`.`question` (`id`, `description`, `header`, `answer_id`) VALUES ('2', 'QUEST DESC 2', 'QUES HEAD 2', '2');
-
-drop table clientAssessmentPortal.answer_options;
-
-CREATE TABLE clientAssessmentPortal.answer_options (
-  `answer_id` int(11) NOT NULL,
+CREATE TABLE clientAssessmentPortal.question_options (
+  `question_id` int(11) NOT NULL,
   `options_id` int(11) NOT NULL,
-  PRIMARY KEY (`answer_id`,`options_id`),
-  CONSTRAINT `FK2bn9ytu1jr6fiml7xncpefjnb` FOREIGN KEY (`answer_id`) REFERENCES `answer` (`id`),
-  CONSTRAINT `FK65v596w6gy9fp02qomgiro2mh` FOREIGN KEY (`options_id`) REFERENCES `options` (`id`)
-);
+  CONSTRAINT `FK18p5p89dis3ma9g5kveiwltmq` FOREIGN KEY (`options_id`) REFERENCES `options` (`id`),
+  CONSTRAINT `FKjk4v42xhyfv4ca1yyhorsg5tv` FOREIGN KEY (`question_id`) REFERENCES `question` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
-INSERT INTO `clientAssessmentPortal`.`answer_options` (`answer_id`, `options_id`) VALUES ('1', '2');
+INSERT INTO `clientAssessmentPortal`.`question_options` (`question_id`, `options_id`) VALUES ('1', '11');
+INSERT INTO `clientAssessmentPortal`.`question_options` (`question_id`, `options_id`) VALUES ('1', '12');
+INSERT INTO `clientAssessmentPortal`.`question_options` (`question_id`, `options_id`) VALUES ('1', '13');
+INSERT INTO `clientAssessmentPortal`.`question_options` (`question_id`, `options_id`) VALUES ('1', '14');
+INSERT INTO `clientAssessmentPortal`.`question_options` (`question_id`, `options_id`) VALUES ('3', '7');
+INSERT INTO `clientAssessmentPortal`.`question_options` (`question_id`, `options_id`) VALUES ('3', '8');
+INSERT INTO `clientAssessmentPortal`.`question_options` (`question_id`, `options_id`) VALUES ('3', '9');
+INSERT INTO `clientAssessmentPortal`.`question_options` (`question_id`, `options_id`) VALUES ('3', '10');
+INSERT INTO `clientAssessmentPortal`.`question_options` (`question_id`, `options_id`) VALUES ('4', '7');
+INSERT INTO `clientAssessmentPortal`.`question_options` (`question_id`, `options_id`) VALUES ('4', '8');
+INSERT INTO `clientAssessmentPortal`.`question_options` (`question_id`, `options_id`) VALUES ('4', '9');
+INSERT INTO `clientAssessmentPortal`.`question_options` (`question_id`, `options_id`) VALUES ('4', '10');
 
-INSERT INTO `clientAssessmentPortal`.`answer_options` (`answer_id`, `options_id`) VALUES ('1', '3');
-
-INSERT INTO `clientAssessmentPortal`.`answer_options` (`answer_id`, `options_id`) VALUES ('1', '4');
-
-INSERT INTO `clientAssessmentPortal`.`answer_options` (`answer_id`, `options_id`) VALUES ('2', '1');
-
-INSERT INTO `clientAssessmentPortal`.`answer_options` (`answer_id`, `options_id`) VALUES ('2', '2');
-
-INSERT INTO `clientAssessmentPortal`.`answer_options` (`answer_id`, `options_id`) VALUES ('2', '3');
-COMMIT;
+commit;
 
 drop table clientAssessmentPortal.assessment_questions;
 
 CREATE TABLE clientAssessmentPortal.assessment_questions (
   `assessment_id` int(11) NOT NULL,
   `questions_id` int(11) NOT NULL,
-  PRIMARY KEY (`assessment_id`,`questions_id`),
-   CONSTRAINT `FKaf20224e4jochperimgguvnuw` FOREIGN KEY (`assessment_id`) REFERENCES `assessment` (`id`),
+  CONSTRAINT `FKaf20224e4jochperimgguvnuw` FOREIGN KEY (`assessment_id`) REFERENCES `assessment` (`id`),
   CONSTRAINT `FKbsio8xaewqfgk6w24cydb5be8` FOREIGN KEY (`questions_id`) REFERENCES `question` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
-INSERT INTO `clientAssessmentPortal`.`assessment_questions` (`assessment_id`, `questions_id`) VALUES ('1', '1');
-
-INSERT INTO `clientAssessmentPortal`.`assessment_questions` (`assessment_id`, `questions_id`) VALUES ('1', '2');
-
-INSERT INTO `clientAssessmentPortal`.`assessment_questions` (`assessment_id`, `questions_id`) VALUES ('2', '2');
-
-INSERT INTO `clientAssessmentPortal`.`assessment_questions` (`assessment_id`, `questions_id`) VALUES ('2', '1');
-
-INSERT INTO `clientAssessmentPortal`.`assessment_questions` (`assessment_id`, `questions_id`) VALUES ('3', '2');
-
-INSERT INTO `clientAssessmentPortal`.`assessment_questions` (`assessment_id`, `questions_id`) VALUES ('3', '1');
-COMMIT;
-
-INSERT INTO `clientAssessmentPortal`.`question_answer` (`id`, `marks`, `assessment_id`, `options_id`, `question_id`) VALUES ('1', '5', '1', '2', '1');
-
-INSERT INTO `clientAssessmentPortal`.`question_answer` (`id`, `marks`, `assessment_id`, `options_id`, `question_id`) VALUES ('2', '1', '1', '1', '2');
-
-INSERT INTO `clientAssessmentPortal`.`question_answer` (`id`, `marks`, `assessment_id`, `options_id`, `question_id`) VALUES ('3', '4', '2', '2', '1');
-
-INSERT INTO `clientAssessmentPortal`.`question_answer` (`id`, `marks`, `assessment_id`, `options_id`, `question_id`) VALUES ('4', '3', '2', '3', '1');
-COMMIT;
 
 =======================================================
 

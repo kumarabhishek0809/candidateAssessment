@@ -119,21 +119,21 @@ public class AssessmentsService {
         }
 
         //Process Question Answer
-        Optional<List<QuestionAnswer>> assessmentQueAnsScoreByAssesmentId = questionAnswerOptionRepository
+        Optional<List<EvaluationQuestionAnswer>> assessmentQueAnsScoreByAssesmentId = questionAnswerOptionRepository
                 .findAllByAssessmentId(submitAssessmentQuestionAnswer.getAssessmentId());
 
         //Calculate How Much Answers were correct.
         List<SubmitAssessmentQuestionAnswer.QuestionAnswerReq> questionAnswersRequestReq = submitAssessmentQuestionAnswer.getQuestionAnswerReq();
         if (assessmentQueAnsScoreByAssesmentId.isPresent()) {
-            List<QuestionAnswer> questionAnswersDB = assessmentQueAnsScoreByAssesmentId.get();
-            totalAssessmentScore = questionAnswersDB.stream().mapToLong(questionAnswer -> questionAnswer.getMarks()).sum();
-            for (QuestionAnswer questionAnswerDB : questionAnswersDB) {
-                Question question = questionAnswerDB.getQuestion();
+            List<EvaluationQuestionAnswer> evaluationQuestionAnswersDB = assessmentQueAnsScoreByAssesmentId.get();
+            totalAssessmentScore = evaluationQuestionAnswersDB.stream().mapToLong(evaluationQuestionAnswer -> evaluationQuestionAnswer.getMarks()).sum();
+            for (EvaluationQuestionAnswer evaluationQuestionAnswerDB : evaluationQuestionAnswersDB) {
+                Question question = evaluationQuestionAnswerDB.getQuestion();
                 if (question != null) {
                     for (SubmitAssessmentQuestionAnswer.QuestionAnswerReq questionAnswerReq : questionAnswersRequestReq) {
-                        if (questionAnswerReq.getQuestionId() == questionAnswerDB.getId()) {
-                            if (questionAnswerReq.getOptionId() == questionAnswerDB.getOptions().getId()) {
-                                totalMarksObtained = totalMarksObtained + questionAnswerDB.getMarks();
+                        if (questionAnswerReq.getQuestionId() == evaluationQuestionAnswerDB.getId()) {
+                            if (questionAnswerReq.getOptionId() == evaluationQuestionAnswerDB.getOptions().getId()) {
+                                totalMarksObtained = totalMarksObtained + evaluationQuestionAnswerDB.getMarks();
                                 break;
                             }
                         }
