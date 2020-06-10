@@ -22,7 +22,7 @@ public class Question {
 
     @OneToMany
     private Set<Options> options ;
-
+    private String technology;
     @OneToOne
     private QuestionType questionType;
 

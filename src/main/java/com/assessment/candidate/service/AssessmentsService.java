@@ -128,7 +128,7 @@ public class AssessmentsService {
         List<SubmitAssessmentQuestionAnswer.QuestionAnswerReq> questionAnswersRequestReq = submitAssessmentQuestionAnswer.getQuestionAnswerReq();
         if (assessmentQueAnsScoreByAssesmentId.isPresent()) {
             List<EvaluationQuestionAnswer> evaluationQuestionAnswersDB = assessmentQueAnsScoreByAssesmentId.get();
-            totalAssessmentScore = evaluationQuestionAnswersDB.stream().mapToLong(evaluationQuestionAnswer -> evaluationQuestionAnswer.getMarks()).sum();
+            totalAssessmentScore = evaluationQuestionAnswersDB.stream().mapToLong(evaluationQuestionAnswer -> Optional.ofNullable(evaluationQuestionAnswer.getMarks()).orElse(5)).sum();
             for (EvaluationQuestionAnswer evaluationQuestionAnswerDB : evaluationQuestionAnswersDB) {
                 Question question = evaluationQuestionAnswerDB.getQuestion();
                 if (question != null) {
