@@ -95,18 +95,7 @@ CREATE TABLE clientAssessmentPortal.question_options (
   CONSTRAINT `FKjk4v42xhyfv4ca1yyhorsg5tv` FOREIGN KEY (`question_id`) REFERENCES `question` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
-INSERT INTO `clientAssessmentPortal`.`question_options` (`question_id`, `options_id`) VALUES ('1', '11');
-INSERT INTO `clientAssessmentPortal`.`question_options` (`question_id`, `options_id`) VALUES ('1', '12');
-INSERT INTO `clientAssessmentPortal`.`question_options` (`question_id`, `options_id`) VALUES ('1', '13');
-INSERT INTO `clientAssessmentPortal`.`question_options` (`question_id`, `options_id`) VALUES ('1', '14');
-INSERT INTO `clientAssessmentPortal`.`question_options` (`question_id`, `options_id`) VALUES ('3', '7');
-INSERT INTO `clientAssessmentPortal`.`question_options` (`question_id`, `options_id`) VALUES ('3', '8');
-INSERT INTO `clientAssessmentPortal`.`question_options` (`question_id`, `options_id`) VALUES ('3', '9');
-INSERT INTO `clientAssessmentPortal`.`question_options` (`question_id`, `options_id`) VALUES ('3', '10');
-INSERT INTO `clientAssessmentPortal`.`question_options` (`question_id`, `options_id`) VALUES ('4', '7');
-INSERT INTO `clientAssessmentPortal`.`question_options` (`question_id`, `options_id`) VALUES ('4', '8');
-INSERT INTO `clientAssessmentPortal`.`question_options` (`question_id`, `options_id`) VALUES ('4', '9');
-INSERT INTO `clientAssessmentPortal`.`question_options` (`question_id`, `options_id`) VALUES ('4', '10');
+
 
 commit;
 
@@ -122,23 +111,13 @@ CREATE TABLE clientAssessmentPortal.assessment_questions (
 
 =======================================================
 
-SELECT * FROM clientAssessmentPortal.assessment;
-
-SELECT * FROM clientAssessmentPortal.candidate_assessment;
-
-SELECT * FROM clientAssessmentPortal.candidate;
-
 SELECT * FROM clientAssessmentPortal.question;
-
-SELECT * FROM clientAssessmentPortal.answer_option;
-
+SELECT * FROM clientAssessmentPortal.options;
+SELECT * FROM clientAssessmentPortal.question_options;
 SELECT * FROM clientAssessmentPortal.answer;
-
-SELECT * FROM clientAssessmentPortal.answer_answer_options;
-
-SELECT * FROM clientAssessmentPortal.question;
-
+SELECT * FROM clientAssessmentPortal.assessment;
 SELECT * FROM clientAssessmentPortal.assessment_questions;
+SELECT * FROM clientAssessmentPortal.evaluation_question_answer;
 
 ==========================================================
 
