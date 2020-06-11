@@ -22,9 +22,9 @@ public class AssessmentsController {
         return assessmentsService.getAssessments();
     }
 
-    @GetMapping(value = "/assessment/{assessmentId}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public AssessmentDetailResponse getAssessments(@PathVariable("assessmentId") Integer assessmentId,
-                                                   @RequestParam("emailId") String emailId){
+    @GetMapping(value = "/assessment", produces = MediaType.APPLICATION_JSON_VALUE)
+    public AssessmentDetailResponse getAssessments(@RequestParam("emailId") String emailId ,
+                                                   @RequestParam("assessmentId") Integer assessmentId){
         return assessmentsService.getAssessment(assessmentId,emailId);
     }
 

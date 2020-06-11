@@ -113,7 +113,10 @@ public class AssessmentsService {
             candidateDb = byEmailAddress.get();
             List<CandidateAssessment> dbCandidateAssessments = candidateDb.getCandidateAssessments();
             candidateAssessment = dbCandidateAssessments.stream().filter(ca
-                    -> !ca.isStatus() && ca.getAssessment().getId() == submitAssessmentQuestionAnswer.getAssessmentId()).findFirst().orElse(null);
+                    ->
+                    !ca.isStatus()
+                    && ca.getAssessment().getId() == submitAssessmentQuestionAnswer.getAssessmentId())
+                        .findFirst().orElse(null);
             if (candidateAssessment == null) {
                 assessmentDetailResponse.setDataAvailable(false);
                 return assessmentDetailResponse;
