@@ -29,7 +29,7 @@ public class AssessmentsController {
     }
 
 
-    @PutMapping(value = "/submitAssessment", produces = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(value = "/submitAssessment", produces = MediaType.APPLICATION_JSON_VALUE)
     public AssessmentDetailResponse submitAssessment(@RequestParam("emailId") String emailId,
                                                      @RequestBody SubmitAssessmentQuestionAnswer submitAssessmentQuestionAnswer
                                                    ) throws MessagingException {
