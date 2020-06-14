@@ -1,6 +1,7 @@
 package com.assessment.candidate.service;
 
 import com.assessment.candidate.entity.*;
+import com.assessment.candidate.model.AssessmentCandidateCount;
 import com.assessment.candidate.model.Email;
 import com.assessment.candidate.model.SubmitAssessmentQuestionAnswer;
 import com.assessment.candidate.repository.IAssessmentRepository;
@@ -214,5 +215,9 @@ public class AssessmentsService {
             }
         }
         return assessmentDetailResponse;
+    }
+
+    public List<AssessmentCandidateCount> candidateAssessmentCount() {
+        return candidateAssessmentRepository.getCandidateAssessmentCount();
     }
 }

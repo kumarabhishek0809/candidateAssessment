@@ -1,5 +1,6 @@
 package com.assessment.candidate.controller;
 
+import com.assessment.candidate.model.AssessmentCandidateCount;
 import com.assessment.candidate.model.SubmitAssessmentQuestionAnswer;
 import com.assessment.candidate.response.AssessmentDetailResponse;
 import com.assessment.candidate.response.AssessmentResponse;
@@ -9,6 +10,7 @@ import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
 import javax.mail.MessagingException;
+import java.util.List;
 
 @RestController
 public class AssessmentsController {
@@ -34,5 +36,10 @@ public class AssessmentsController {
                                                      @RequestBody SubmitAssessmentQuestionAnswer submitAssessmentQuestionAnswer
                                                    ) throws MessagingException {
         return assessmentsService.submitAssessment(emailId,submitAssessmentQuestionAnswer);
+    }
+
+    @GetMapping(value = "/candidateAssessmentCount" , produces = MediaType.APPLICATION_JSON_VALUE)
+    public List<AssessmentCandidateCount> candidateAssessmentCount() throws MessagingException {
+        return assessmentsService.candidateAssessmentCount();
     }
 }
