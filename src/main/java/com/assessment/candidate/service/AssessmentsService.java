@@ -18,9 +18,8 @@ import org.springframework.util.StringUtils;
 
 import javax.mail.MessagingException;
 import java.time.ZonedDateTime;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
+import java.util.concurrent.atomic.AtomicInteger;
 
 @Service
 public class AssessmentsService {
@@ -217,7 +216,17 @@ public class AssessmentsService {
         return assessmentDetailResponse;
     }
 
-    public List<AssessmentCandidateCount> candidateAssessmentCount() {
-        return candidateAssessmentRepository.getCandidateAssessmentCount();
+    public Map<String,AssessmentCandidateCount> candidateAssessmentCount() {
+        List<AssessmentCandidateCount> candidateAssessmentCount = candidateAssessmentRepository.getCandidateAssessmentCount();
+
+        Map<String,AssessmentCandidateCount> assessmentCandidateCountMap = new HashMap<>();
+        AtomicInteger i = new AtomicInteger(1);
+        candidateAssessmentCount.stream().forEach(
+                ca -> {
+                    assessmentCandidateCountMap.put(""+i,ca);
+                    i.incrementAndGet();
+                }
+        );
+        return assessmentCandidateCountMap;
     }
 }

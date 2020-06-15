@@ -86,6 +86,7 @@ http://18.223.111.230:8080/assessment?emailId=KUMAR.ABHISHEK1@synechron.com&asse
 For SQL Please follow folder resource/sql inside src/main
 
 ==========================================================
+http://18.223.111.230:8080/candidateAssessmentCount
 
 ************Intitial script************
 

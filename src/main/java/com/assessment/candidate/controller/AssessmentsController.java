@@ -10,7 +10,7 @@ import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
 import javax.mail.MessagingException;
-import java.util.List;
+import java.util.Map;
 
 @RestController
 public class AssessmentsController {
@@ -39,7 +39,7 @@ public class AssessmentsController {
     }
 
     @GetMapping(value = "/candidateAssessmentCount" , produces = MediaType.APPLICATION_JSON_VALUE)
-    public List<AssessmentCandidateCount> candidateAssessmentCount() throws MessagingException {
+    public Map<String, AssessmentCandidateCount> candidateAssessmentCount() throws MessagingException {
         return assessmentsService.candidateAssessmentCount();
     }
 }
