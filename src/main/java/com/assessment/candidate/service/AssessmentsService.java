@@ -164,7 +164,7 @@ public class AssessmentsService {
 
             //Send Email,
             if (candidateDb != null && emailId != null && assessment != null && candidateAssessment != null) {
-                String subject = "Candidate " + candidateDb.getFirstName() + " " + candidateDb.getLastName() + " completed Assessement " + assessment.getName();
+                String subject = "Candidate " + Optional.ofNullable(candidateDb.getFirstName()).orElse("") + " " + Optional.ofNullable(candidateDb.getLastName()).orElse("") + " completed Assessement " + assessment.getName();
                 Email email = Email.builder()
                         .subject(subject)
                         .message("" +
