@@ -210,6 +210,7 @@ public class AssessmentsService {
 
 
 
+    @Cacheable(value = CANDIDATE_CACHE, key = " 'candidateAssessmentCount' ")
     public Map<String,AssessmentCandidateCount> candidateAssessmentCount() {
         List<AssessmentCandidateCount> candidateAssessmentCount = candidateAssessmentRepository.getCandidateAssessmentCount();
 
