@@ -131,7 +131,7 @@ public class AssessmentsService {
                     for (SubmitAssessmentQuestionAnswer.QuestionAnswerReq questionAnswerReq : questionAnswersRequestReq) {
                         if (questionAnswerReq.getQuestionId() == evaluationQuestionAnswerDB.getId()) {
                             if (questionAnswerReq.getOptionId() == evaluationQuestionAnswerDB.getOptions().getId()) {
-                                totalMarksObtained = totalMarksObtained + evaluationQuestionAnswerDB.getMarks();
+                                totalMarksObtained = totalMarksObtained + Optional.ofNullable(evaluationQuestionAnswerDB.getMarks()).orElse(5);
                                 break;
                             }
                         }
