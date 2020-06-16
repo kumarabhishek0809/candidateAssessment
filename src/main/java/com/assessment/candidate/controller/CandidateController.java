@@ -41,6 +41,9 @@ public class CandidateController {
 
     @PutMapping(value = "/registerCandidate" )
     public GenericResponse registerCandidate(@RequestBody Candidate candidate){
+        if(candidate == null || candidate.getEmailAddress() == null){
+            throw new RuntimeException();
+        }
         return candidateService.registerCandidate(candidate);
     }
 

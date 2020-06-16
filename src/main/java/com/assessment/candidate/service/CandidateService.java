@@ -119,7 +119,8 @@ public class CandidateService {
         return candidateSearchResponse;
     }
 
-    public com.assessment.candidate.model.Candidate mapEntityToModel(Candidate candidate,
+    public com.assessment.candidate.model.Candidate
+    mapEntityToModel(Candidate candidate,
                                                                      List<com.assessment.candidate.model.CandidateAssessment> assessments) {
 
         String inviteDate = "";
@@ -146,8 +147,11 @@ public class CandidateService {
     public GenericResponse registerCandidate(Candidate candidate) {
         GenericResponse genericResponse = new GenericResponse();
         genericResponse.setDataAvailable(true);
-        candidate.getCandidateAssessments().forEach(candidateAssessment -> candidateAssessment.setInviteDate(ZonedDateTime.now()));
-        com.assessment.candidate.entity.Candidate candidateEntity = candidateRepository.save(candidate);
+
+        Candidate candidateEntity = updateCandidateDetails(candidate);
+        candidateEntity = candidateRepository.save(candidateEntity);
+
+
         System.out.println(candidateEntity.getId());
         return genericResponse;
     }
@@ -160,19 +164,7 @@ public class CandidateService {
         //FindCandidate if not then save
         Candidate candidateEntity = null;
         Assessment assessment = null;
-        Optional<Candidate> byEmailAddress = candidateRepository.findByEmailAddress(candidateAssessmentRequest.getCandidate().getEmailAddress());
-        if (byEmailAddress.isPresent()) {
-            candidateEntity = byEmailAddress.get();
-            Candidate candidateRequest = candidateAssessmentRequest.getCandidate();
-            candidateEntity.setMobileNo(Optional.ofNullable(candidateEntity.getMobileNo()).orElse(candidateRequest.getMobileNo()));
-            candidateEntity.setLastName(Optional.ofNullable(candidateEntity.getLastName()).orElse(candidateRequest.getLastName()));
-            candidateEntity.setFirstName(Optional.ofNullable(candidateEntity.getFirstName()).orElse(candidateRequest.getFirstName()));
-            candidateEntity.setEmailAddress(Optional.ofNullable(candidateEntity.getEmailAddress()).orElse(candidateRequest.getEmailAddress()));
-            candidateEntity.setDateOfBirth(Optional.ofNullable(candidateEntity.getDateOfBirth()).orElse(candidateRequest.getDateOfBirth()));
-            candidateEntity.setCountryCode(Optional.ofNullable(candidateEntity.getCountryCode()).orElse(candidateRequest.getCountryCode()));
-        } else {
-            candidateEntity = candidateRepository.save(candidateAssessmentRequest.getCandidate());
-        }
+        candidateEntity = updateCandidateDetails(candidateAssessmentRequest.getCandidate());
         System.out.println(candidateEntity.getId());
 
         CandidateAssessment candidateAssessment = candidateAssessmentRequest.getCandidateAssessment();
@@ -222,6 +214,23 @@ public class CandidateService {
             }
         }
         return genericResponse;
+    }
+
+    public Candidate updateCandidateDetails(Candidate candidateRequest) {
+        Candidate candidateEntity;
+        Optional<Candidate> byEmailAddress = candidateRepository.findByEmailAddress(candidateRequest.getEmailAddress());
+        if (byEmailAddress.isPresent()) {
+            candidateEntity = byEmailAddress.get();
+            candidateEntity.setMobileNo(Optional.ofNullable(candidateEntity.getMobileNo()).orElse(candidateRequest.getMobileNo()));
+            candidateEntity.setLastName(Optional.ofNullable(candidateEntity.getLastName()).orElse(candidateRequest.getLastName()));
+            candidateEntity.setFirstName(Optional.ofNullable(candidateEntity.getFirstName()).orElse(candidateRequest.getFirstName()));
+            candidateEntity.setEmailAddress(Optional.ofNullable(candidateEntity.getEmailAddress()).orElse(candidateRequest.getEmailAddress()));
+            candidateEntity.setDateOfBirth(Optional.ofNullable(candidateEntity.getDateOfBirth()).orElse(candidateRequest.getDateOfBirth()));
+            candidateEntity.setCountryCode(Optional.ofNullable(candidateEntity.getCountryCode()).orElse(candidateRequest.getCountryCode()));
+        } else {
+            candidateEntity = candidateRepository.save(candidateRequest);
+        }
+        return candidateEntity;
     }
 
     public GenericResponse processAssessmentForCandidate(ProcessAssessments candidateAssessments) {
