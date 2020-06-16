@@ -7,11 +7,11 @@ import com.assessment.candidate.model.SubmitAssessmentQuestionAnswer;
 import com.assessment.candidate.repository.IAssessmentRepository;
 import com.assessment.candidate.repository.ICandidateAssessmentRepository;
 import com.assessment.candidate.repository.ICandidateRepository;
-import com.assessment.candidate.repository.IQuestionAnswerOptionRepository;
 import com.assessment.candidate.response.AssessmentDetailResponse;
 import com.assessment.candidate.response.AssessmentResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
@@ -20,9 +20,13 @@ import java.time.ZonedDateTime;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
 
+import static com.assessment.candidate.CandidateApplication.CANDIDATE_CACHE;
+
 @Service
 public class AssessmentsService {
 
+    @Autowired
+    private  AssessmentCandidateMapper assessmentCandidateMapper;
     @Autowired
     private IAssessmentRepository assessmentRepository;
     @Autowired
@@ -31,8 +35,8 @@ public class AssessmentsService {
     private CandidateService candidateService;
     @Autowired
     private ICandidateAssessmentRepository candidateAssessmentRepository;
-    @Autowired
-    private IQuestionAnswerOptionRepository questionAnswerOptionRepository;
+
+
 
     @Value("${adminEmailId}")
     private String adminEmailId;
@@ -41,11 +45,12 @@ public class AssessmentsService {
     @Autowired
     private EmailService emailService;
 
+    @Cacheable(value = CANDIDATE_CACHE, key = " 'getAssessments' ")
     public AssessmentResponse getAssessments() {
         Iterable<Assessment> assessmentRepositoryAll = assessmentRepository.findAll();
         List<com.assessment.candidate.model.Assessment> assessments = new ArrayList<>();
         for (Assessment assessment : assessmentRepositoryAll) {
-            assessments.add(mapEntityToModel(assessment));
+            assessments.add(assessmentCandidateMapper.mapEntityToModel(assessment));
         }
 
 
@@ -53,16 +58,6 @@ public class AssessmentsService {
                 .assessments(assessments).build();
         assessmentResponse.setDataAvailable(true);
         return assessmentResponse;
-    }
-
-
-    public com.assessment.candidate.model.Assessment mapEntityToModel(Assessment assessment) {
-        return com.assessment.candidate.model.Assessment.builder()
-                .duration(assessment.getDuration())
-                .id(assessment.getId())
-                .name(assessment.getName())
-                .technology(assessment.getTechnology())
-                .build();
     }
 
     public AssessmentDetailResponse getAssessment(Integer assessmentId, String emailId) {
@@ -80,7 +75,7 @@ public class AssessmentsService {
                                 -> candidateAssessment.getAssessment().getId() == assessmentId)
                         .findAny().isPresent();
                 if (isAssessmentAvailable) {
-                    Optional<Assessment> assessment = assessmentRepository.findById(assessmentId);
+                    Optional<Assessment> assessment = assessmentCandidateMapper.getAssessment(assessmentId);
                     assessmentDetailResponse.setAssessments(assessment.get());
                 } else {
                     assessmentDetailResponse.setDataAvailable(false);
@@ -89,6 +84,7 @@ public class AssessmentsService {
         }
         return assessmentDetailResponse;
     }
+
 
     public AssessmentDetailResponse submitAssessment(String emailId,
                                                      SubmitAssessmentQuestionAnswer submitAssessmentQuestionAnswer) throws MessagingException {
@@ -120,8 +116,8 @@ public class AssessmentsService {
         }
 
         //Process Question Answer
-        Optional<List<EvaluationQuestionAnswer>> assessmentQueAnsScoreByAssesmentId = questionAnswerOptionRepository
-                .findAllByAssessmentId(submitAssessmentQuestionAnswer.getAssessmentId());
+        Optional<List<EvaluationQuestionAnswer>> assessmentQueAnsScoreByAssesmentId =
+                assessmentCandidateMapper.getEvaluationQuestionAnswer(submitAssessmentQuestionAnswer.getAssessmentId());
 
         //Calculate How Much Answers were correct.
         List<SubmitAssessmentQuestionAnswer.QuestionAnswerReq> questionAnswersRequestReq = submitAssessmentQuestionAnswer.getQuestionAnswerReq();
@@ -211,6 +207,8 @@ public class AssessmentsService {
         }
         return assessmentDetailResponse;
     }
+
+
 
     public Map<String,AssessmentCandidateCount> candidateAssessmentCount() {
         List<AssessmentCandidateCount> candidateAssessmentCount = candidateAssessmentRepository.getCandidateAssessmentCount();

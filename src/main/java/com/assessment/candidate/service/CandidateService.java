@@ -15,6 +15,7 @@ import com.assessment.candidate.response.GenericResponse;
 import com.assessment.candidate.util.DateUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
@@ -27,6 +28,8 @@ import java.util.Optional;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
+import static com.assessment.candidate.CandidateApplication.CANDIDATE_CACHE;
+
 @Service
 public class CandidateService {
 
@@ -37,7 +40,7 @@ public class CandidateService {
     @Autowired
     private IAssessmentRepository assessmentRepository;
     @Autowired
-    private AssessmentsService assessmentsService;
+    private AssessmentCandidateMapper assessmentCandidateMapper;
     @Autowired
     private EmailService emailService;
 
@@ -45,6 +48,7 @@ public class CandidateService {
     private String instanceIPAddress;
 
 
+    @Cacheable(value = CANDIDATE_CACHE, key = " 'findCandidateDetails' ")
     public CandidatesSearchResponse findCandidateDetails() {
         CandidatesSearchResponse candidateSearchResponse = CandidatesSearchResponse.builder().build();
         candidateSearchResponse.setCandidates(new ArrayList<>());
@@ -80,7 +84,7 @@ public class CandidateService {
     private Function<CandidateAssessment, com.assessment.candidate.model.CandidateAssessment> getCandidateAssessmentCandidateAssessmentFunction() {
         return candidateAssessment ->
                 com.assessment.candidate.model.CandidateAssessment.builder()
-                        .assessment(assessmentsService.mapEntityToModel(candidateAssessment.getAssessment()))
+                        .assessment(assessmentCandidateMapper.mapEntityToModel(candidateAssessment.getAssessment()))
                         .action(candidateAssessment.getAction())
                         .id(candidateAssessment.getId())
                         .percentage(candidateAssessment.getPercentage())
