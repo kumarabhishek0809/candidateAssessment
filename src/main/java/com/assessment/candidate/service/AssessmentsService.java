@@ -13,7 +13,6 @@ import com.assessment.candidate.response.AssessmentResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
-import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 
 import javax.mail.MessagingException;
@@ -76,13 +75,10 @@ public class AssessmentsService {
             if (byEmailAddress.isPresent()) {
                 Candidate candidate = byEmailAddress.get();
                 assessmentDetailResponse.setCandidate(candidateService.mapEntityToModel(candidate, null));
-                List<CandidateAssessment> candidateAssessments = candidate.getCandidateAssessments();
-                if (!CollectionUtils.isEmpty(candidateAssessments)) {
-                    isAssessmentAvailable = candidateAssessments.stream().filter(ca -> !ca.isStatus())
-                            .filter(candidateAssessment
-                                    -> candidateAssessment.getAssessment().getId() == assessmentId)
-                            .findAny().isPresent();
-                }
+                isAssessmentAvailable = candidate.getCandidateAssessments().stream().filter(ca -> !ca.isStatus())
+                        .filter(candidateAssessment
+                                -> candidateAssessment.getAssessment().getId() == assessmentId)
+                        .findAny().isPresent();
                 if (isAssessmentAvailable) {
                     Optional<Assessment> assessment = assessmentRepository.findById(assessmentId);
                     assessmentDetailResponse.setAssessments(assessment.get());

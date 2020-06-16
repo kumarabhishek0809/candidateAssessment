@@ -4,7 +4,7 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Data;
 
 import javax.persistence.*;
-import java.util.Set;
+import java.util.List;
 
 @Data
 @Entity
@@ -20,9 +20,11 @@ public class Question {
     @OneToOne
     private Answer answer;
 
-    @OneToMany
-    private Set<Options> options ;
+    @OneToMany(mappedBy="question")
+    private List<Options> options ;
+
     private String technology;
+
     @OneToOne
     private QuestionType questionType;
 

@@ -1,12 +1,10 @@
 package com.assessment.candidate.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Data;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
 
 @Data
 @Entity
@@ -17,6 +15,9 @@ public class Options {
     @GeneratedValue(strategy= GenerationType.AUTO)
     private Integer id;
 
+    @ManyToOne
+    @JsonIgnore
+    private Question question;
     private String description;
 
 

@@ -80,13 +80,13 @@ http://localhost:8080/submitAssessment?emailId=kumar.abhishek1@gmail.com
 }
 
 ============================EXAM SUBMIT LINK =======
-http://18.223.111.230:8080/assessment?emailId=KUMAR.ABHISHEK1@synechron.com&assessmentId=3
+http://18.191.46.80:8080/assessment?emailId=KUMAR.ABHISHEK1@synechron.com&assessmentId=3
 ================================================
 
 For SQL Please follow folder resource/sql inside src/main
 
 ==========================================================
-http://18.223.111.230:8080/candidateAssessmentCount
+http://18.191.46.80:8080/candidateAssessmentCount
 
 ************Intitial script************
 
