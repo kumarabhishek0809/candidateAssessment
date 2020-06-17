@@ -2,13 +2,16 @@ package com.assessment.candidate.service;
 
 import com.assessment.candidate.entity.*;
 import com.assessment.candidate.model.AssessmentCandidateCount;
+import com.assessment.candidate.model.AssessmentRequest;
 import com.assessment.candidate.model.Email;
 import com.assessment.candidate.model.SubmitAssessmentQuestionAnswer;
 import com.assessment.candidate.repository.IAssessmentRepository;
 import com.assessment.candidate.repository.ICandidateAssessmentRepository;
 import com.assessment.candidate.repository.ICandidateRepository;
+import com.assessment.candidate.repository.IQuestionRepository;
 import com.assessment.candidate.response.AssessmentDetailResponse;
 import com.assessment.candidate.response.AssessmentResponse;
+import com.assessment.candidate.response.GenericResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cache.annotation.Cacheable;
@@ -19,6 +22,7 @@ import javax.mail.MessagingException;
 import java.time.ZonedDateTime;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.stream.Collectors;
 
 import static com.assessment.candidate.CandidateApplication.CANDIDATE_CACHE;
 
@@ -35,7 +39,8 @@ public class AssessmentsService {
     private CandidateService candidateService;
     @Autowired
     private ICandidateAssessmentRepository candidateAssessmentRepository;
-
+    @Autowired
+    private IQuestionRepository questionRepository;
 
 
     @Value("${adminEmailId}")
@@ -62,7 +67,7 @@ public class AssessmentsService {
 
     public AssessmentDetailResponse getAssessment(Integer assessmentId, String emailId) {
         AssessmentDetailResponse assessmentDetailResponse = AssessmentDetailResponse.builder().build();
-        assessmentDetailResponse.setDataAvailable(true);
+        assessmentDetailResponse.setDataAvailable(false);
         //validate if test is scheduled for email id.
         boolean isAssessmentAvailable = false;
         if (!StringUtils.isEmpty(emailId)) {
@@ -77,6 +82,7 @@ public class AssessmentsService {
                 if (isAssessmentAvailable) {
                     Optional<Assessment> assessment = assessmentCandidateMapper.getAssessment(assessmentId);
                     assessmentDetailResponse.setAssessments(assessment.get());
+                    assessmentDetailResponse.setDataAvailable(true);
                 } else {
                     assessmentDetailResponse.setDataAvailable(false);
                 }
@@ -223,5 +229,26 @@ public class AssessmentsService {
                 }
         );
         return assessmentCandidateCountMap;
+    }
+
+    public GenericResponse addAssessment(AssessmentRequest assessmentRequest) {
+        GenericResponse genericResponse = new GenericResponse();
+        genericResponse.setDataAvailable(false);
+        if(assessmentRequest != null){
+            Assessment assementReq = Assessment.builder()
+                    .duration(assessmentRequest.getDuration())
+                    .name(assessmentRequest.getName())
+                    .passingPercentage(assessmentRequest.getPassingPercentage())
+                    .technology(assessmentRequest.getTechnology())
+                    .questions(assessmentRequest.getQuestionIds().stream().map(
+                            qIdReq ->
+                                    questionRepository.findById(qIdReq).orElseThrow(()
+                                            -> new RuntimeException("No Question Available"))).collect(Collectors.toList()))
+                    .build();
+            Assessment assessment = assessmentRepository.save(assementReq);
+            System.out.println(assessment.getId());
+        }
+
+        return genericResponse;
     }
 }

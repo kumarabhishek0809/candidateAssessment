@@ -1,12 +1,16 @@
 package com.assessment.candidate.controller;
 
 import com.assessment.candidate.model.AssessmentCandidateCount;
+import com.assessment.candidate.model.AssessmentRequest;
 import com.assessment.candidate.model.SubmitAssessmentQuestionAnswer;
 import com.assessment.candidate.response.AssessmentDetailResponse;
 import com.assessment.candidate.response.AssessmentResponse;
+import com.assessment.candidate.response.GenericResponse;
 import com.assessment.candidate.service.AssessmentsService;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.mail.MessagingException;
@@ -15,9 +19,17 @@ import java.util.Map;
 @RestController
 public class AssessmentsController {
 
-    @Autowired
-    private AssessmentsService assessmentsService;
+    private final AssessmentsService assessmentsService;
 
+    public AssessmentsController(AssessmentsService assessmentsService) {
+        this.assessmentsService = assessmentsService;
+    }
+
+    @PostMapping(value = "/assessment", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<GenericResponse> addAssessment(@RequestBody AssessmentRequest assessmentRequest){
+        GenericResponse genericResponse = assessmentsService.addAssessment(assessmentRequest);
+        return new ResponseEntity<>(genericResponse, new HttpHeaders(), HttpStatus.OK);
+    }
 
     @GetMapping(value = "/assessments", produces = MediaType.APPLICATION_JSON_VALUE)
     public AssessmentResponse getAssessments(){
