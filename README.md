@@ -88,6 +88,29 @@ For SQL Please follow folder resource/sql inside src/main
 ==========================================================
 http://18.191.46.80:8080/candidateAssessmentCount
 
+==========================================================
+http://localhost:8080/question
+{
+    "header": "An expression involving byte, int, and literal numbers is promoted to which of these",
+    "answerId": 1,
+    "options": [
+        {
+            "description": "int"
+        },
+        {
+            "description": "long"
+        },
+        {
+            "description": "byte"
+        },
+        {
+            "description": "float"
+        }
+    ],
+    "technology": "Java",
+    "questionTypeId": 1
+}
+==========================================================
 ************Intitial script************
 
 #!/bin/sh
