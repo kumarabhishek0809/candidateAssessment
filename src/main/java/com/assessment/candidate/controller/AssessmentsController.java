@@ -5,6 +5,7 @@ import com.assessment.candidate.model.AssessmentRequest;
 import com.assessment.candidate.model.SubmitAssessmentQuestionAnswer;
 import com.assessment.candidate.response.AssessmentDetailResponse;
 import com.assessment.candidate.response.AssessmentResponse;
+import com.assessment.candidate.response.AssessmentSubmittedResponse;
 import com.assessment.candidate.response.GenericResponse;
 import com.assessment.candidate.service.AssessmentsService;
 import org.springframework.http.HttpHeaders;
@@ -53,8 +54,8 @@ public class AssessmentsController {
 
 
     @PostMapping(value = "/submitAssessment", produces = MediaType.APPLICATION_JSON_VALUE)
-    public AssessmentDetailResponse submitAssessment(@RequestParam("emailId") String emailId,
-                                                     @RequestBody SubmitAssessmentQuestionAnswer submitAssessmentQuestionAnswer
+    public AssessmentSubmittedResponse submitAssessment(@RequestParam("emailId") String emailId,
+                                                        @RequestBody SubmitAssessmentQuestionAnswer submitAssessmentQuestionAnswer
                                                    ) throws MessagingException {
         return assessmentsService.submitAssessment(emailId,submitAssessmentQuestionAnswer);
     }

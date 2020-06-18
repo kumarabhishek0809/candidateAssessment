@@ -11,6 +11,7 @@ import com.assessment.candidate.repository.ICandidateRepository;
 import com.assessment.candidate.repository.IQuestionRepository;
 import com.assessment.candidate.response.AssessmentDetailResponse;
 import com.assessment.candidate.response.AssessmentResponse;
+import com.assessment.candidate.response.AssessmentSubmittedResponse;
 import com.assessment.candidate.response.GenericResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -93,11 +94,11 @@ public class AssessmentsService {
     }
 
 
-    public AssessmentDetailResponse submitAssessment(String emailId,
-                                                     SubmitAssessmentQuestionAnswer submitAssessmentQuestionAnswer) throws MessagingException {
+    public AssessmentSubmittedResponse submitAssessment(String emailId,
+                                                        SubmitAssessmentQuestionAnswer submitAssessmentQuestionAnswer) throws MessagingException {
 
-        AssessmentDetailResponse assessmentDetailResponse = AssessmentDetailResponse.builder().build();
-
+        AssessmentSubmittedResponse assessmentDetailResponse = AssessmentSubmittedResponse.builder().build();
+        assessmentDetailResponse.setDataAvailable(true);
         Integer totalAssessmentScore = 0;
         Integer totalMarksObtained = 0;
         float totalPercentage = 0;
@@ -109,6 +110,7 @@ public class AssessmentsService {
         Optional<Candidate> byEmailAddress = candidateRepository.findByEmailAddress(emailId);
         if (byEmailAddress.isPresent()) {
             candidateDb = byEmailAddress.get();
+            mapCandidateFromEntity(assessmentDetailResponse, candidateDb);
             List<CandidateAssessment> dbCandidateAssessments = candidateDb.getCandidateAssessments();
             candidateAssessment = dbCandidateAssessments.stream().filter(ca
                     ->
@@ -120,7 +122,6 @@ public class AssessmentsService {
                 return assessmentDetailResponse;
             }
         }
-
         //Process Question Answer
         Optional<List<EvaluationQuestionAnswer>> assessmentQueAnsScoreByAssesmentId =
                 assessmentCandidateMapper.getEvaluationQuestionAnswer(submitAssessmentQuestionAnswer.getAssessmentId());
@@ -171,8 +172,22 @@ public class AssessmentsService {
             sendCompletionEmailToCandidate(candidateDb, candidateAssessment, assessment);
 
         }
-        assessmentDetailResponse.setDataAvailable(false);
+        assessmentDetailResponse.setDataSubmited(true);
         return assessmentDetailResponse;
+    }
+
+    public void mapCandidateFromEntity(AssessmentSubmittedResponse assessmentDetailResponse, Candidate candidateDb) {
+        com.assessment.candidate.model.Candidate candidateRes = com.assessment.candidate.model.Candidate.builder()
+                .mobileNo(candidateDb.getMobileNo())
+                .countryCode(candidateDb.getCountryCode())
+                .dateOfBirth(candidateDb.getDateOfBirth())
+                .emailAddress(candidateDb.getEmailAddress())
+                .firstName(candidateDb.getFirstName())
+                .id(candidateDb.getId())
+                .lastName(candidateDb.getLastName())
+                .candidateAssessments(null)
+                .build();
+        assessmentDetailResponse.setCandidate(candidateRes);
     }
 
     private void sendCompletionEmailToCandidate(Candidate candidateDb,

@@ -119,9 +119,8 @@ public class CandidateService {
         return candidateSearchResponse;
     }
 
-    public com.assessment.candidate.model.Candidate
-    mapEntityToModel(Candidate candidate,
-                                                                     List<com.assessment.candidate.model.CandidateAssessment> assessments) {
+    public com.assessment.candidate.model.Candidate  mapEntityToModel(Candidate candidate,
+                                                                      List<com.assessment.candidate.model.CandidateAssessment> assessments) {
 
         String inviteDate = "";
         String attemptedDate = "";
