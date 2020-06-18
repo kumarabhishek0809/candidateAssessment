@@ -203,7 +203,7 @@ public class AssessmentsService {
                                     "You have successfully submitted your "+ assessment.getName() + " assessment !!!!" + "<br><br>" +
                                     "" +
                                     "" +
-                                    "Post evaluation our HR team will get back to you for next steps" + "<br> <br>" +
+                                    "Post evaluation our HR team will get back to you for next steps." + "<br> <br>" +
                                     "</h3>" +
                                     "Regards , <br>" +
                                     "Synechron ")
@@ -289,9 +289,9 @@ public class AssessmentsService {
                         .questions(noQuestionAvailable)
                         .build();
             }else {
-                Assessment assessmentRepositoryById = assessmentRepository.findById(assessmentRequest.getAssessmentId())
+                assementReq = assessmentRepository.findById(assessmentRequest.getAssessmentId())
                         .orElseThrow( () -> new RuntimeException("Assessment Id Incorrect"));
-                List<Question> questions = assessmentRepositoryById.getQuestions();
+                List<Question> questions = assementReq.getQuestions();
                 if(CollectionUtils.isEmpty(questions)) {
                     questions = new ArrayList<>();
                 }

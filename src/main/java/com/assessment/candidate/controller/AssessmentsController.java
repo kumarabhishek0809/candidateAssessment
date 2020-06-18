@@ -34,7 +34,7 @@ public class AssessmentsController {
 
     @PutMapping(value = "/assessment", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<GenericResponse> updateAssessment(@RequestBody AssessmentRequest assessmentRequest){
-        if(assessmentRequest == null || assessmentRequest.getAssessmentId() != null){
+        if(assessmentRequest == null || assessmentRequest.getAssessmentId() == null){
             throw new RuntimeException("Assessment Id should be blank");
         }
         GenericResponse genericResponse = assessmentsService.addUpdateAssessment(assessmentRequest);
