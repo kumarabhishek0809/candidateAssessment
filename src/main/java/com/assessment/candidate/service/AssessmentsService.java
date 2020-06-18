@@ -168,7 +168,7 @@ public class AssessmentsService {
 
                 CandidateAssessment canAssessment = candidateAssessmentRepository.save(candidateAssessment);
             }
-            //sendCompletionEmailToAdmin(emailId, candidateDb, candidateAssessment, assessment);
+            sendCompletionEmailToAdmin(emailId, candidateDb, candidateAssessment, assessment);
             sendCompletionEmailToCandidate(candidateDb, candidateAssessment, assessment);
 
         }
