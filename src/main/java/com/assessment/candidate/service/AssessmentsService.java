@@ -97,7 +97,6 @@ public class AssessmentsService {
                                                      SubmitAssessmentQuestionAnswer submitAssessmentQuestionAnswer) throws MessagingException {
 
         AssessmentDetailResponse assessmentDetailResponse = AssessmentDetailResponse.builder().build();
-        assessmentDetailResponse.setDataAvailable(true);
 
         Integer totalAssessmentScore = 0;
         Integer totalMarksObtained = 0;
@@ -172,6 +171,7 @@ public class AssessmentsService {
             sendCompletionEmailToCandidate(candidateDb, candidateAssessment, assessment);
 
         }
+        assessmentDetailResponse.setDataAvailable(false);
         return assessmentDetailResponse;
     }
 
@@ -185,7 +185,7 @@ public class AssessmentsService {
                             "<i> Dear  <b>" + candidateDb.getFirstName() + " </b> Greetings!</i><br>" +
                                     "<b> Wish you a nice day! </b> <br> <br>" +
                                     "<h3>" +
-                                    "You have successfully submitted your assessment" + assessment.getName() + " !!!!" + "<br><br>" +
+                                    "You have successfully submitted your "+ assessment.getName() + " assessment !!!!" + "<br><br>" +
                                     "" +
                                     "" +
                                     "Post evaluation our HR team will get back to you for next steps" + "<br> <br>" +
