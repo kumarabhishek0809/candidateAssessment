@@ -27,7 +27,16 @@ public class AssessmentsController {
 
     @PostMapping(value = "/assessment", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<GenericResponse> addAssessment(@RequestBody AssessmentRequest assessmentRequest){
-        GenericResponse genericResponse = assessmentsService.addAssessment(assessmentRequest);
+        GenericResponse genericResponse = assessmentsService.addUpdateAssessment(assessmentRequest);
+        return new ResponseEntity<>(genericResponse, new HttpHeaders(), HttpStatus.OK);
+    }
+
+    @PutMapping(value = "/assessment", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<GenericResponse> updateAssessment(@RequestBody AssessmentRequest assessmentRequest){
+        if(assessmentRequest == null || assessmentRequest.getAssessmentId() != null){
+            throw new RuntimeException("Assessment Id should be blank");
+        }
+        GenericResponse genericResponse = assessmentsService.addUpdateAssessment(assessmentRequest);
         return new ResponseEntity<>(genericResponse, new HttpHeaders(), HttpStatus.OK);
     }
 

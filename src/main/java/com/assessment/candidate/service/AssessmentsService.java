@@ -16,6 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 
 import javax.mail.MessagingException;
@@ -167,53 +168,80 @@ public class AssessmentsService {
 
                 CandidateAssessment canAssessment = candidateAssessmentRepository.save(candidateAssessment);
             }
+            //sendCompletionEmailToAdmin(emailId, candidateDb, candidateAssessment, assessment);
+            sendCompletionEmailToCandidate(candidateDb, candidateAssessment, assessment);
 
-            //Send Email,
-            if (candidateDb != null && emailId != null && assessment != null && candidateAssessment != null) {
-                String subject = "Candidate " + Optional.ofNullable(candidateDb.getFirstName()).orElse("") + " " + Optional.ofNullable(candidateDb.getLastName()).orElse("") + " completed Assessement " + assessment.getName();
-                Email email = Email.builder()
-                        .subject(subject)
-                        .message("" +
-                                "<i> Dear Team Greetings!</i><br>" +
-                                "<b> Wish you a nice day! </b><br> <br> <br>" +
-                                "<b><font color=red> " + subject + "</font> </b><br><br><br><br>" +
-                                "<style>\n" +
-                                "table, th, td {\n" +
-                                "  border: 1px solid black;\n" +
-                                "}\n" +
-                                "</style>" +
-                                "<table style=\"width:100%\"> " +
-                                "  <tr> " +
-                                "    <th>Candidate Name</th> " +
-                                "    <th>Candidate Email Id</th> " +
-                                "    <th>Assessment Attempted</th> " +
-                                "    <th>Score Obtained</th> " +
-                                "    <th>Total Score</th> " +
-                                "    <th>Percentage</th> " +
-                                "    <th>Result</th> " +
-                                "  </tr> " +
-                                "  <tr> " +
-                                "    <td> " + candidateDb.getFirstName() + " " + candidateDb.getLastName() + "</td>" +
-                                "    <td> " + emailId + " </td>" +
-                                "    <td> " + assessment.getName() + " </td>" +
-                                "    <td> " + candidateAssessment.getTotalMarksObtained() + "</td>" +
-                                "    <td> " + candidateAssessment.getTotalAssessmentScore() + " </td>" +
-                                "    <td> " + candidateAssessment.getPercentage() + " </th> " +
-                                "    <td> " + candidateAssessment.getResult() + " </td> " +
-                                "  </tr> " +
-                                "</table>" +
-
-                                "<br><br><br>" +
-                                "Regards ,<br>" +
-                                "Synechron ")
-                        .toEmail(adminEmailId)
-                        .build();
-                emailService.sendMail(email);
-            }
         }
         return assessmentDetailResponse;
     }
 
+    private void sendCompletionEmailToCandidate(Candidate candidateDb,
+                                               CandidateAssessment candidateAssessment,
+                                               Assessment assessment) throws MessagingException {
+        if (candidateDb != null && assessment != null) {
+            Email email = Email.builder().subject("Successfully Submitted assessment " + assessment.getName())
+                    .message(
+
+                            "<i> Dear  <b>" + candidateDb.getFirstName() + " </b> Greetings!</i><br>" +
+                                    "<b> Wish you a nice day! </b> <br> <br>" +
+                                    "<h3>" +
+                                    "You have successfully submitted your assessment" + assessment.getName() + " !!!!" + "<br><br>" +
+                                    "" +
+                                    "" +
+                                    "Post evaluation our HR team will get back to you for next steps" + "<br> <br>" +
+                                    "</h3>" +
+                                    "Regards , <br>" +
+                                    "Synechron ")
+                    .toEmail(candidateDb.getEmailAddress())
+                    .build();
+            emailService.sendMail(email);
+        }
+    }
+
+    private void sendCompletionEmailToAdmin(String emailId, Candidate candidateDb, CandidateAssessment candidateAssessment, Assessment assessment) throws MessagingException {
+        //Send Email to admin,
+        if (candidateDb != null && emailId != null && assessment != null && candidateAssessment != null) {
+            String subject = "Candidate " + Optional.ofNullable(candidateDb.getFirstName()).orElse("") + " " + Optional.ofNullable(candidateDb.getLastName()).orElse("") + " completed Assessement " + assessment.getName();
+            Email email = Email.builder()
+                    .subject(subject)
+                    .message("" +
+                            "<i> Dear Team Greetings!</i><br>" +
+                            "<b> Wish you a nice day! </b><br> <br> <br>" +
+                            "<b><font color=red> " + subject + "</font> </b><br><br><br><br>" +
+                            "<style>\n" +
+                            "table, th, td {\n" +
+                            "  border: 1px solid black;\n" +
+                            "}\n" +
+                            "</style>" +
+                            "<table style=\"width:100%\"> " +
+                            "  <tr> " +
+                            "    <th>Candidate Name</th> " +
+                            "    <th>Candidate Email Id</th> " +
+                            "    <th>Assessment Attempted</th> " +
+                            "    <th>Score Obtained</th> " +
+                            "    <th>Total Score</th> " +
+                            "    <th>Percentage</th> " +
+                            "    <th>Result</th> " +
+                            "  </tr> " +
+                            "  <tr> " +
+                            "    <td> " + candidateDb.getFirstName() + " " + candidateDb.getLastName() + "</td>" +
+                            "    <td> " + emailId + " </td>" +
+                            "    <td> " + assessment.getName() + " </td>" +
+                            "    <td> " + candidateAssessment.getTotalMarksObtained() + "</td>" +
+                            "    <td> " + candidateAssessment.getTotalAssessmentScore() + " </td>" +
+                            "    <td> " + candidateAssessment.getPercentage() + " </th> " +
+                            "    <td> " + candidateAssessment.getResult() + " </td> " +
+                            "  </tr> " +
+                            "</table>" +
+
+                            "<br><br><br>" +
+                            "Regards ,<br>" +
+                            "Synechron ")
+                    .toEmail(adminEmailId)
+                    .build();
+            emailService.sendMail(email);
+        }
+    }
 
 
     @Cacheable(value = CANDIDATE_CACHE, key = " 'candidateAssessmentCount' ")
@@ -231,24 +259,44 @@ public class AssessmentsService {
         return assessmentCandidateCountMap;
     }
 
-    public GenericResponse addAssessment(AssessmentRequest assessmentRequest) {
+    public GenericResponse addUpdateAssessment(AssessmentRequest assessmentRequest) {
         GenericResponse genericResponse = new GenericResponse();
         genericResponse.setDataAvailable(false);
+        Assessment assementReq = null;
         if(assessmentRequest != null){
-            Assessment assementReq = Assessment.builder()
-                    .duration(assessmentRequest.getDuration())
-                    .name(assessmentRequest.getName())
-                    .passingPercentage(assessmentRequest.getPassingPercentage())
-                    .technology(assessmentRequest.getTechnology())
-                    .questions(assessmentRequest.getQuestionIds().stream().map(
-                            qIdReq ->
-                                    questionRepository.findById(qIdReq).orElseThrow(()
-                                            -> new RuntimeException("No Question Available"))).collect(Collectors.toList()))
-                    .build();
-            Assessment assessment = assessmentRepository.save(assementReq);
-            System.out.println(assessment.getId());
+            List<Question> noQuestionAvailable = getNoQuestionAvailable(assessmentRequest);
+            if(assessmentRequest.getAssessmentId() == null) {
+                assementReq = Assessment.builder()
+                        .duration(assessmentRequest.getDuration())
+                        .name(assessmentRequest.getName())
+                        .passingPercentage(assessmentRequest.getPassingPercentage())
+                        .technology(assessmentRequest.getTechnology())
+                        .questions(noQuestionAvailable)
+                        .build();
+            }else {
+                Assessment assessmentRepositoryById = assessmentRepository.findById(assessmentRequest.getAssessmentId())
+                        .orElseThrow( () -> new RuntimeException("Assessment Id Incorrect"));
+                List<Question> questions = assessmentRepositoryById.getQuestions();
+                if(CollectionUtils.isEmpty(questions)) {
+                    questions = new ArrayList<>();
+                }
+                questions.addAll(noQuestionAvailable);
+                assementReq.setQuestions(questions);
+            }
+            if(assementReq != null) {
+                Assessment assessment = assessmentRepository.save(assementReq);
+                genericResponse.setDataAvailable(true);
+                System.out.println(assessment.getId());
+            }
         }
 
         return genericResponse;
+    }
+
+    public List<Question> getNoQuestionAvailable(AssessmentRequest assessmentRequest) {
+        return assessmentRequest.getQuestionIds().stream().map(
+                qIdReq ->
+                        questionRepository.findById(qIdReq).orElseThrow(()
+                                -> new RuntimeException("No Question Available"))).collect(Collectors.toList());
     }
 }
