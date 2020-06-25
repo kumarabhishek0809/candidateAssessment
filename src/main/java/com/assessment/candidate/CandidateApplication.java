@@ -33,7 +33,7 @@ public class CandidateApplication {
     }
 
     @CacheEvict(allEntries = true, value = {CANDIDATE_CACHE})
-    @Scheduled(fixedDelay = 2 * 60 * 60 * 1000, initialDelay = 500)
+    @Scheduled(fixedDelay = 2 * 60 * 1000, initialDelay = 500)
     public void candidateCacheEvict() {
         System.out.println("Flush Cache");
     }

@@ -39,7 +39,7 @@ public class CandidateController {
         return candidateSearchResponse;
     }
 
-    @PutMapping(value = "/registerCandidate" )
+    @PostMapping(value = "/registerCandidate" )
     public GenericResponse registerCandidate(@RequestBody Candidate candidate){
         if(candidate == null || candidate.getEmailAddress() == null){
             throw new RuntimeException();
