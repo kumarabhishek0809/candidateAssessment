@@ -183,7 +183,7 @@ public class CandidateService {
             if (candidateEntity != null && assessment != null) {
                 //?myparam1={id1}&myparam2={id2}
                 //?emailId=KUMAR.ABHISHEK1@synechron.com&assessmentId=3
-                String testLink = "http://" + instanceIPAddress + ":3000/admin/question-management?emailId=" + candidateEntity.getEmailAddress()+"&assessmentId="+assessment.getId();
+                String testLink = "http://" + instanceIPAddress + ":3000/CandidateRegisterForAssessment?emailId=" + candidateEntity.getEmailAddress()+"&assessmentId="+assessment.getId();
                 Email email = Email.builder().subject("Synechron invites you to take " + assessmentName + " Assessment")
                         .message(
 
