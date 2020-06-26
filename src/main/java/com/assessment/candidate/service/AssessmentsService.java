@@ -152,7 +152,7 @@ public class AssessmentsService {
                 candidateAssessment.setTotalMarksObtained(totalMarksObtained);
                 candidateAssessment.setTotalAssessmentScore(totalAssessmentScore);
                 if (totalAssessmentScore != 0 && totalMarksObtained != 0) {
-                    totalPercentage = 100 * (totalMarksObtained / totalAssessmentScore);
+                    totalPercentage = (100 * totalMarksObtained) / totalAssessmentScore;
                     String formattedString = String.format("%.02f", totalPercentage);
                     candidateAssessment.setPercentage(formattedString);
                 } else {
