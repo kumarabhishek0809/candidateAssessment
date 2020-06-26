@@ -220,12 +220,12 @@ public class CandidateService {
         Optional<Candidate> byEmailAddress = candidateRepository.findByEmailAddress(candidateRequest.getEmailAddress());
         if (byEmailAddress.isPresent()) {
             candidateEntity = byEmailAddress.get();
-            candidateEntity.setMobileNo(Optional.ofNullable(candidateEntity.getMobileNo()).orElse(candidateRequest.getMobileNo()));
-            candidateEntity.setLastName(Optional.ofNullable(candidateEntity.getLastName()).orElse(candidateRequest.getLastName()));
-            candidateEntity.setFirstName(Optional.ofNullable(candidateEntity.getFirstName()).orElse(candidateRequest.getFirstName()));
-            candidateEntity.setEmailAddress(Optional.ofNullable(candidateEntity.getEmailAddress()).orElse(candidateRequest.getEmailAddress()));
-            candidateEntity.setDateOfBirth(Optional.ofNullable(candidateEntity.getDateOfBirth()).orElse(candidateRequest.getDateOfBirth()));
-            candidateEntity.setCountryCode(Optional.ofNullable(candidateEntity.getCountryCode()).orElse(candidateRequest.getCountryCode()));
+            candidateEntity.setMobileNo(Optional.ofNullable(candidateRequest.getMobileNo()).orElse(candidateEntity.getMobileNo()));
+            candidateEntity.setLastName(Optional.ofNullable(candidateRequest.getLastName()).orElse(candidateEntity.getLastName()));
+            candidateEntity.setFirstName(Optional.ofNullable(candidateRequest.getFirstName()).orElse(candidateEntity.getFirstName()));
+            candidateEntity.setEmailAddress(Optional.ofNullable(candidateRequest.getEmailAddress()).orElse(candidateEntity.getEmailAddress()));
+            candidateEntity.setDateOfBirth(Optional.ofNullable(candidateRequest.getDateOfBirth()).orElse(candidateEntity.getDateOfBirth()));
+            candidateEntity.setCountryCode(Optional.ofNullable(candidateRequest.getCountryCode()).orElse(candidateEntity.getCountryCode()));
         } else {
             candidateEntity = candidateRepository.save(candidateRequest);
         }
