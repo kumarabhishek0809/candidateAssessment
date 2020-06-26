@@ -163,7 +163,7 @@ public class AssessmentsService {
                 candidateAssessment.setAttemptedDate(ZonedDateTime.now());
 
                 assessment = candidateAssessment.getAssessment();
-                Integer passingPercentage = Optional.ofNullable(assessment.getPassingPercentage()).orElse(60);
+                Integer passingPercentage = Optional.ofNullable(assessment.getPassingPercentage()).orElse(59);
                 candidateAssessment.setResult(totalPercentage > passingPercentage ? "Pass" : "Fail");
 
                 candidateAssessment = candidateAssessmentRepository.save(candidateAssessment);
