@@ -166,7 +166,7 @@ public class AssessmentsService {
                 Integer passingPercentage = Optional.ofNullable(assessment.getPassingPercentage()).orElse(60);
                 candidateAssessment.setResult(totalPercentage > passingPercentage ? "Pass" : "Fail");
 
-                CandidateAssessment canAssessment = candidateAssessmentRepository.save(candidateAssessment);
+                candidateAssessment = candidateAssessmentRepository.save(candidateAssessment);
             }
             sendCompletionEmailToAdmin(emailId, candidateDb, candidateAssessment, assessment);
             sendCompletionEmailToCandidate(candidateDb, candidateAssessment, assessment);
