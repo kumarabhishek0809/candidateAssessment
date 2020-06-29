@@ -5,6 +5,7 @@ import lombok.*;
 
 import javax.persistence.*;
 import java.time.ZonedDateTime;
+import java.util.List;
 
 @Entity
 @Data
@@ -41,4 +42,12 @@ public class CandidateAssessment {
     @Builder.Default
     private boolean status = false;
     private ZonedDateTime attemptedDate;
+
+    @OneToMany(
+            mappedBy = "candidateAssessment",
+            cascade = CascadeType.ALL,
+            orphanRemoval = true
+    )
+    private List<CandidateAssessmentResultSubmission> assessmentResultSubmissions;
+
 }

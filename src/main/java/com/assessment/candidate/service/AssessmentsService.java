@@ -32,7 +32,7 @@ import static com.assessment.candidate.CandidateApplication.CANDIDATE_CACHE;
 public class AssessmentsService {
 
     @Autowired
-    private  AssessmentCandidateMapper assessmentCandidateMapper;
+    private AssessmentCandidateMapper assessmentCandidateMapper;
     @Autowired
     private IAssessmentRepository assessmentRepository;
     @Autowired
@@ -95,7 +95,9 @@ public class AssessmentsService {
 
 
     public AssessmentSubmittedResponse submitAssessment(String emailId,
-                                                        SubmitAssessmentQuestionAnswer submitAssessmentQuestionAnswer) throws MessagingException {
+                                                        SubmitAssessmentQuestionAnswer
+                                                                submitAssessmentQuestionAnswer)
+            throws MessagingException {
 
         AssessmentSubmittedResponse assessmentDetailResponse = AssessmentSubmittedResponse.builder().build();
         assessmentDetailResponse.setDataAvailable(true);
@@ -106,21 +108,20 @@ public class AssessmentsService {
         CandidateAssessment candidateAssessment = null;
         Assessment assessment = null;
 
-        //Validate If candiate has this assessment.
-        Optional<Candidate> byEmailAddress = candidateRepository.findByEmailAddress(emailId);
-        if (byEmailAddress.isPresent()) {
-            candidateDb = byEmailAddress.get();
-            mapCandidateFromEntity(assessmentDetailResponse, candidateDb);
-            List<CandidateAssessment> dbCandidateAssessments = candidateDb.getCandidateAssessments();
-            candidateAssessment = dbCandidateAssessments.stream().filter(ca
-                    ->
-                    !ca.isStatus()
-                    && ca.getAssessment().getId() == submitAssessmentQuestionAnswer.getAssessmentId())
-                        .findFirst().orElse(null);
-            if (candidateAssessment == null) {
-                assessmentDetailResponse.setDataAvailable(false);
-                return assessmentDetailResponse;
-            }
+        //Validate If candidate has this assessment.
+        candidateDb = candidateRepository
+                .findByEmailAddress(emailId)
+                .orElseThrow(() -> new RuntimeException("Candidate Not Found with email id " + emailId));
+        mapCandidateFromEntity(assessmentDetailResponse, candidateDb);
+        List<CandidateAssessment> dbCandidateAssessments = candidateDb.getCandidateAssessments();
+        candidateAssessment = dbCandidateAssessments.stream().filter(ca
+                ->
+                !ca.isStatus()
+                        && ca.getAssessment().getId() == submitAssessmentQuestionAnswer.getAssessmentId())
+                .findFirst().orElse(null);
+        if (candidateAssessment == null) {
+            assessmentDetailResponse.setDataAvailable(false);
+            return assessmentDetailResponse;
         }
         //Process Question Answer
         Optional<List<EvaluationQuestionAnswer>> assessmentQueAnsScoreByAssesmentId =
@@ -146,37 +147,55 @@ public class AssessmentsService {
                 }
             }
         }
-        ///
-        if (byEmailAddress.isPresent()) {
-            if (candidateAssessment != null) {
-                candidateAssessment.setTotalMarksObtained(totalMarksObtained);
-                candidateAssessment.setTotalAssessmentScore(totalAssessmentScore);
-                if (totalAssessmentScore != 0 && totalMarksObtained != 0) {
-                    totalPercentage = (100 * totalMarksObtained) / totalAssessmentScore;
-                    String formattedString = String.format("%.02f", totalPercentage);
-                    candidateAssessment.setPercentage(formattedString);
-                } else {
-                    candidateAssessment.setPercentage("" + 0l);
-                }
-                candidateAssessment.setStatus(Boolean.TRUE);
-                candidateAssessment.setResult("Attended");
-                candidateAssessment.setAttemptedDate(ZonedDateTime.now());
-
-                assessment = candidateAssessment.getAssessment();
-                Integer passingPercentage = Optional.ofNullable(assessment.getPassingPercentage()).orElse(59);
-                candidateAssessment.setResult(totalPercentage > passingPercentage ? "Pass" : "Fail");
-
-                candidateAssessment = candidateAssessmentRepository.save(candidateAssessment);
+        if (candidateAssessment != null) {
+            candidateAssessment.setTotalMarksObtained(totalMarksObtained);
+            candidateAssessment.setTotalAssessmentScore(totalAssessmentScore);
+            if (totalAssessmentScore != 0 && totalMarksObtained != 0) {
+                totalPercentage = (100 * totalMarksObtained) / totalAssessmentScore;
+                String formattedString = String.format("%.02f", totalPercentage);
+                candidateAssessment.setPercentage(formattedString);
+            } else {
+                candidateAssessment.setPercentage("" + 0l);
             }
-            sendCompletionEmailToAdmin(emailId, candidateDb, candidateAssessment, assessment);
-            sendCompletionEmailToCandidate(candidateDb, candidateAssessment, assessment);
+            candidateAssessment.setStatus(Boolean.TRUE);
+            candidateAssessment.setResult("Attended");
+            candidateAssessment.setAttemptedDate(ZonedDateTime.now());
 
+            assessment = candidateAssessment.getAssessment();
+            Integer passingPercentage = Optional.ofNullable(assessment.getPassingPercentage()).orElse(59);
+            candidateAssessment.setResult(totalPercentage > passingPercentage ? "Pass" : "Fail");
+
+            populateAssessmentResultSubmission(candidateAssessment, submitAssessmentQuestionAnswer);
+
+            candidateAssessment = candidateAssessmentRepository.save(candidateAssessment);
         }
+        sendCompletionEmailToAdmin(emailId, candidateDb, candidateAssessment, assessment);
+        sendCompletionEmailToCandidate(candidateDb, candidateAssessment, assessment);
+
         assessmentDetailResponse.setDataSubmited(true);
         return assessmentDetailResponse;
     }
 
-    public void mapCandidateFromEntity(AssessmentSubmittedResponse assessmentDetailResponse, Candidate candidateDb) {
+    private void populateAssessmentResultSubmission(CandidateAssessment candidateAssessment,
+                                                    SubmitAssessmentQuestionAnswer submitAssessmentQuestionAnswer) {
+
+        if (submitAssessmentQuestionAnswer != null) {
+            List<SubmitAssessmentQuestionAnswer.QuestionAnswerReq> questionAnswerReq =
+                    submitAssessmentQuestionAnswer.getQuestionAnswerReq();
+
+            candidateAssessment.setAssessmentResultSubmissions(
+                    questionAnswerReq.stream().map(qaR ->
+                            CandidateAssessmentResultSubmission.builder().candidateAssessment(candidateAssessment)
+                                    .optionId(qaR.getOptionId())
+                                    .questionId(qaR.getQuestionId()).build()).collect(Collectors.toList())
+            );
+        }
+
+    }
+
+    public void mapCandidateFromEntity(AssessmentSubmittedResponse
+                                               assessmentDetailResponse,
+                                       Candidate candidateDb) {
         com.assessment.candidate.model.Candidate candidateRes = com.assessment.candidate.model.Candidate.builder()
                 .mobileNo(candidateDb.getMobileNo())
                 .countryCode(candidateDb.getCountryCode())
@@ -191,8 +210,8 @@ public class AssessmentsService {
     }
 
     private void sendCompletionEmailToCandidate(Candidate candidateDb,
-                                               CandidateAssessment candidateAssessment,
-                                               Assessment assessment) throws MessagingException {
+                                                CandidateAssessment candidateAssessment,
+                                                Assessment assessment) throws MessagingException {
         if (candidateDb != null && assessment != null) {
             Email email = Email.builder().subject("Successfully Submitted assessment " + assessment.getName())
                     .message(
@@ -200,7 +219,7 @@ public class AssessmentsService {
                             "<i> Dear  <b>" + candidateDb.getFirstName() + " </b> Greetings!</i><br>" +
                                     "<b> Wish you a nice day! </b> <br> <br>" +
                                     "<h3>" +
-                                    "You have successfully submitted your "+ assessment.getName() + " assessment !!!!" + "<br><br>" +
+                                    "You have successfully submitted your " + assessment.getName() + " assessment !!!!" + "<br><br>" +
                                     "" +
                                     "" +
                                     "Post evaluation our HR team will get back to you for next steps." + "<br> <br>" +
@@ -260,14 +279,14 @@ public class AssessmentsService {
 
 
     @Cacheable(value = CANDIDATE_CACHE, key = " 'candidateAssessmentCount' ")
-    public Map<String,AssessmentCandidateCount> candidateAssessmentCount() {
+    public Map<String, AssessmentCandidateCount> candidateAssessmentCount() {
         List<AssessmentCandidateCount> candidateAssessmentCount = candidateAssessmentRepository.getCandidateAssessmentCount();
 
-        Map<String,AssessmentCandidateCount> assessmentCandidateCountMap = new HashMap<>();
+        Map<String, AssessmentCandidateCount> assessmentCandidateCountMap = new HashMap<>();
         AtomicInteger i = new AtomicInteger(1);
         candidateAssessmentCount.stream().forEach(
                 ca -> {
-                    assessmentCandidateCountMap.put(""+i,ca);
+                    assessmentCandidateCountMap.put("" + i, ca);
                     i.incrementAndGet();
                 }
         );
@@ -278,9 +297,9 @@ public class AssessmentsService {
         GenericResponse genericResponse = new GenericResponse();
         genericResponse.setDataAvailable(false);
         Assessment assementReq = null;
-        if(assessmentRequest != null){
+        if (assessmentRequest != null) {
             List<Question> noQuestionAvailable = getNoQuestionAvailable(assessmentRequest);
-            if(assessmentRequest.getAssessmentId() == null) {
+            if (assessmentRequest.getAssessmentId() == null) {
                 assementReq = Assessment.builder()
                         .duration(assessmentRequest.getDuration())
                         .name(assessmentRequest.getName())
@@ -288,17 +307,17 @@ public class AssessmentsService {
                         .technology(assessmentRequest.getTechnology())
                         .questions(noQuestionAvailable)
                         .build();
-            }else {
+            } else {
                 assementReq = assessmentRepository.findById(assessmentRequest.getAssessmentId())
-                        .orElseThrow( () -> new RuntimeException("Assessment Id Incorrect"));
+                        .orElseThrow(() -> new RuntimeException("Assessment Id Incorrect"));
                 List<Question> questions = assementReq.getQuestions();
-                if(CollectionUtils.isEmpty(questions)) {
+                if (CollectionUtils.isEmpty(questions)) {
                     questions = new ArrayList<>();
                 }
                 questions.addAll(noQuestionAvailable);
                 assementReq.setQuestions(questions);
             }
-            if(assementReq != null) {
+            if (assementReq != null) {
                 Assessment assessment = assessmentRepository.save(assementReq);
                 genericResponse.setDataAvailable(true);
                 System.out.println(assessment.getId());

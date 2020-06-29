@@ -183,15 +183,19 @@ public class CandidateService {
             if (candidateEntity != null && assessment != null) {
                 //?myparam1={id1}&myparam2={id2}
                 //?emailId=KUMAR.ABHISHEK1@synechron.com&assessmentId=3
-                String testLink = "http://" + instanceIPAddress + ":3000/CandidateRegisterForAssessment?emailId=" + candidateEntity.getEmailAddress()+"&assessmentId="+assessment.getId();
+                String testLink = "http://" + instanceIPAddress +
+                        ":3000/CandidateRegisterForAssessment?emailId="
+                        + candidateEntity.getEmailAddress()
+                        +"&assessmentId="+assessment.getId()
+                        +"&assessmentName="+assessment.getName();
                 Email email = Email.builder().subject("Synechron invites you to take " + assessmentName + " Assessment")
                         .message(
 
                                 "<i> Dear  <b>" + candidateEntity.getFirstName() + " </b> Greetings!</i><br>" +
                                         "<b> Wish you a nice day! </b> <br> <br>" +
-                                        "<h3>" +
+                                        "<h4>" +
                                         "Please to inform, your profile is shortlisted for Next Level…. Congratulation !!!!" + "<br><br>" +
-                                        "As a of recruitment process, request you to please complete the Assessment <b>" + assessmentName + " <b> <br>" +
+                                        "As a of recruitment process, request you to please complete the Assessment : <b>" + assessmentName + " <b> <br>" +
                                         "Test Link:  <a href=" + testLink + "> Assessment Link </a>  <br> <br> <br> <br>" +
                                         "Instructions to follow :" + "<br> <br>" +
                                         "Once you get the test link please login with your credentials.  <br>  " +
@@ -204,7 +208,7 @@ public class CandidateService {
                                         "<b><font color=red>Note : Please DO NOT try to copy anything as an automated flag will be raised against your name and you will get dis-qualified. </font> </b> <br>" +
 
 
-                                        "</h3>" +
+                                        "</h4>" +
                                         "Regards , <br>" +
                                         "Synechron ")
                         .toEmail(candidateEntity.getEmailAddress())
