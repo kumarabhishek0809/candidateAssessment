@@ -119,8 +119,8 @@ public class CandidateService {
         return candidateSearchResponse;
     }
 
-    public com.assessment.candidate.model.Candidate  mapEntityToModel(Candidate candidate,
-                                                                      List<com.assessment.candidate.model.CandidateAssessment> assessments) {
+    public com.assessment.candidate.model.Candidate mapEntityToModel(Candidate candidate,
+                                                                     List<com.assessment.candidate.model.CandidateAssessment> assessments) {
 
         String inviteDate = "";
         String attemptedDate = "";
@@ -168,16 +168,15 @@ public class CandidateService {
 
         CandidateAssessment candidateAssessment = candidateAssessmentRequest.getCandidateAssessment();
         if (candidateAssessment != null && candidateAssessment.getAssessment() != null && candidateAssessment.getAssessment().getId() != null) {
-            Optional<Assessment> byId = assessmentRepository.findById(candidateAssessment.getAssessment().getId());
-            if (byId.isPresent()) {
-                assessment = byId.get();
-                assessmentName = assessment.getName();
-                CandidateAssessment newAssessment = candidateAssessment;
-                newAssessment.setCandidate(candidateEntity);
-                newAssessment.setAssessment(assessment);
-                CandidateAssessment canAssessment = candidateAssessmentRepository.save(newAssessment);
-                System.out.println(assessment.getId());
-            }
+            assessment = assessmentRepository.findById(candidateAssessment.getAssessment().getId())
+            .orElseThrow(() -> new RuntimeException("Assessment ID incorrect "+candidateAssessment.getAssessment().getId() ));
+
+            assessmentName = assessment.getName();
+            CandidateAssessment newAssessment = candidateAssessment;
+            newAssessment.setCandidate(candidateEntity);
+            newAssessment.setAssessment(assessment);
+            CandidateAssessment canAssessment = candidateAssessmentRepository.save(newAssessment);
+            System.out.println(assessment.getId());
 
             //Send Email,
             if (candidateEntity != null && assessment != null) {
@@ -186,8 +185,8 @@ public class CandidateService {
                 String testLink = "http://" + instanceIPAddress +
                         ":3000/CandidateRegisterForAssessment?emailId="
                         + candidateEntity.getEmailAddress()
-                        +"&assessmentId="+assessment.getId()
-                        +"&assessmentName="+assessment.getName();
+                        + "&assessmentId=" + assessment.getId()
+                        + "&assessmentName=" + assessment.getName();
                 Email email = Email.builder().subject("Synechron invites you to take " + assessmentName + " Assessment")
                         .message(
 

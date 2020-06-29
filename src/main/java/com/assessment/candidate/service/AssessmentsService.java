@@ -5,10 +5,7 @@ import com.assessment.candidate.model.AssessmentCandidateCount;
 import com.assessment.candidate.model.AssessmentRequest;
 import com.assessment.candidate.model.Email;
 import com.assessment.candidate.model.SubmitAssessmentQuestionAnswer;
-import com.assessment.candidate.repository.IAssessmentRepository;
-import com.assessment.candidate.repository.ICandidateAssessmentRepository;
-import com.assessment.candidate.repository.ICandidateRepository;
-import com.assessment.candidate.repository.IQuestionRepository;
+import com.assessment.candidate.repository.*;
 import com.assessment.candidate.response.AssessmentDetailResponse;
 import com.assessment.candidate.response.AssessmentResponse;
 import com.assessment.candidate.response.AssessmentSubmittedResponse;
@@ -43,6 +40,8 @@ public class AssessmentsService {
     private ICandidateAssessmentRepository candidateAssessmentRepository;
     @Autowired
     private IQuestionRepository questionRepository;
+    @Autowired
+    private ICandidateAssessmentResultSubmissionRepository candidateAssessmentResultSubmissionRepository;
 
 
     @Value("${adminEmailId}")
@@ -124,24 +123,24 @@ public class AssessmentsService {
             return assessmentDetailResponse;
         }
         //Process Question Answer
-        Optional<List<EvaluationQuestionAnswer>> assessmentQueAnsScoreByAssesmentId =
-                assessmentCandidateMapper.getEvaluationQuestionAnswer(submitAssessmentQuestionAnswer.getAssessmentId());
+        List<EvaluationQuestionAnswer> evaluationQuestionAnswersDB =
+                assessmentCandidateMapper
+                        .getEvaluationQuestionAnswer(submitAssessmentQuestionAnswer.getAssessmentId())
+                        .orElseThrow(() -> new RuntimeException("Incorrect Assessment ID " + submitAssessmentQuestionAnswer.getAssessmentId()));
 
         //Calculate How Much Answers were correct.
-        List<SubmitAssessmentQuestionAnswer.QuestionAnswerReq> questionAnswersRequestReq = submitAssessmentQuestionAnswer.getQuestionAnswerReq();
-        if (assessmentQueAnsScoreByAssesmentId.isPresent()) {
-            List<EvaluationQuestionAnswer> evaluationQuestionAnswersDB = assessmentQueAnsScoreByAssesmentId.get();
-            totalAssessmentScore = evaluationQuestionAnswersDB.stream()
-                    .mapToInt(evaluationQuestionAnswer -> Optional.ofNullable(evaluationQuestionAnswer.getMarks()).orElse(5)).sum();
-            for (EvaluationQuestionAnswer evaluationQuestionAnswerDB : evaluationQuestionAnswersDB) {
-                Question question = evaluationQuestionAnswerDB.getQuestion();
-                if (question != null) {
-                    for (SubmitAssessmentQuestionAnswer.QuestionAnswerReq questionAnswerReq : questionAnswersRequestReq) {
-                        if (questionAnswerReq.getQuestionId() == evaluationQuestionAnswerDB.getId()) {
-                            if (questionAnswerReq.getOptionId() == evaluationQuestionAnswerDB.getOptions().getId()) {
-                                totalMarksObtained = totalMarksObtained + Optional.ofNullable(evaluationQuestionAnswerDB.getMarks()).orElse(5);
-                                break;
-                            }
+        List<SubmitAssessmentQuestionAnswer.QuestionAnswerReq> questionAnswersRequestReq =
+                submitAssessmentQuestionAnswer.getQuestionAnswerReq();
+        totalAssessmentScore = evaluationQuestionAnswersDB.stream()
+                .mapToInt(evaluationQuestionAnswer -> Optional.ofNullable(evaluationQuestionAnswer.getMarks()).orElse(5)).sum();
+        for (EvaluationQuestionAnswer evaluationQuestionAnswerDB : evaluationQuestionAnswersDB) {
+            Question question = evaluationQuestionAnswerDB.getQuestion();
+            if (question != null) {
+                for (SubmitAssessmentQuestionAnswer.QuestionAnswerReq questionAnswerReq : questionAnswersRequestReq) {
+                    if (questionAnswerReq.getQuestionId() == evaluationQuestionAnswerDB.getId()) {
+                        if (questionAnswerReq.getOptionId() == evaluationQuestionAnswerDB.getOptions().getId()) {
+                            totalMarksObtained = totalMarksObtained + Optional.ofNullable(evaluationQuestionAnswerDB.getMarks()).orElse(5);
+                            break;
                         }
                     }
                 }
@@ -163,7 +162,7 @@ public class AssessmentsService {
 
             assessment = candidateAssessment.getAssessment();
             Integer passingPercentage = Optional.ofNullable(assessment.getPassingPercentage()).orElse(59);
-            candidateAssessment.setResult(totalPercentage > passingPercentage ? "Pass" : "Fail");
+            candidateAssessment.setResult(totalPercentage >= passingPercentage ? "Pass" : "Fail");
 
             populateAssessmentResultSubmission(candidateAssessment, submitAssessmentQuestionAnswer);
 
@@ -177,18 +176,21 @@ public class AssessmentsService {
     }
 
     private void populateAssessmentResultSubmission(CandidateAssessment candidateAssessment,
-                                                    SubmitAssessmentQuestionAnswer submitAssessmentQuestionAnswer) {
+                                                    SubmitAssessmentQuestionAnswer
+                                                            submitAssessmentQuestionAnswer) {
 
         if (submitAssessmentQuestionAnswer != null) {
             List<SubmitAssessmentQuestionAnswer.QuestionAnswerReq> questionAnswerReq =
                     submitAssessmentQuestionAnswer.getQuestionAnswerReq();
 
-            candidateAssessment.setAssessmentResultSubmissions(
-                    questionAnswerReq.stream().map(qaR ->
-                            CandidateAssessmentResultSubmission.builder().candidateAssessment(candidateAssessment)
-                                    .optionId(qaR.getOptionId())
-                                    .questionId(qaR.getQuestionId()).build()).collect(Collectors.toList())
-            );
+
+            List<CandidateAssessmentResultSubmission> candidateAssessmentResultSubmissions = questionAnswerReq.stream().map(qaR ->
+                    CandidateAssessmentResultSubmission.builder()
+                            .candidateAssessment(candidateAssessment)
+                            .optionId(qaR.getOptionId())
+                            .questionId(qaR.getQuestionId())
+                            .build()).collect(Collectors.toList());
+            candidateAssessmentResultSubmissionRepository.saveAll(candidateAssessmentResultSubmissions);
         }
 
     }

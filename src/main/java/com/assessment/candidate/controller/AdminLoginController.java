@@ -13,7 +13,9 @@ public class AdminLoginController {
     private EncodeDecodeService encodeDecodeService;
 
     @GetMapping(value = "/valdiateLogin")
-    public boolean validateLoginCredentials(@RequestParam("loginId") String loginId , @RequestParam("password") String password){
+    public boolean validateLoginCredentials(
+            @RequestParam("loginId") String loginId ,
+            @RequestParam("password") String password){
         boolean loginAllowed = true;
         /*if(StringUtils.isNotBlank(loginId) && StringUtils.isNotBlank(password)) {
            // String passwordDec = encodeDecodeService.decode(password);
