@@ -6,6 +6,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.servlet.http.HttpServletRequest;
+
 @RestController
 public class AdminLoginController {
 
@@ -15,8 +17,12 @@ public class AdminLoginController {
     @GetMapping(value = "/valdiateLogin")
     public boolean validateLoginCredentials(
             @RequestParam("loginId") String loginId ,
-            @RequestParam("password") String password){
+            @RequestParam("password") String password,
+            HttpServletRequest request){
         boolean loginAllowed = true;
+        System.out.println("loginId" +loginId);
+        System.out.println("password" +password);
+        System.out.println("request" +request.getRemoteAddr());
         /*if(StringUtils.isNotBlank(loginId) && StringUtils.isNotBlank(password)) {
            // String passwordDec = encodeDecodeService.decode(password);
             //encodedString ::::UEBzc3cwciQ=
