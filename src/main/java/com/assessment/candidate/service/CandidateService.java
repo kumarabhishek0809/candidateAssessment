@@ -169,7 +169,7 @@ public class CandidateService {
         CandidateAssessment candidateAssessment = candidateAssessmentRequest.getCandidateAssessment();
         if (candidateAssessment != null && candidateAssessment.getAssessment() != null && candidateAssessment.getAssessment().getId() != null) {
             assessment = assessmentRepository.findById(candidateAssessment.getAssessment().getId())
-            .orElseThrow(() -> new RuntimeException("Assessment ID incorrect "+candidateAssessment.getAssessment().getId() ));
+                    .orElseThrow(() -> new RuntimeException("Assessment ID incorrect " + candidateAssessment.getAssessment().getId()));
 
             assessmentName = assessment.getName();
             CandidateAssessment newAssessment = candidateAssessment;
@@ -223,16 +223,22 @@ public class CandidateService {
         Optional<Candidate> byEmailAddress = candidateRepository.findByEmailAddress(candidateRequest.getEmailAddress());
         if (byEmailAddress.isPresent()) {
             candidateEntity = byEmailAddress.get();
-            candidateEntity.setMobileNo(Optional.ofNullable(candidateRequest.getMobileNo()).orElse(candidateEntity.getMobileNo()));
-            candidateEntity.setLastName(Optional.ofNullable(candidateRequest.getLastName()).orElse(candidateEntity.getLastName()));
-            candidateEntity.setFirstName(Optional.ofNullable(candidateRequest.getFirstName()).orElse(candidateEntity.getFirstName()));
-            candidateEntity.setEmailAddress(Optional.ofNullable(candidateRequest.getEmailAddress()).orElse(candidateEntity.getEmailAddress()));
-            candidateEntity.setDateOfBirth(Optional.ofNullable(candidateRequest.getDateOfBirth()).orElse(candidateEntity.getDateOfBirth()));
-            candidateEntity.setCountryCode(Optional.ofNullable(candidateRequest.getCountryCode()).orElse(candidateEntity.getCountryCode()));
+            candidateEntity.setMobileNo(getFirstNotNullString(candidateRequest.getMobileNo(), candidateEntity.getMobileNo()));
+            candidateEntity.setLastName(getFirstNotNullString(candidateRequest.getLastName(), candidateEntity.getLastName()));
+            candidateEntity.setFirstName(getFirstNotNullString(candidateRequest.getFirstName(), candidateEntity.getFirstName()));
+            candidateEntity.setEmailAddress(getFirstNotNullString(candidateRequest.getEmailAddress(), candidateEntity.getEmailAddress()));
+            candidateEntity.setDateOfBirth(getFirstNotNullString(candidateRequest.getDateOfBirth(), candidateEntity.getDateOfBirth()));
+            candidateEntity.setCountryCode(getFirstNotNullString(candidateRequest.getCountryCode(), candidateEntity.getCountryCode()));
         } else {
             candidateEntity = candidateRepository.save(candidateRequest);
         }
         return candidateEntity;
+    }
+
+    public String getFirstNotNullString(String requestString, String databaseString) {
+        String notNullString = Optional.ofNullable(requestString).filter(str -> !StringUtils.isEmpty(str.trim()))
+                .orElse(databaseString);
+        return notNullString;
     }
 
     public GenericResponse processAssessmentForCandidate(ProcessAssessments candidateAssessments) {
@@ -252,8 +258,8 @@ public class CandidateService {
                             && candidateAssessment.isStatus() != assessmentStatus.isStatus())).forEach(candidateAssessment ->
                     {
                         candidateAssessment.setAttemptedDate(ZonedDateTime.now());
-                        candidateAssessment.setPercentage(Optional.ofNullable(candidateAssessment.getPercentage()).orElse("0"));
-                        candidateAssessment.setAction(Optional.ofNullable(candidateAssessment.getAction()).orElse(assessmentStatus.isStatus() ? "Completed By HR" : "Reassigned By HR"));
+                        candidateAssessment.setPercentage(getFirstNotNullString(candidateAssessment.getPercentage(), "0"));
+                        candidateAssessment.setAction(getFirstNotNullString(candidateAssessment.getAction(), assessmentStatus.isStatus() ? "Completed By HR" : "Reassigned By HR"));
                         candidateAssessment.setStatus(assessmentStatus.isStatus());
                     });
                 }

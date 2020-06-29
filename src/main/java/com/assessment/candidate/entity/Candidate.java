@@ -17,6 +17,7 @@ public class Candidate {
 
     private String firstName;
     private String lastName;
+    @Column(unique=true)
     private String emailAddress;
     private String countryCode;
     private String dateOfBirth;
