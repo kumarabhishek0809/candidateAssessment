@@ -6,14 +6,21 @@ import com.assessment.candidate.model.ProcessAssessments;
 import com.assessment.candidate.response.CandidateSearchResponse;
 import com.assessment.candidate.response.CandidatesSearchResponse;
 import com.assessment.candidate.response.GenericResponse;
+import com.assessment.candidate.service.CandidateAssessmentExcelGenerator;
 import com.assessment.candidate.service.CandidateService;
 import io.micrometer.core.instrument.util.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.InputStreamResource;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.mail.MessagingException;
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
 import java.net.UnknownHostException;
+import java.util.List;
 
 @RestController
 public class CandidateController {
@@ -37,6 +44,26 @@ public class CandidateController {
         CandidatesSearchResponse candidateSearchResponse = null;
         candidateSearchResponse = candidateService.findCandidateDetails();
         return candidateSearchResponse;
+    }
+
+    @GetMapping(value = "/download/candidateDetails.xlsx")
+    public ResponseEntity<InputStreamResource> excelCustomersReport()
+            throws IOException {
+
+        CandidatesSearchResponse candidateSearchResponse = candidateService.findCandidateDetails();
+        List<CandidatesSearchResponse.CandidateProfile> candidates = candidateSearchResponse.getCandidates();
+
+        ByteArrayInputStream in = CandidateAssessmentExcelGenerator.customersToExcel(candidates);
+        // return IOUtils.toByteArray(in);
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.add("Content-Disposition",
+                "attachment; filename=candidateDetails.xlsx");
+
+        return ResponseEntity
+                .ok()
+                .headers(headers)
+                .body(new InputStreamResource(in));
     }
 
     @PostMapping(value = "/registerCandidate" )

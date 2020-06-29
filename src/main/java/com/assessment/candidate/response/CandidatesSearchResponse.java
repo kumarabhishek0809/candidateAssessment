@@ -35,7 +35,7 @@ public class CandidatesSearchResponse extends GenericResponse {
         private String percentage;
         private String action;
         private boolean status;
-        private String name;
+        private String assessmentName;
     }
 
 }
