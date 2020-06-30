@@ -7,9 +7,9 @@ import com.assessment.candidate.model.Email;
 import com.assessment.candidate.model.SubmitAssessmentQuestionAnswer;
 import com.assessment.candidate.repository.*;
 import com.assessment.candidate.response.AssessmentDetailResponse;
+import com.assessment.candidate.response.AssessmentQuestionResponse;
 import com.assessment.candidate.response.AssessmentResponse;
 import com.assessment.candidate.response.AssessmentSubmittedResponse;
-import com.assessment.candidate.response.GenericResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cache.annotation.Cacheable;
@@ -295,8 +295,8 @@ public class AssessmentsService {
         return assessmentCandidateCountMap;
     }
 
-    public GenericResponse addUpdateAssessment(AssessmentRequest assessmentRequest) {
-        GenericResponse genericResponse = new GenericResponse();
+    public AssessmentQuestionResponse addUpdateAssessment(AssessmentRequest assessmentRequest) {
+        AssessmentQuestionResponse genericResponse = new AssessmentQuestionResponse();
         genericResponse.setDataAvailable(false);
         Assessment assementReq = null;
         if (assessmentRequest != null) {
@@ -322,6 +322,7 @@ public class AssessmentsService {
             if (assementReq != null) {
                 Assessment assessment = assessmentRepository.save(assementReq);
                 genericResponse.setDataAvailable(true);
+                genericResponse.setAssessment(assessment);
                 System.out.println(assessment.getId());
             }
         }

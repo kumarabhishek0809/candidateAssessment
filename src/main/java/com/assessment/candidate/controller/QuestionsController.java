@@ -2,7 +2,7 @@ package com.assessment.candidate.controller;
 
 import com.assessment.candidate.entity.Question;
 import com.assessment.candidate.model.QuestionsRequest;
-import com.assessment.candidate.response.GenericResponse;
+import com.assessment.candidate.response.QuestionAddResponse;
 import com.assessment.candidate.service.QuestionService;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -25,8 +25,8 @@ public class QuestionsController {
     }
 
     @PostMapping(value = "/question", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<GenericResponse>   addQuestion(@RequestBody QuestionsRequest questionsRequest){
-        GenericResponse genericResponse = questionService.saveQuestion(questionsRequest);
+    public ResponseEntity<QuestionAddResponse>   addQuestion(@RequestBody QuestionsRequest questionsRequest){
+        QuestionAddResponse genericResponse = questionService.saveQuestion(questionsRequest);
         return new ResponseEntity<>(genericResponse, new HttpHeaders(), HttpStatus.OK);
     }
 }

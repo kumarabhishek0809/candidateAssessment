@@ -6,7 +6,7 @@ import com.assessment.candidate.model.QuestionsRequest;
 import com.assessment.candidate.repository.IAnswerRepository;
 import com.assessment.candidate.repository.IQuestionRepository;
 import com.assessment.candidate.repository.IQuestionTypeRepository;
-import com.assessment.candidate.response.GenericResponse;
+import com.assessment.candidate.response.QuestionAddResponse;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
@@ -31,9 +31,9 @@ public class QuestionService {
         return questionRepository.findById(id).orElseThrow(() -> new RuntimeException("Question Not Found"));
     }
 
-    public GenericResponse saveQuestion(QuestionsRequest questionsRequest) {
+    public QuestionAddResponse saveQuestion(QuestionsRequest questionsRequest) {
 
-        GenericResponse genericResponse = new GenericResponse();
+        QuestionAddResponse genericResponse = new QuestionAddResponse();
         genericResponse.setDataAvailable(false);
 
         List<QuestionsRequest.Options> options = questionsRequest.getOptions();
@@ -57,8 +57,9 @@ public class QuestionService {
                             .question(question).build())
             );
 
-            Question save = questionRepository.save(question);
-            System.out.println(save.getId());
+            Question questionSave = questionRepository.save(question);
+            genericResponse.setQuestion(questionSave);
+            System.out.println(question.getId());
 
             genericResponse.setDataAvailable(true);
         }

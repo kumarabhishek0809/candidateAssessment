@@ -7,13 +7,9 @@ http://localhost:8080/candidateDetail?emailId=john.doe@gmail.com
 =================================================
 http://localhost:8080/assessments
 =================================================
-
 http://localhost:8080/candidateDetails
-
 =================================================
-
 http://localhost:8080/registerCandidate
-
 {
   "firstName" : "Sample First Name",
   "lastName" : "Sample Last Name",
@@ -23,9 +19,7 @@ http://localhost:8080/registerCandidate
   "mobileNo" : "523083264",
   "loginId": "john.doe2@gmail.com"
 }
-
 =================================================
-
 http://localhost:8080/registerCandidateScheduleAssessment
 {
 	 "candidate" : {
@@ -37,40 +31,30 @@ http://localhost:8080/registerCandidateScheduleAssessment
 		}
 	}
 }
-
 ===============================================
-
 http://localhost:8080/sendmail
-
 {
 	"toEmail" : "kumar.abhishek0809@gmail.com",
 	"subject" : "Good Luck You have cleared the test",
 	"message" : "Our Hiring Manager will getback to you."
 }
 ===============================================
-
 http://localhost:8080/sendmailAttachment
-
 {
 	"toEmail" : "kumar.abhishek0809@gmail.com",
 	"subject" : "Good Luck You have cleared the test",
 	"message" : "Our Hiring Manager will getback to you.",
 	"pathToAttachment" : "/home/ec2-user/candidateAssessment/assessment.csv"
 }
-
 =================================================
-
 http://localhost:8080/processAssessmentForCandidate 
 
 {
    "emailAddress" : "john.doe@gmail.com",
     "candidateAssessments" : [{"id" : "15", "status" : true},{"id" : "14", "status" : true},{"id" : "12", "status" : false},{"id" : "13", "status" : false}]   
 }
-
 ================================================
-
 http://localhost:8080/submitAssessment?emailId=kumar.abhishek1@gmail.com
-
 {
  "assessmentId": 1,
  "questionAnswerReq"  : [
@@ -78,16 +62,12 @@ http://localhost:8080/submitAssessment?emailId=kumar.abhishek1@gmail.com
 	{"questionId" : 2 , "optionId" : 1}
  ]
 }
-
 ============================EXAM SUBMIT LINK =======
 http://18.191.46.80:8080/assessment?emailId=KUMAR.ABHISHEK1@synechron.com&assessmentId=3
 ================================================
-
 For SQL Please follow folder resource/sql inside src/main
-
 ==========================================================
 http://18.191.46.80:8080/candidateAssessmentCount
-
 ==========================================================
 http://localhost:8080/question
 {
@@ -155,5 +135,48 @@ nohup java -jar -Xmx512m -Xms256m candidate-0.0.1.jar &
 Question Set
 https://www.sanfoundry.com/java-mcqs-integer-floating-data-types/
 https://angular-quiz.surge.sh/ 
+
+#Download Candidate Details
+http://3.15.175.168:8080/download/candidateDetails
  
- 
+Adding question.
+
+curl --location --request POST 'http://3.15.175.168//question' \
+--header 'Content-Type: application/json' \
+--data-raw '{
+    "header": "Which of the following is not a core AngularJS directive",
+    "answerId": 1,
+    "options": [
+        {
+            "description": "ng-app"
+        },
+        {
+            "description": "ng-model"
+        },
+        {
+            "description": "ng-bind"
+        },
+        {
+            "description": "ng-state"
+        }
+    ],
+    "technology": "Angular",
+    "questionTypeId": 1
+}'
+
+Add Question to Assessment
+http://localhost:8080/assessment
+{
+	"assessmentId" : 1,
+	"questionIds": [435]
+}
+
+http://localhost:8080/evaluation
+Add Evaluation record for Question
+{
+    "assessmentId" : 1,
+    "questionId" : 430,
+    "optionId" : 431 ,
+    "marks" : 5
+}
+
