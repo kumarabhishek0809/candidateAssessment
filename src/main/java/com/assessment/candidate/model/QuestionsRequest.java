@@ -22,6 +22,8 @@ public class QuestionsRequest implements Serializable {
     private String id;
     private String technology;
 
+    private List<Integer> assessmentIds;
+    private Integer marks;
 
     @Data
     @Builder
@@ -31,6 +33,7 @@ public class QuestionsRequest implements Serializable {
     @NoArgsConstructor
     public static class Options {
         private String description;
+        private boolean answerOption;
     }
 
 

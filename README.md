@@ -137,7 +137,7 @@ https://www.sanfoundry.com/java-mcqs-integer-floating-data-types/
 https://angular-quiz.surge.sh/ 
 
 #Download Candidate Details
-http://3.15.175.168:8080/download/candidateDetails
+http://localhost/:8080/download/candidateDetails
  
 Adding question.
 

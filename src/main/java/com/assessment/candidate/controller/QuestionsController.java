@@ -29,4 +29,10 @@ public class QuestionsController {
         QuestionAddResponse genericResponse = questionService.saveQuestion(questionsRequest);
         return new ResponseEntity<>(genericResponse, new HttpHeaders(), HttpStatus.OK);
     }
+
+    @PostMapping(value = "/questionOptionsAssessment", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<QuestionAddResponse>   questionOptionsAssessment(@RequestBody QuestionsRequest questionsRequest){
+        QuestionAddResponse genericResponse = questionService.questionOptionsAssessment(questionsRequest);
+        return new ResponseEntity<>(genericResponse, new HttpHeaders(), HttpStatus.OK);
+    }
 }
