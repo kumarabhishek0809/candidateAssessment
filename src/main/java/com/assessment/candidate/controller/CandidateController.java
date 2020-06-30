@@ -46,7 +46,7 @@ public class CandidateController {
         return candidateSearchResponse;
     }
 
-    @GetMapping(value = "/download/candidateDetails.xlsx")
+    @GetMapping(value = "/download/candidateDetails")
     public ResponseEntity<InputStreamResource> excelCustomersReport()
             throws IOException {
 
@@ -54,7 +54,6 @@ public class CandidateController {
         List<CandidatesSearchResponse.CandidateProfile> candidates = candidateSearchResponse.getCandidates();
 
         ByteArrayInputStream in = CandidateAssessmentExcelGenerator.customersToExcel(candidates);
-        // return IOUtils.toByteArray(in);
 
         HttpHeaders headers = new HttpHeaders();
         headers.add("Content-Disposition",
