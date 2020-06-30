@@ -63,11 +63,11 @@ http://localhost:8080/submitAssessment?emailId=kumar.abhishek1@gmail.com
  ]
 }
 ============================EXAM SUBMIT LINK =======
-http://18.191.46.80:8080/assessment?emailId=KUMAR.ABHISHEK1@synechron.com&assessmentId=3
+http://localhost:8080/assessment?emailId=KUMAR.ABHISHEK1@synechron.com&assessmentId=3
 ================================================
 For SQL Please follow folder resource/sql inside src/main
 ==========================================================
-http://18.191.46.80:8080/candidateAssessmentCount
+http://localhost:8080/candidateAssessmentCount
 ==========================================================
 http://localhost:8080/question
 {
@@ -141,7 +141,7 @@ http://localhost/:8080/download/candidateDetails
  
 Adding question.
 
-curl --location --request POST 'http://3.15.175.168//question' \
+curl --location --request POST 'http://localhost//question' \
 --header 'Content-Type: application/json' \
 --data-raw '{
     "header": "Which of the following is not a core AngularJS directive",
@@ -180,3 +180,29 @@ Add Evaluation record for Question
     "marks" : 5
 }
 
+
+http://localhost:8080/questionOptionsAssessment
+{
+    "header": "An interface with no fields or methods is known as a ______",
+    "answerId": 1,
+    "options": [
+        {
+            "description": "Runnable Interface"
+        },
+        {
+            "description": "Marker Interface",
+			"answerOption" : true
+        },
+        {
+            "description": "Abstract Interface"
+        },
+        {
+            "description": "CharSequence Interface",
+			"answerOption" : false
+        }
+    ],
+    "technology": "Java",
+    "questionTypeId": 1,
+	"assessmentIds" : [1],
+	"marks" : 5
+}
