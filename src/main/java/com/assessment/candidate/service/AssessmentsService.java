@@ -85,7 +85,7 @@ public class AssessmentsService {
                     .findAny().isPresent();
             if (isAssessmentAvailable) {
                 Assessment assessment = assessmentCandidateMapper.getAssessment(assessmentId)
-                        .orElseThrow( () -> new RuntimeException("Assessment not exists for assessmentId "+assessmentId));
+                        .orElseThrow(() -> new RuntimeException("Assessment not exists for assessmentId " + assessmentId));
                 assessmentDetailResponse.setAssessments(assessment);
                 assessmentDetailResponse.setDataAvailable(true);
             } else {
@@ -139,14 +139,11 @@ public class AssessmentsService {
         totalAssessmentScore = evaluationQuestionAnswersDB.stream()
                 .mapToInt(evaluationQuestionAnswer -> Optional.ofNullable(evaluationQuestionAnswer.getMarks()).orElse(5)).sum();
         for (EvaluationQuestionAnswer evaluationQuestionAnswerDB : evaluationQuestionAnswersDB) {
-            Question question = evaluationQuestionAnswerDB.getQuestion();
-            if (question != null) {
-                for (SubmitAssessmentQuestionAnswer.QuestionAnswerReq questionAnswerReq : questionAnswersRequestReq) {
-                    if (questionAnswerReq.getQuestionId() == evaluationQuestionAnswerDB.getQuestion().getId()) {
-                        if (questionAnswerReq.getOptionId() == evaluationQuestionAnswerDB.getOptions().getId()) {
-                            totalMarksObtained = totalMarksObtained + Optional.ofNullable(evaluationQuestionAnswerDB.getMarks()).orElse(5);
-                            break;
-                        }
+            for (SubmitAssessmentQuestionAnswer.QuestionAnswerReq questionAnswerReq : questionAnswersRequestReq) {
+                if (questionAnswerReq.getQuestionId().equals(evaluationQuestionAnswerDB.getQuestion().getId())) {
+                    if (questionAnswerReq.getOptionId().equals(evaluationQuestionAnswerDB.getOptions().getId())) {
+                        totalMarksObtained = totalMarksObtained + Optional.ofNullable(evaluationQuestionAnswerDB.getMarks()).orElse(5);
+                        break;
                     }
                 }
             }
@@ -239,7 +236,8 @@ public class AssessmentsService {
         }
     }
 
-    private void sendCompletionEmailToAdmin(String emailId, Candidate candidateDb, CandidateAssessment candidateAssessment, Assessment assessment) throws MessagingException {
+    private void sendCompletionEmailToAdmin(String emailId, Candidate candidateDb, CandidateAssessment
+            candidateAssessment, Assessment assessment) throws MessagingException {
         //Send Email to admin,
         if (candidateDb != null && emailId != null && assessment != null && candidateAssessment != null) {
             String subject = "Candidate " + Optional.ofNullable(candidateDb.getFirstName()).orElse("") + " " + Optional.ofNullable(candidateDb.getLastName()).orElse("") + " completed Assessement " + assessment.getName();
