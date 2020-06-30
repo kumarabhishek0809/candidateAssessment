@@ -206,3 +206,13 @@ http://localhost:8080/questionOptionsAssessment
 	"assessmentIds" : [1],
 	"marks" : 5
 }
+
+
+
+select q.header,op.description  from clientAssessmentPortal.question q, clientAssessmentPortal.options op , 
+clientAssessmentPortal.evaluation_question_answer qa
+where 
+qa.assessment_id =1
+and qa.question_id = q.id
+and qa.options_id = op.id
+and q.id = op.question_id;

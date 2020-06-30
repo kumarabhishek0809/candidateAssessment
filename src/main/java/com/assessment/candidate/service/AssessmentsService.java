@@ -69,24 +69,27 @@ public class AssessmentsService {
     public AssessmentDetailResponse getAssessment(Integer assessmentId, String emailId) {
         AssessmentDetailResponse assessmentDetailResponse = AssessmentDetailResponse.builder().build();
         assessmentDetailResponse.setDataAvailable(false);
+
         //validate if test is scheduled for email id.
         boolean isAssessmentAvailable = false;
+
         if (!StringUtils.isEmpty(emailId)) {
-            Optional<Candidate> byEmailAddress = candidateRepository.findByEmailAddress(emailId);
-            if (byEmailAddress.isPresent()) {
-                Candidate candidate = byEmailAddress.get();
-                assessmentDetailResponse.setCandidate(candidateService.mapEntityToModel(candidate, null));
-                isAssessmentAvailable = candidate.getCandidateAssessments().stream().filter(ca -> !ca.isStatus())
-                        .filter(candidateAssessment
-                                -> candidateAssessment.getAssessment().getId() == assessmentId)
-                        .findAny().isPresent();
-                if (isAssessmentAvailable) {
-                    Optional<Assessment> assessment = assessmentCandidateMapper.getAssessment(assessmentId);
-                    assessmentDetailResponse.setAssessments(assessment.get());
-                    assessmentDetailResponse.setDataAvailable(true);
-                } else {
-                    assessmentDetailResponse.setDataAvailable(false);
-                }
+            Candidate candidate = candidateRepository.findByEmailAddress(emailId)
+                    .orElseThrow(() -> new RuntimeException("Candidate Details does not exits for email : " + emailId));
+
+            assessmentDetailResponse.setCandidate(candidateService.mapEntityToModel(candidate, null));
+            isAssessmentAvailable = candidate.getCandidateAssessments()
+                    .stream().filter(ca -> !ca.isStatus())
+                    .filter(candidateAssessment
+                            -> candidateAssessment.getAssessment().getId() == assessmentId)
+                    .findAny().isPresent();
+            if (isAssessmentAvailable) {
+                Assessment assessment = assessmentCandidateMapper.getAssessment(assessmentId)
+                        .orElseThrow( () -> new RuntimeException("Assessment not exists for assessmentId "+assessmentId));
+                assessmentDetailResponse.setAssessments(assessment);
+                assessmentDetailResponse.setDataAvailable(true);
+            } else {
+                assessmentDetailResponse.setDataAvailable(false);
             }
         }
         return assessmentDetailResponse;
@@ -122,6 +125,8 @@ public class AssessmentsService {
             assessmentDetailResponse.setDataAvailable(false);
             return assessmentDetailResponse;
         }
+
+        //todo fetch questions by assessmentID
         //Process Question Answer
         List<EvaluationQuestionAnswer> evaluationQuestionAnswersDB =
                 assessmentCandidateMapper
@@ -137,7 +142,7 @@ public class AssessmentsService {
             Question question = evaluationQuestionAnswerDB.getQuestion();
             if (question != null) {
                 for (SubmitAssessmentQuestionAnswer.QuestionAnswerReq questionAnswerReq : questionAnswersRequestReq) {
-                    if (questionAnswerReq.getQuestionId() == evaluationQuestionAnswerDB.getId()) {
+                    if (questionAnswerReq.getQuestionId() == evaluationQuestionAnswerDB.getQuestion().getId()) {
                         if (questionAnswerReq.getOptionId() == evaluationQuestionAnswerDB.getOptions().getId()) {
                             totalMarksObtained = totalMarksObtained + Optional.ofNullable(evaluationQuestionAnswerDB.getMarks()).orElse(5);
                             break;
