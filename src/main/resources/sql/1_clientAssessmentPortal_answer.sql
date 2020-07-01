@@ -1,6 +1,6 @@
 -- MySQL dump 10.13  Distrib 8.0.20, for Win64 (x86_64)
 --
--- Host: 18.223.111.230    Database: clientAssessmentPortal
+-- Host: 3.15.175.168    Database: clientAssessmentPortal
 -- ------------------------------------------------------
 -- Server version	5.7.30
 
@@ -35,7 +35,7 @@ CREATE TABLE `answer` (
 
 LOCK TABLES `answer` WRITE;
 /*!40000 ALTER TABLE `answer` DISABLE KEYS */;
-INSERT INTO `answer` VALUES (1,'Choose the best option');
+REPLACE  IGNORE INTO `answer` (`id`, `header`) VALUES (1,'Choose the best option');
 /*!40000 ALTER TABLE `answer` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -48,4 +48,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2020-06-10 14:25:39
+-- Dump completed on 2020-06-30 19:10:27

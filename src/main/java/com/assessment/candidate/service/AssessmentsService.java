@@ -139,11 +139,13 @@ public class AssessmentsService {
         totalAssessmentScore = evaluationQuestionAnswersDB.stream()
                 .mapToInt(evaluationQuestionAnswer -> Optional.ofNullable(evaluationQuestionAnswer.getMarks()).orElse(5)).sum();
         for (EvaluationQuestionAnswer evaluationQuestionAnswerDB : evaluationQuestionAnswersDB) {
-            for (SubmitAssessmentQuestionAnswer.QuestionAnswerReq questionAnswerReq : questionAnswersRequestReq) {
-                if (questionAnswerReq.getQuestionId().equals(evaluationQuestionAnswerDB.getQuestion().getId())) {
-                    if (questionAnswerReq.getOptionId().equals(evaluationQuestionAnswerDB.getOptions().getId())) {
-                        totalMarksObtained = totalMarksObtained + Optional.ofNullable(evaluationQuestionAnswerDB.getMarks()).orElse(5);
-                        break;
+            if(!CollectionUtils.isEmpty(questionAnswersRequestReq)) {
+                for (SubmitAssessmentQuestionAnswer.QuestionAnswerReq questionAnswerReq : questionAnswersRequestReq) {
+                    if (questionAnswerReq.getQuestionId().equals(evaluationQuestionAnswerDB.getQuestion().getId())) {
+                        if (questionAnswerReq.getOptionId().equals(evaluationQuestionAnswerDB.getOptions().getId())) {
+                            totalMarksObtained = totalMarksObtained + Optional.ofNullable(evaluationQuestionAnswerDB.getMarks()).orElse(5);
+                            break;
+                        }
                     }
                 }
             }
@@ -181,7 +183,7 @@ public class AssessmentsService {
                                                     SubmitAssessmentQuestionAnswer
                                                             submitAssessmentQuestionAnswer) {
 
-        if (submitAssessmentQuestionAnswer != null) {
+        if (submitAssessmentQuestionAnswer != null && !CollectionUtils.isEmpty(submitAssessmentQuestionAnswer.getQuestionAnswerReq())) {
             List<SubmitAssessmentQuestionAnswer.QuestionAnswerReq> questionAnswerReq =
                     submitAssessmentQuestionAnswer.getQuestionAnswerReq();
 

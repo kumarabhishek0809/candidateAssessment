@@ -1,8 +1,6 @@
-CREATE DATABASE  IF NOT EXISTS `clientAssessmentPortal` /*!40100 DEFAULT CHARACTER SET latin1 */;
-USE `clientAssessmentPortal`;
 -- MySQL dump 10.13  Distrib 8.0.20, for Win64 (x86_64)
 --
--- Host: 18.223.111.230    Database: clientAssessmentPortal
+-- Host: 3.15.175.168    Database: clientAssessmentPortal
 -- ------------------------------------------------------
 -- Server version	5.7.30
 
@@ -40,9 +38,7 @@ CREATE TABLE `assessment` (
 
 LOCK TABLES `assessment` WRITE;
 /*!40000 ALTER TABLE `assessment` DISABLE KEYS */;
-INSERT INTO `assessment` VALUES (1,'30','Java','Java',60);
-INSERT INTO `assessment` VALUES (2,'40','Angular','Angular',60);
-INSERT INTO `assessment` VALUES (3,'50 ','React','React',60);
+REPLACE  IGNORE INTO `assessment` (`id`, `duration`, `name`, `technology`, `passing_percentage`) VALUES (1,'45','Java','Java',60),(2,'45','Angular','Angular',60),(3,'45','React','React',60),(4,'45','Spring Boot','Java',60);
 /*!40000 ALTER TABLE `assessment` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -55,4 +51,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2020-06-10 11:17:01
+-- Dump completed on 2020-06-30 19:11:35
