@@ -104,9 +104,16 @@ public class AssessmentsService {
     private List<Question> getRandomQuestions(Assessment assessment) {
         List<Question> questions = new ArrayList<>();
         if (assessment != null) {
-            Integer questionCount = assessment.getQuestionCount();
+
             List<Question> assessmentQuestions = assessment.getQuestions();
             Collections.shuffle(assessmentQuestions);
+
+            Integer questionCount = Optional.ofNullable(assessment.getQuestionCount())
+                    .orElse(25);
+            if(questionCount > assessmentQuestions.size()){
+                questionCount = assessmentQuestions.size();
+            }
+
             questions = assessmentQuestions.subList(0, questionCount);
         }
         return questions;
@@ -147,7 +154,6 @@ public class AssessmentsService {
             return assessmentDetailResponse;
         }
 
-        //todo fetch questions by assessmentID
         //Process Question Answer
         List<EvaluationQuestionAnswer> evaluationQuestionAnswersDB =
                 assessmentCandidateMapper

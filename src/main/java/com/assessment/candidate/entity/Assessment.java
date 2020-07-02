@@ -28,7 +28,7 @@ public class Assessment {
     private Integer passingPercentage;
     private Integer questionCount;
 
-    @ManyToMany
+    @ManyToMany(cascade = CascadeType.ALL)
     private List<Question> questions;
 
 }

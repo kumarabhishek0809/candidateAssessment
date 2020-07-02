@@ -13,10 +13,10 @@ public class EvaluationQuestionAnswer {
     @GeneratedValue(strategy= GenerationType.AUTO)
     private Integer id;
 
-    @OneToOne
+    @OneToOne(cascade = CascadeType.ALL)
     private Question question;
 
-    @OneToOne
+    @OneToOne(cascade = CascadeType.ALL)
     private Options options;
 
     private Integer marks;

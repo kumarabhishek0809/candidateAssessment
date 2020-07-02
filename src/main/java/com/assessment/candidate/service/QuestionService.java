@@ -7,6 +7,7 @@ import com.assessment.candidate.entity.Question;
 import com.assessment.candidate.model.QuestionsRequest;
 import com.assessment.candidate.repository.*;
 import com.assessment.candidate.response.EvaluationResponse;
+import com.assessment.candidate.response.GenericResponse;
 import com.assessment.candidate.response.QuestionAddResponse;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
@@ -158,6 +159,13 @@ public class QuestionService {
 
             genericResponse.setDataAvailable(true);
         }
+        return genericResponse;
+    }
+
+    public GenericResponse deleteQuestionById(Integer id) {
+        questionRepository.deleteById(id);
+        GenericResponse genericResponse = new GenericResponse();
+        genericResponse.setDataAvailable(true);
         return genericResponse;
     }
 }

@@ -1,10 +1,12 @@
 package com.assessment.candidate.service;
 
 import com.assessment.candidate.entity.EvaluationQuestionAnswer;
+import com.assessment.candidate.entity.Question;
 import com.assessment.candidate.model.Assessment;
 import com.assessment.candidate.model.SubmitAssessmentQuestionAnswer;
 import com.assessment.candidate.repository.IAssessmentRepository;
 import com.assessment.candidate.repository.IEvaluationQuestionAnswerRepository;
+import com.assessment.candidate.repository.IQuestionRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.CacheManager;
 import org.springframework.cache.annotation.Cacheable;
@@ -28,6 +30,9 @@ public class AssessmentCandidateMapper {
     @Autowired
     private IEvaluationQuestionAnswerRepository evaluationQuestionAnswerRepository;
 
+    @Autowired
+    private IQuestionRepository questionRepository;
+
 
     public Assessment mapEntityToModel(com.assessment.candidate.entity.Assessment assessment) {
         return Assessment.builder()
@@ -46,14 +51,15 @@ public class AssessmentCandidateMapper {
     @Cacheable(value = CANDIDATE_CACHE, key = " 'getEvaluationQuestionAnswer' +#assessmentId")
     public Optional<List<EvaluationQuestionAnswer>> getEvaluationQuestionAnswer(
             SubmitAssessmentQuestionAnswer submitAssessmentQuestionAnswer) {
-
+        Iterable<Question> allById= null;
         List<SubmitAssessmentQuestionAnswer.QuestionAnswerReq> questionAnswerReq = submitAssessmentQuestionAnswer.getQuestionAnswerReq();
         List<Integer> questionsId = new ArrayList<>();
         if (!CollectionUtils.isEmpty(questionAnswerReq)) {
             questionsId = questionAnswerReq.stream().map(qa -> qa.getQuestionId())
                     .collect(Collectors.toList());
+            allById = questionRepository.findAllById(questionsId);
         }
         return evaluationQuestionAnswerRepository
-                .findAllByQuestionIn(questionsId);
+                .findAllByQuestionIn(allById);
     }
 }

@@ -24,6 +24,7 @@ public class Options {
     @ManyToOne
     @JsonIgnore
     private Question question;
+
     private String description;
 
 
