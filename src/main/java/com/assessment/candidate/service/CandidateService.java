@@ -21,9 +21,7 @@ import org.springframework.util.StringUtils;
 
 import javax.mail.MessagingException;
 import java.time.ZonedDateTime;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -57,6 +55,8 @@ public class CandidateService {
         candidateRepositoryAll.forEach(candidateEntity ->
         {
             List<CandidateAssessment> candidateAssessments = candidateEntity.getCandidateAssessments();
+            Collections.sort(candidateAssessments,  Comparator.comparing(CandidateAssessment::getId)
+                    .reversed());
             candidateProfiles.addAll(candidateAssessments.stream().map(candidateAssessment -> {
                 return CandidatesSearchResponse.CandidateProfile.builder()
                         .assessmentName(candidateAssessment.getAssessment().getName())
@@ -294,14 +294,16 @@ public class CandidateService {
             if (!CollectionUtils.isEmpty(dbCandidateAssessments)) {
                 for (ProcessAssessments.AssessmentStatus assessmentStatus : assessmentStatusRequest) {
 
-                    dbCandidateAssessments.stream().filter(candidateAssessment -> (candidateAssessment.getId() == assessmentStatus.getId()
-                            && candidateAssessment.isStatus() != assessmentStatus.isStatus())).forEach(candidateAssessment ->
-                    {
-                        candidateAssessment.setAttemptedDate(ZonedDateTime.now());
-                        candidateAssessment.setPercentage(getFirstNotNullString(candidateAssessment.getPercentage(), "0"));
-                        candidateAssessment.setAction(getFirstNotNullString(candidateAssessment.getAction(), assessmentStatus.isStatus() ? "Completed By HR" : "Reassigned By HR"));
-                        candidateAssessment.setStatus(assessmentStatus.isStatus());
-                    });
+                    dbCandidateAssessments.stream().filter(candidateAssessment ->
+                            (candidateAssessment.getId().equals(assessmentStatus.getId())
+                                    && candidateAssessment.isStatus() != assessmentStatus.isStatus()))
+                            .forEach(candidateAssessment ->
+                            {
+                                candidateAssessment.setAttemptedDate(ZonedDateTime.now());
+                                candidateAssessment.setPercentage(getFirstNotNullString(candidateAssessment.getPercentage(), "0"));
+                                candidateAssessment.setAction(getFirstNotNullString(candidateAssessment.getAction(), assessmentStatus.isStatus() ? "Completed By HR" : "Reassigned By HR"));
+                                candidateAssessment.setStatus(assessmentStatus.isStatus());
+                            });
                 }
             }
             candidateAssessmentRepository.saveAll(dbCandidateAssessments);

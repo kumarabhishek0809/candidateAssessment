@@ -17,7 +17,9 @@ public class AssessmentRequest {
     private Integer assessmentId;
     private String duration;
     private Integer passingPercentage;
+    private Integer questionCount;
     private String name;
     private String technology;
     private List<Integer> questionIds;
+
 }

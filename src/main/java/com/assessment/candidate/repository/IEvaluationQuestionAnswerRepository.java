@@ -7,5 +7,5 @@ import java.util.List;
 import java.util.Optional;
 
 public interface IEvaluationQuestionAnswerRepository extends CrudRepository<EvaluationQuestionAnswer, Integer> {
-    Optional<List<EvaluationQuestionAnswer>> findAllByAssessmentId(Integer assessmentId);
+    Optional<List<EvaluationQuestionAnswer>> findAllByQuestionIn(List<Integer> questionIds);
 }

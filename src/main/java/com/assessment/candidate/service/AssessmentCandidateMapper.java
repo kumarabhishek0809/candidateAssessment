@@ -2,15 +2,19 @@ package com.assessment.candidate.service;
 
 import com.assessment.candidate.entity.EvaluationQuestionAnswer;
 import com.assessment.candidate.model.Assessment;
+import com.assessment.candidate.model.SubmitAssessmentQuestionAnswer;
 import com.assessment.candidate.repository.IAssessmentRepository;
 import com.assessment.candidate.repository.IEvaluationQuestionAnswerRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.CacheManager;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Component;
+import org.springframework.util.CollectionUtils;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import static com.assessment.candidate.CandidateApplication.CANDIDATE_CACHE;
 
@@ -35,16 +39,21 @@ public class AssessmentCandidateMapper {
     }
 
     @Cacheable(value = CANDIDATE_CACHE, key = " 'getAssessment'+ #assessmentId ")
-    public Optional<com.assessment.candidate.entity.Assessment> getAssessment(Integer assessmentId){
-        cacheManager.getCache(CANDIDATE_CACHE);
-        Optional<com.assessment.candidate.entity.Assessment> byId = assessmentRepository.findById(assessmentId);
-        cacheManager.getCache(CANDIDATE_CACHE);
-        return byId;
+    public Optional<com.assessment.candidate.entity.Assessment> getAssessment(Integer assessmentId) {
+        return assessmentRepository.findById(assessmentId);
     }
 
-    @Cacheable(value = CANDIDATE_CACHE,key = " 'getEvaluationQuestionAnswer' +#assessmentId")
-    public Optional<List<EvaluationQuestionAnswer>> getEvaluationQuestionAnswer(Integer assessmentId) {
+    @Cacheable(value = CANDIDATE_CACHE, key = " 'getEvaluationQuestionAnswer' +#assessmentId")
+    public Optional<List<EvaluationQuestionAnswer>> getEvaluationQuestionAnswer(
+            SubmitAssessmentQuestionAnswer submitAssessmentQuestionAnswer) {
+
+        List<SubmitAssessmentQuestionAnswer.QuestionAnswerReq> questionAnswerReq = submitAssessmentQuestionAnswer.getQuestionAnswerReq();
+        List<Integer> questionsId = new ArrayList<>();
+        if (!CollectionUtils.isEmpty(questionAnswerReq)) {
+            questionsId = questionAnswerReq.stream().map(qa -> qa.getQuestionId())
+                    .collect(Collectors.toList());
+        }
         return evaluationQuestionAnswerRepository
-                .findAllByAssessmentId(assessmentId);
+                .findAllByQuestionIn(questionsId);
     }
 }

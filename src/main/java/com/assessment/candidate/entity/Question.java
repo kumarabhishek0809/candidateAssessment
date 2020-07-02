@@ -33,7 +33,4 @@ public class Question {
     @OneToOne
     private QuestionType questionType;
 
-
-
-
 }

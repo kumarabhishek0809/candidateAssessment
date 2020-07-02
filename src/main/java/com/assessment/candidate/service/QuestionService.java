@@ -48,6 +48,14 @@ public class QuestionService {
         List<Options> optionsEntity = new ArrayList<>();
 
         if (!CollectionUtils.isEmpty(options)) {
+
+            if(questionsRequest.getQuestionTypeId().equals(new Integer(1))){
+                long count = options.stream().filter(op -> op.isAnswerOption()).count();
+                if(count != 1){
+                    throw new RuntimeException("Only One Answer is correct");
+                }
+            }
+
             Question question = Question.builder().answer(
                     answerRepository
                             .findById(questionsRequest.getAnswerId()).orElseThrow(()
@@ -64,6 +72,8 @@ public class QuestionService {
                             .description(op.getDescription())
                             .question(question).build())
             );
+
+
 
             Question questionSave = questionRepository.save(question);
             genericResponse.setQuestion(questionSave);
@@ -93,7 +103,6 @@ public class QuestionService {
 
                                 //Correct option.
                                 EvaluationQuestionAnswer evaluationQuestionAnswer = new EvaluationQuestionAnswer();
-                                evaluationQuestionAnswer.setAssessment(assessment);
                                 evaluationQuestionAnswer.setMarks(questionsRequest.getMarks());
                                 evaluationQuestionAnswer.setOptions(answerOption);
                                 evaluationQuestionAnswer.setQuestion(question);

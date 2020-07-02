@@ -22,8 +22,8 @@ public class EvaluationController {
 
     @PostMapping(value = "/evaluation",
             produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<EvaluationResponse>
-    addAnswerToEvaluation(@RequestBody EvaluationRequest evaluationRequest){
+    public ResponseEntity<EvaluationResponse> addAnswerToEvaluation(
+            @RequestBody EvaluationRequest evaluationRequest){
         if(evaluationRequest == null
                 || evaluationRequest.getAssessmentId() == null
         || evaluationRequest.getOptionId() == null

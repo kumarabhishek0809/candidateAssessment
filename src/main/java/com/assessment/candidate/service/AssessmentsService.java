@@ -41,7 +41,8 @@ public class AssessmentsService {
     private IQuestionRepository questionRepository;
     @Autowired
     private ICandidateAssessmentResultSubmissionRepository candidateAssessmentResultSubmissionRepository;
-
+    @Autowired
+    private IEvaluationQuestionAnswerRepository evaluationQuestionAnswerRepository;
     @Autowired
     private SystemConfigurationService systemConfigurationService;
 
@@ -78,12 +79,20 @@ public class AssessmentsService {
             isAssessmentAvailable = candidate.getCandidateAssessments()
                     .stream().filter(ca -> !ca.isStatus())
                     .filter(candidateAssessment
-                            -> candidateAssessment.getAssessment().getId() == assessmentId)
+                            -> candidateAssessment.getAssessment().getId().equals(assessmentId))
                     .findAny().isPresent();
             if (isAssessmentAvailable) {
                 Assessment assessment = assessmentCandidateMapper.getAssessment(assessmentId)
                         .orElseThrow(() -> new RuntimeException("Assessment not exists for assessmentId " + assessmentId));
-                assessmentDetailResponse.setAssessments(assessment);
+                assessmentDetailResponse.setAssessments(
+                        AssessmentDetailResponse.Assessment.builder()
+                                .id(assessment.getId())
+                                .name(assessment.getName())
+                                .duration(assessment.getDuration())
+                                .technology(assessment.getTechnology())
+                                .passingPercentage(assessment.getPassingPercentage())
+                                .questions(getRandomQuestions(assessment))
+                                .build());
                 assessmentDetailResponse.setDataAvailable(true);
             } else {
                 assessmentDetailResponse.setDataAvailable(false);
@@ -92,14 +101,27 @@ public class AssessmentsService {
         return assessmentDetailResponse;
     }
 
+    private List<Question> getRandomQuestions(Assessment assessment) {
+        List<Question> questions = new ArrayList<>();
+        if (assessment != null) {
+            Integer questionCount = assessment.getQuestionCount();
+            List<Question> assessmentQuestions = assessment.getQuestions();
+            Collections.shuffle(assessmentQuestions);
+            questions = assessmentQuestions.subList(0, questionCount);
+        }
+        return questions;
+    }
+
 
     public AssessmentSubmittedResponse submitAssessment(String emailId,
                                                         SubmitAssessmentQuestionAnswer
                                                                 submitAssessmentQuestionAnswer)
             throws MessagingException {
 
-        AssessmentSubmittedResponse assessmentDetailResponse = AssessmentSubmittedResponse.builder().build();
+        AssessmentSubmittedResponse assessmentDetailResponse =
+                AssessmentSubmittedResponse.builder().build();
         assessmentDetailResponse.setDataAvailable(true);
+
         Integer totalAssessmentScore = 0;
         Integer totalMarksObtained = 0;
         float totalPercentage = 0;
@@ -112,12 +134,14 @@ public class AssessmentsService {
                 .findByEmailAddress(emailId)
                 .orElseThrow(() -> new RuntimeException("Candidate Not Found with email id " + emailId));
         mapCandidateFromEntity(assessmentDetailResponse, candidateDb);
+
         List<CandidateAssessment> dbCandidateAssessments = candidateDb.getCandidateAssessments();
         candidateAssessment = dbCandidateAssessments.stream().filter(ca
                 ->
                 !ca.isStatus()
-                        && ca.getAssessment().getId() == submitAssessmentQuestionAnswer.getAssessmentId())
+                        && ca.getAssessment().getId().equals(submitAssessmentQuestionAnswer.getAssessmentId()))
                 .findFirst().orElse(null);
+
         if (candidateAssessment == null) {
             assessmentDetailResponse.setDataAvailable(false);
             return assessmentDetailResponse;
@@ -127,29 +151,37 @@ public class AssessmentsService {
         //Process Question Answer
         List<EvaluationQuestionAnswer> evaluationQuestionAnswersDB =
                 assessmentCandidateMapper
-                        .getEvaluationQuestionAnswer(submitAssessmentQuestionAnswer.getAssessmentId())
+                        .getEvaluationQuestionAnswer(submitAssessmentQuestionAnswer)
                         .orElseThrow(() -> new RuntimeException("Incorrect Assessment ID " + submitAssessmentQuestionAnswer.getAssessmentId()));
 
-        //Calculate How Much Answers were correct.
+        //Calculate How many Answers were correct.
         List<SubmitAssessmentQuestionAnswer.QuestionAnswerReq> questionAnswersRequestReq =
                 submitAssessmentQuestionAnswer.getQuestionAnswerReq();
-        totalAssessmentScore = evaluationQuestionAnswersDB.stream()
-                .mapToInt(evaluationQuestionAnswer -> Optional.ofNullable(evaluationQuestionAnswer.getMarks()).orElse(5)).sum();
+
         for (EvaluationQuestionAnswer evaluationQuestionAnswerDB : evaluationQuestionAnswersDB) {
-            if(!CollectionUtils.isEmpty(questionAnswersRequestReq)) {
-                for (SubmitAssessmentQuestionAnswer.QuestionAnswerReq questionAnswerReq : questionAnswersRequestReq) {
-                    if (questionAnswerReq.getQuestionId().equals(evaluationQuestionAnswerDB.getQuestion().getId())) {
-                        if (questionAnswerReq.getOptionId().equals(evaluationQuestionAnswerDB.getOptions().getId())) {
-                            totalMarksObtained = totalMarksObtained + Optional.ofNullable(evaluationQuestionAnswerDB.getMarks()).orElse(5);
+            if (!CollectionUtils.isEmpty(questionAnswersRequestReq)) {
+                for (SubmitAssessmentQuestionAnswer.QuestionAnswerReq questionAnswerReq :
+                        questionAnswersRequestReq) {
+                    if (questionAnswerReq.getQuestionId().equals(evaluationQuestionAnswerDB.getQuestion()
+                            .getId())) {
+                        if (questionAnswerReq.getOptionId().equals(evaluationQuestionAnswerDB.getOptions()
+                                .getId())) {
+                            totalMarksObtained =
+                                    totalMarksObtained + Optional.ofNullable(evaluationQuestionAnswerDB.getMarks()).orElse(5);
                             break;
                         }
                     }
                 }
             }
         }
+
         if (candidateAssessment != null) {
             candidateAssessment.setTotalMarksObtained(totalMarksObtained);
             candidateAssessment.setTotalAssessmentScore(totalAssessmentScore);
+
+            assessment = candidateAssessment.getAssessment();
+            Integer questionCount = assessment.getQuestionCount();
+            totalAssessmentScore = questionCount * 5;
             if (totalAssessmentScore != 0 && totalMarksObtained != 0) {
                 totalPercentage = (100 * totalMarksObtained) / totalAssessmentScore;
                 String formattedString = String.format("%.02f", totalPercentage);
@@ -161,7 +193,6 @@ public class AssessmentsService {
             candidateAssessment.setResult("Attended");
             candidateAssessment.setAttemptedDate(ZonedDateTime.now());
 
-            assessment = candidateAssessment.getAssessment();
             Integer passingPercentage = Optional.ofNullable(assessment.getPassingPercentage()).orElse(59);
             candidateAssessment.setResult(totalPercentage >= passingPercentage ? "Pass" : "Fail");
 
@@ -338,7 +369,7 @@ public class AssessmentsService {
         List<Integer> questionIds = assessmentRequest.getQuestionIds();
         List<Question> noQuestionAvailable = null;
 
-        if(!CollectionUtils.isEmpty(questionIds)) {
+        if (!CollectionUtils.isEmpty(questionIds)) {
             noQuestionAvailable = questionIds.stream().map(
                     qIdReq ->
                             questionRepository.findById(qIdReq).orElseThrow(()

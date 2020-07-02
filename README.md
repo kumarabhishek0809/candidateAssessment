@@ -209,10 +209,13 @@ http://localhost:8080/questionOptionsAssessment
 
 
 
-select q.header,op.description  from clientAssessmentPortal.question q, clientAssessmentPortal.options op , 
-clientAssessmentPortal.evaluation_question_answer qa
+select q.header,op.description from clientAssessmentPortal.question q, clientAssessmentPortal.options op , 
+clientAssessmentPortal.evaluation_question_answer qa,clientAssessmentPortal.assessment_questions aq
 where 
-qa.assessment_id =1
-and qa.question_id = q.id
+qa.question_id = q.id
+and aq.assessment_id = 4
+and aq.questions_id = q.id
 and qa.options_id = op.id
-and q.id = op.question_id;
+and qa.question_id = aq.questions_id
+and q.id = op.question_id
+order by q.id asc

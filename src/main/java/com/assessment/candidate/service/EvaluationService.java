@@ -49,7 +49,6 @@ public class EvaluationService {
 
 
         EvaluationQuestionAnswer evaluationQuestionAnswer = new EvaluationQuestionAnswer();
-        evaluationQuestionAnswer.setAssessment(assessment);
         evaluationQuestionAnswer.setMarks(evaluationRequest.getMarks());
         evaluationQuestionAnswer.setOptions(options);
         evaluationQuestionAnswer.setQuestion(question);

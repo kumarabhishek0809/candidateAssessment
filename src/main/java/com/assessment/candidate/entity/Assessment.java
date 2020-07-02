@@ -26,7 +26,9 @@ public class Assessment {
     private String name;
     private String technology;
     private Integer passingPercentage;
+    private Integer questionCount;
 
     @ManyToMany
     private List<Question> questions;
+
 }

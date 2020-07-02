@@ -14,9 +14,6 @@ public class EvaluationQuestionAnswer {
     private Integer id;
 
     @OneToOne
-    private Assessment assessment;
-
-    @OneToOne
     private Question question;
 
     @OneToOne
