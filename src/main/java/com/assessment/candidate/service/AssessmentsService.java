@@ -110,7 +110,7 @@ public class AssessmentsService {
 
             Integer questionCount = Optional.ofNullable(assessment.getQuestionCount())
                     .orElse(25);
-            if(questionCount > assessmentQuestions.size()){
+            if (questionCount > assessmentQuestions.size()) {
                 questionCount = assessmentQuestions.size();
             }
 
@@ -158,7 +158,9 @@ public class AssessmentsService {
         List<EvaluationQuestionAnswer> evaluationQuestionAnswersDB =
                 assessmentCandidateMapper
                         .getEvaluationQuestionAnswer(submitAssessmentQuestionAnswer)
-                        .orElseThrow(() -> new RuntimeException("Incorrect Assessment ID " + submitAssessmentQuestionAnswer.getAssessmentId()));
+                        .orElseThrow(() ->
+                                new RuntimeException("Incorrect Assessment ID "
+                                        + submitAssessmentQuestionAnswer.getAssessmentId()));
 
         //Calculate How many Answers were correct.
         List<SubmitAssessmentQuestionAnswer.QuestionAnswerReq> questionAnswersRequestReq =
@@ -182,12 +184,14 @@ public class AssessmentsService {
         }
 
         if (candidateAssessment != null) {
-            candidateAssessment.setTotalMarksObtained(totalMarksObtained);
-            candidateAssessment.setTotalAssessmentScore(totalAssessmentScore);
-
             assessment = candidateAssessment.getAssessment();
             Integer questionCount = assessment.getQuestionCount();
             totalAssessmentScore = questionCount * 5;
+
+            candidateAssessment.setTotalMarksObtained(totalMarksObtained);
+            candidateAssessment.setTotalAssessmentScore(totalAssessmentScore);
+
+
             if (totalAssessmentScore != 0 && totalMarksObtained != 0) {
                 totalPercentage = (100 * totalMarksObtained) / totalAssessmentScore;
                 String formattedString = String.format("%.02f", totalPercentage);
@@ -205,11 +209,11 @@ public class AssessmentsService {
             populateAssessmentResultSubmission(candidateAssessment, submitAssessmentQuestionAnswer);
 
             candidateAssessment = candidateAssessmentRepository.save(candidateAssessment);
-        }
-        sendCompletionEmailToAdmin(emailId, candidateDb, candidateAssessment, assessment);
-        sendCompletionEmailToCandidate(candidateDb, candidateAssessment, assessment);
+            sendCompletionEmailToAdmin(emailId, candidateDb, candidateAssessment, assessment);
+            sendCompletionEmailToCandidate(candidateDb, candidateAssessment, assessment);
 
-        assessmentDetailResponse.setDataSubmited(true);
+            assessmentDetailResponse.setDataSubmited(true);
+        }
         return assessmentDetailResponse;
     }
 
