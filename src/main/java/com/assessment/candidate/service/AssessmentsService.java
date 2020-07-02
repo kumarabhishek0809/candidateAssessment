@@ -336,9 +336,16 @@ public class AssessmentsService {
     }
 
     public List<Question> getNoQuestionAvailable(AssessmentRequest assessmentRequest) {
-        return assessmentRequest.getQuestionIds().stream().map(
-                qIdReq ->
-                        questionRepository.findById(qIdReq).orElseThrow(()
-                                -> new RuntimeException("No Question Available"))).collect(Collectors.toList());
+        List<Integer> questionIds = assessmentRequest.getQuestionIds();
+        List<Question> noQuestionAvailable = null;
+
+        if(!CollectionUtils.isEmpty(questionIds)) {
+            noQuestionAvailable = questionIds.stream().map(
+                    qIdReq ->
+                            questionRepository.findById(qIdReq).orElseThrow(()
+                                    -> new RuntimeException("No Question Available WITH ID" + qIdReq)))
+                    .collect(Collectors.toList());
+        }
+        return noQuestionAvailable;
     }
 }

@@ -24,7 +24,8 @@ public class AssessmentsController {
     }
 
     @PostMapping(value = "/assessment", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<AssessmentQuestionResponse> addAssessment(@RequestBody AssessmentRequest assessmentRequest){
+    public ResponseEntity<AssessmentQuestionResponse> addAssessment(@RequestBody AssessmentRequest
+                                                                                assessmentRequest){
         AssessmentQuestionResponse genericResponse = assessmentsService.addUpdateAssessment(assessmentRequest);
         return new ResponseEntity<>(genericResponse, new HttpHeaders(), HttpStatus.OK);
     }

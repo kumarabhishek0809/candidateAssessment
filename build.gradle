@@ -39,6 +39,9 @@ dependencies {
 
     //Email Library
     compile('org.springframework.boot:spring-boot-starter-mail')
+
+    compile group: 'commons-validator', name: 'commons-validator', version: '1.6'
+
 }
 
 test {
