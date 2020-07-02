@@ -27,7 +27,7 @@ public class EmailService {
     public void sendMessageWithAttachment(Email email) throws MessagingException {
         MimeMessage message = javaMailSender.createMimeMessage();
         MimeMessageHelper helper = new MimeMessageHelper(message, true);
-        helper.setTo(email.getToEmail());
+        helper.setTo(email.getToEmail().toArray(new String[0]));
         helper.setSubject(email.getSubject());
         message.setText(email.getMessage() ,"utf-8", "html");
         String pathToAttachment = email.getPathToAttachment();

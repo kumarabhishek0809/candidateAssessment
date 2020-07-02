@@ -14,7 +14,6 @@ import com.assessment.candidate.response.CandidatesSearchResponse;
 import com.assessment.candidate.response.GenericResponse;
 import com.assessment.candidate.util.DateUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
@@ -44,9 +43,8 @@ public class CandidateService {
     @Autowired
     private EmailService emailService;
 
-    @Value("${instanceIPAddress}")
-    private String instanceIPAddress;
-
+    @Autowired
+    private SystemConfigurationService systemConfigurationService;
 
     @Cacheable(value = CANDIDATE_CACHE, key = " 'findCandidateDetails' ")
     public CandidatesSearchResponse findCandidateDetails() {
@@ -146,11 +144,8 @@ public class CandidateService {
     public GenericResponse registerCandidate(Candidate candidate) {
         GenericResponse genericResponse = new GenericResponse();
         genericResponse.setDataAvailable(true);
-
         Candidate candidateEntity = updateCandidateDetails(candidate);
         candidateEntity = candidateRepository.save(candidateEntity);
-
-
         System.out.println(candidateEntity.getId());
         return genericResponse;
     }
@@ -180,42 +175,87 @@ public class CandidateService {
 
             //Send Email,
             if (candidateEntity != null && assessment != null) {
-                //?myparam1={id1}&myparam2={id2}
-                //?emailId=KUMAR.ABHISHEK1@synechron.com&assessmentId=3
-                String testLink = "http://" + instanceIPAddress +
-                        ":3000/CandidateRegisterForAssessment?emailId="
-                        + candidateEntity.getEmailAddress()
-                        + "&assessmentId=" + assessment.getId()
-                        + "&assessmentName=" + assessment.getName();
-                Email email = Email.builder().subject("Synechron invites you to take " + assessmentName + " Assessment")
-                        .message(
-
-                                "<i> Dear  <b>" + candidateEntity.getFirstName() + " </b> Greetings!</i><br>" +
-                                        "<b> Wish you a nice day! </b> <br> <br>" +
-                                        "<h4>" +
-                                        "Please to inform, your profile is shortlisted for Next Level…. Congratulation !!!!" + "<br><br>" +
-                                        "As a of recruitment process, request you to please complete the Assessment : <b>" + assessmentName + " <b> <br>" +
-                                        "Test Link:  <a href=" + testLink + "> Assessment Link </a>  <br> <br> <br> <br>" +
-                                        "Instructions to follow :" + "<br> <br>" +
-                                        "Once you get the test link please login with your credentials.  <br>  " +
-                                        "It’s a " + assessment.getDuration() + "  Min Online Test.<br>" +
-
-                                        "To ensure an uninterrupted test taking experience , you may close all chat windows, Screen savers, multiple windows etc. before starting the test. <br> " +
-                                        "Please do not press “F5” during the test. This will finish your test and you will not be able to re-open the test.   <br>" +
-                                        "Once you complete the test, please revert us to get your result. <br><br><br>" +
-
-                                        "<b><font color=red>Note : Please DO NOT try to copy anything as an automated flag will be raised against your name and you will get dis-qualified. </font> </b> <br>" +
-
-
-                                        "</h4>" +
-                                        "Regards , <br>" +
-                                        "Synechron ")
-                        .toEmail(candidateEntity.getEmailAddress())
-                        .build();
-                emailService.sendMail(email);
+                sendEmailToCandidate(assessmentName, candidateEntity, assessment);
+                sendEmailToAdmin(assessmentName, candidateEntity, assessment);
             }
         }
         return genericResponse;
+    }
+
+    private void sendEmailToAdmin(String assessmentName, Candidate candidateDb, Assessment assessment) throws MessagingException {
+        if (assessmentName != null && candidateDb != null && assessment != null) {
+
+            String subject = "Assessment assigned to candidate " + Optional.ofNullable(candidateDb.getFirstName())
+                    .orElse("") + " " + Optional.ofNullable(candidateDb.getLastName()).orElse("")
+                    + " for assessment " + assessment.getName();
+
+            Email email = Email.builder()
+                    .subject(subject)
+                    .message("<i> Dear Team Greetings!</i><br>" +
+                            "<b> Wish you a nice day! </b><br> <br> <br>" +
+                            "<b><font color=red> " + subject + "</font> </b><br><br><br><br>" +
+                            "<style>\n" +
+                            "table, th, td {\n" +
+                            "  border: 1px solid black;\n" +
+                            "}\n" +
+                            "</style>" +
+                            "<table style=\"width:100%\"> " +
+                            "  <tr> " +
+                            "    <th>Candidate Name</th> " +
+                            "    <th>Candidate Email Id</th> " +
+                            "    <th>Assessment Assigned</th> " +
+                            "  </tr> " +
+                            "  <tr> " +
+                            "    <td> " + candidateDb.getFirstName() + " " + candidateDb.getLastName() + "</td>" +
+                            "    <td> " + candidateDb.getEmailAddress() + " </td>" +
+                            "    <td> " + assessment.getName() + " </td>" +
+                            "  </tr> " +
+                            "</table> " +
+                            "<br><br><br> " +
+                            "Regards ," +
+                            "<br> " +
+                            "Synechron")
+                    .toEmail(systemConfigurationService.adminEmails())
+                    .build();
+            emailService.sendMail(email);
+        }
+    }
+
+    public void sendEmailToCandidate(String assessmentName, Candidate candidateEntity, Assessment assessment)
+            throws MessagingException {
+        String instanceIPAddress = systemConfigurationService.getCandidateIPAddress();
+        String testLink = "http://" + instanceIPAddress +
+                ":3000/CandidateRegisterForAssessment?emailId="
+                + candidateEntity.getEmailAddress()
+                + "&assessmentId=" + assessment.getId()
+                + "&assessmentName=" + assessment.getName();
+
+        List<String> toEmails = new ArrayList<>();
+        toEmails.add(candidateEntity.getEmailAddress());
+        Email email = Email.builder().subject("Synechron invites you to take " + assessmentName + " Assessment")
+                .message(
+
+                        "<i> Dear  <b>" + candidateEntity.getFirstName() + " </b> Greetings!</i><br>" +
+                                "<b> Wish you a nice day! </b> <br> <br>" +
+                                "<h4>" +
+                                "Please to inform, your profile is shortlisted for Next Level…. Congratulation !!!!" + "<br><br>" +
+                                "As a of recruitment process, request you to please complete the Assessment : <b>" + assessmentName + " <b> <br>" +
+                                "Test Link:  <a href=" + testLink + "> Assessment Link </a>  <br> <br> <br> <br>" +
+                                "Instructions to follow :" + "<br> <br>" +
+                                "Once you get the test link please login with your credentials.  <br>  " +
+                                "It’s a " + assessment.getDuration() + "  Min Online Test.<br>" +
+
+                                "To ensure an uninterrupted test taking experience , you may close all chat windows, Screen savers, multiple windows etc. before starting the test. <br> " +
+                                "Please do not press “F5” during the test. This will finish your test and you will not be able to re-open the test.   <br>" +
+                                "Once you complete the test, please revert us to get your result. <br><br><br>" +
+
+                                "<b><font color=red>Note : Please DO NOT try to copy anything as an automated flag will be raised against your name and you will get dis-qualified. </font> </b> <br>" +
+                                "</h4>" +
+                                "Regards , <br>" +
+                                "Synechron ")
+                .toEmail(toEmails)
+                .build();
+        emailService.sendMail(email);
     }
 
     public Candidate updateCandidateDetails(Candidate candidateRequest) {

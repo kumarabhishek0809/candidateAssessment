@@ -11,7 +11,6 @@ import com.assessment.candidate.response.AssessmentQuestionResponse;
 import com.assessment.candidate.response.AssessmentResponse;
 import com.assessment.candidate.response.AssessmentSubmittedResponse;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
@@ -43,10 +42,8 @@ public class AssessmentsService {
     @Autowired
     private ICandidateAssessmentResultSubmissionRepository candidateAssessmentResultSubmissionRepository;
 
-
-    @Value("${adminEmailId}")
-    private String adminEmailId;
-
+    @Autowired
+    private SystemConfigurationService systemConfigurationService;
 
     @Autowired
     private EmailService emailService;
@@ -218,6 +215,8 @@ public class AssessmentsService {
     private void sendCompletionEmailToCandidate(Candidate candidateDb,
                                                 CandidateAssessment candidateAssessment,
                                                 Assessment assessment) throws MessagingException {
+        List<String> toEmails = new ArrayList<>();
+        toEmails.add(candidateDb.getEmailAddress());
         if (candidateDb != null && assessment != null) {
             Email email = Email.builder().subject("Successfully Submitted assessment " + assessment.getName())
                     .message(
@@ -232,7 +231,7 @@ public class AssessmentsService {
                                     "</h3>" +
                                     "Regards , <br>" +
                                     "Synechron ")
-                    .toEmail(candidateDb.getEmailAddress())
+                    .toEmail(toEmails)
                     .build();
             emailService.sendMail(email);
         }
@@ -278,7 +277,7 @@ public class AssessmentsService {
                             "<br><br><br>" +
                             "Regards ,<br>" +
                             "Synechron ")
-                    .toEmail(adminEmailId)
+                    .toEmail(systemConfigurationService.adminEmails())
                     .build();
             emailService.sendMail(email);
         }
