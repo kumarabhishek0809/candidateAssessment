@@ -55,8 +55,6 @@ public class CandidateService {
         candidateRepositoryAll.forEach(candidateEntity ->
         {
             List<CandidateAssessment> candidateAssessments = candidateEntity.getCandidateAssessments();
-            Collections.sort(candidateAssessments,  Comparator.comparing(CandidateAssessment::getId)
-                    .reversed());
             candidateProfiles.addAll(candidateAssessments.stream().map(candidateAssessment -> {
                 return CandidatesSearchResponse.CandidateProfile.builder()
                         .assessmentName(candidateAssessment.getAssessment().getName())
@@ -76,6 +74,11 @@ public class CandidateService {
                         .build();
             }).collect(Collectors.toList()));
         });
+
+        Collections.sort(candidateSearchResponse.getCandidates(),
+                Comparator.comparing(CandidatesSearchResponse.CandidateProfile::getId)
+                .reversed());
+
         return candidateSearchResponse;
     }
 
