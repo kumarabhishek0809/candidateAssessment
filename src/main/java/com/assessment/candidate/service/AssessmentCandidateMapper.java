@@ -51,15 +51,13 @@ public class AssessmentCandidateMapper {
     @Cacheable(value = CANDIDATE_CACHE, key = " 'getEvaluationQuestionAnswer' +#assessmentId")
     public Optional<List<EvaluationQuestionAnswer>> getEvaluationQuestionAnswer(
             SubmitAssessmentQuestionAnswer submitAssessmentQuestionAnswer) {
-        Iterable<Question> allById= null;
+        Optional<List<EvaluationQuestionAnswer>> questionIn = Optional.of(new ArrayList<>());
         List<SubmitAssessmentQuestionAnswer.QuestionAnswerReq> questionAnswerReq = submitAssessmentQuestionAnswer.getQuestionAnswerReq();
-        List<Integer> questionsId = new ArrayList<>();
         if (!CollectionUtils.isEmpty(questionAnswerReq)) {
-            questionsId = questionAnswerReq.stream().map(qa -> qa.getQuestionId())
-                    .collect(Collectors.toList());
-            allById = questionRepository.findAllById(questionsId);
+            Iterable<Question> allById = questionRepository.findAllById(questionAnswerReq.stream().map(qa -> qa.getQuestionId())
+                    .collect(Collectors.toList()));
+            questionIn = evaluationQuestionAnswerRepository.findAllByQuestionIn(allById);
         }
-        return evaluationQuestionAnswerRepository
-                .findAllByQuestionIn(allById);
+        return questionIn;
     }
 }

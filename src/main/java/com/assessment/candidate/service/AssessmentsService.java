@@ -157,10 +157,7 @@ public class AssessmentsService {
         //Process Question Answer
         List<EvaluationQuestionAnswer> evaluationQuestionAnswersDB =
                 assessmentCandidateMapper
-                        .getEvaluationQuestionAnswer(submitAssessmentQuestionAnswer)
-                        .orElseThrow(() ->
-                                new RuntimeException("Incorrect Assessment ID "
-                                        + submitAssessmentQuestionAnswer.getAssessmentId()));
+                        .getEvaluationQuestionAnswer(submitAssessmentQuestionAnswer).get();
 
         //Calculate How many Answers were correct.
         List<SubmitAssessmentQuestionAnswer.QuestionAnswerReq> questionAnswersRequestReq =
