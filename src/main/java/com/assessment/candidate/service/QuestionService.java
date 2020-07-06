@@ -11,6 +11,7 @@ import com.assessment.candidate.response.GenericResponse;
 import com.assessment.candidate.response.QuestionAddResponse;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
+import org.springframework.util.StringUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -57,13 +58,19 @@ public class QuestionService {
                 }
             }
 
+            Optional<Question> byHeader = questionRepository.findByHeader(StringUtils.trimWhitespace(questionsRequest.getHeader()));
+
+            if(byHeader.isPresent()){
+                throw new RuntimeException("Question Already Present");
+            }
+
             Question question = Question.builder().answer(
                     answerRepository
                             .findById(questionsRequest.getAnswerId()).orElseThrow(()
                             -> new RuntimeException("Incorrect Answer Id")))
                     .questionType(questionTypeRepository.findById(questionsRequest.getQuestionTypeId())
                             .orElseThrow(() -> new RuntimeException("Question Type Id")))
-                    .header(questionsRequest.getHeader())
+                    .header(StringUtils.trimWhitespace(questionsRequest.getHeader()))
                     .technology(questionsRequest.getTechnology())
                     .options(optionsEntity)
                     .build();
