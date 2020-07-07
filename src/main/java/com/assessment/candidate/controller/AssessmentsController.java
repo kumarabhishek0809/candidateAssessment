@@ -3,7 +3,10 @@ package com.assessment.candidate.controller;
 import com.assessment.candidate.model.AssessmentCandidateCount;
 import com.assessment.candidate.model.AssessmentRequest;
 import com.assessment.candidate.model.SubmitAssessmentQuestionAnswer;
-import com.assessment.candidate.response.*;
+import com.assessment.candidate.response.AssessmentDetailResponse;
+import com.assessment.candidate.response.AssessmentQuestionResponse;
+import com.assessment.candidate.response.AssessmentResponse;
+import com.assessment.candidate.response.AssessmentSubmittedResponse;
 import com.assessment.candidate.service.AssessmentsService;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -12,6 +15,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.mail.MessagingException;
+import java.util.List;
 import java.util.Map;
 
 @RestController
@@ -62,5 +66,10 @@ public class AssessmentsController {
     @GetMapping(value = "/candidateAssessmentCount" , produces = MediaType.APPLICATION_JSON_VALUE)
     public Map<String, AssessmentCandidateCount> candidateAssessmentCount() throws MessagingException {
         return assessmentsService.candidateAssessmentCount();
+    }
+
+    @GetMapping(value = "/candidatesAssessments" , produces = MediaType.APPLICATION_JSON_VALUE)
+    public List<AssessmentCandidateCount> candidatesAssessments() throws MessagingException {
+        return assessmentsService.candidatesAssessments();
     }
 }

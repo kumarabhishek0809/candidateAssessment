@@ -330,6 +330,11 @@ public class AssessmentsService {
         }
     }
 
+    @Cacheable(value = CANDIDATE_CACHE, key = " 'candidatesAssessments' ")
+    public List<AssessmentCandidateCount> candidatesAssessments() {
+        return candidateAssessmentRepository.getCandidateAssessmentCount();
+    }
+
 
     @Cacheable(value = CANDIDATE_CACHE, key = " 'candidateAssessmentCount' ")
     public Map<String, AssessmentCandidateCount> candidateAssessmentCount() {
