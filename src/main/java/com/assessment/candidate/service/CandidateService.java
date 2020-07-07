@@ -60,7 +60,7 @@ public class CandidateService {
                         .assessmentName(candidateAssessment.getAssessment().getName())
                         .id(candidateAssessment.getId())
                         .firstName(candidateEntity.getFirstName())
-                        .lastName(candidateEntity.getLastName())
+                        .lastName(Optional.ofNullable(candidateEntity.getLastName()).orElse(""))
                         .emailAddress(candidateEntity.getEmailAddress())
                         .countryCode(candidateEntity.getCountryCode())
                         .dateOfBirth(candidateEntity.getDateOfBirth())
