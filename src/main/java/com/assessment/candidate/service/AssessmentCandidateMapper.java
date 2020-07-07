@@ -43,7 +43,7 @@ public class AssessmentCandidateMapper {
                 .build();
     }
 
-    @Cacheable(value = CANDIDATE_CACHE, key = " 'getAssessment'+ #assessmentId ")
+    //@Cacheable(value = CANDIDATE_CACHE, key = " 'getAssessment'+ #assessmentId ")
     public Optional<com.assessment.candidate.entity.Assessment> getAssessment(Integer assessmentId) {
         return assessmentRepository.findById(assessmentId);
     }

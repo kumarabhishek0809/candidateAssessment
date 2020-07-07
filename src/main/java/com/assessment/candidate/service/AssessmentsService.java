@@ -75,15 +75,20 @@ public class AssessmentsService {
             Candidate candidate = candidateRepository.findByEmailAddress(emailId)
                     .orElseThrow(() -> new RuntimeException("Candidate Details does not exits for email : " + emailId));
 
-            assessmentDetailResponse.setCandidate(candidateService.mapEntityToModel(candidate, null));
+            assessmentDetailResponse.setCandidate(candidateService
+                    .mapEntityToModel(candidate, null));
+
             isAssessmentAvailable = candidate.getCandidateAssessments()
                     .stream().filter(ca -> !ca.isStatus())
                     .filter(candidateAssessment
                             -> candidateAssessment.getAssessment().getId().equals(assessmentId))
                     .findAny().isPresent();
+
             if (isAssessmentAvailable) {
                 Assessment assessment = assessmentCandidateMapper.getAssessment(assessmentId)
-                        .orElseThrow(() -> new RuntimeException("Assessment not exists for assessmentId " + assessmentId));
+                        .orElseThrow(() ->
+                                new RuntimeException("Assessment not exists for assessmentId "
+                                        + assessmentId));
                 assessmentDetailResponse.setAssessments(
                         AssessmentDetailResponse.Assessment.builder()
                                 .id(assessment.getId())
@@ -108,13 +113,17 @@ public class AssessmentsService {
             List<Question> assessmentQuestions = assessment.getQuestions();
             Collections.shuffle(assessmentQuestions);
 
-            Integer questionCount = Optional.ofNullable(assessment.getQuestionCount())
+            Integer questionCount =
+                    Optional.ofNullable(assessment.getQuestionCount())
                     .orElse(25);
             if (questionCount > assessmentQuestions.size()) {
                 questionCount = assessmentQuestions.size();
             }
 
             questions = assessmentQuestions.subList(0, questionCount);
+            for (Question question : questions) {
+                Collections.shuffle(question.getOptions());
+            }
         }
         return questions;
     }
