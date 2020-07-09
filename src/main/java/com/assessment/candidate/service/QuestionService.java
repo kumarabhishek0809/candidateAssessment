@@ -75,9 +75,9 @@ public class QuestionService {
                     .options(optionsEntity)
                     .build();
 
-            options.stream().forEach(
+            options.stream().filter( ops -> StringUtils.hasText(StringUtils.trimWhitespace(ops.getDescription()))).forEach(
                     op -> optionsEntity.add(Options.builder()
-                            .description(op.getDescription())
+                            .description(StringUtils.trimWhitespace(op.getDescription()))
                             .question(question).build())
             );
 
@@ -149,7 +149,7 @@ public class QuestionService {
                             -> new RuntimeException("Incorrect Answer Id")))
                     .questionType(questionTypeRepository.findById(questionsRequest.getQuestionTypeId())
                             .orElseThrow(() -> new RuntimeException("Question Type Id")))
-                    .header(questionsRequest.getHeader())
+                    .header(StringUtils.trimWhitespace(questionsRequest.getHeader()))
                     .technology(questionsRequest.getTechnology())
                     .options(optionsEntity)
                     .build();
