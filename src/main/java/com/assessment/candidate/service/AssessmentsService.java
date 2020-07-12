@@ -73,7 +73,8 @@ public class AssessmentsService {
 
         if (!StringUtils.isEmpty(emailId)) {
             Candidate candidate = candidateRepository.findByEmailAddress(emailId)
-                    .orElseThrow(() -> new RuntimeException("Candidate Details does not exits for email : " + emailId));
+                    .orElseThrow(() ->
+                            new RuntimeException("Candidate Details does not exits for email : " + emailId));
 
             assessmentDetailResponse.setCandidate(candidateService
                     .mapEntityToModel(candidate, null));
@@ -89,6 +90,7 @@ public class AssessmentsService {
                         .orElseThrow(() ->
                                 new RuntimeException("Assessment not exists for assessmentId "
                                         + assessmentId));
+
                 assessmentDetailResponse.setAssessments(
                         AssessmentDetailResponse.Assessment.builder()
                                 .id(assessment.getId())
@@ -110,7 +112,7 @@ public class AssessmentsService {
         List<Question> questions = new ArrayList<>();
         if (assessment != null) {
 
-            List<Question> assessmentQuestions = assessment.getQuestions();
+            List<Question> assessmentQuestions = assessment.getQuestions().stream().filter(question -> question.isValid()).collect(Collectors.toList());
             Collections.shuffle(assessmentQuestions);
 
             Integer questionCount =

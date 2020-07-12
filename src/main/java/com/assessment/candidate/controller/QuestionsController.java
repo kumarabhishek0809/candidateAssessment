@@ -32,7 +32,13 @@ public class QuestionsController {
 
     @PostMapping(value = "/question", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<QuestionAddResponse> addQuestion(@RequestBody QuestionsRequest questionsRequest) {
-        QuestionAddResponse genericResponse = questionService.saveQuestion(questionsRequest);
+        QuestionAddResponse genericResponse = questionService.saveUpdateQuestion(questionsRequest);
+        return new ResponseEntity<>(genericResponse, new HttpHeaders(), HttpStatus.OK);
+    }
+
+    @PutMapping(value = "/question", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<QuestionAddResponse> updateQuestion(@RequestBody QuestionsRequest questionsRequest) {
+        QuestionAddResponse genericResponse = questionService.saveUpdateQuestion(questionsRequest);
         return new ResponseEntity<>(genericResponse, new HttpHeaders(), HttpStatus.OK);
     }
 
@@ -41,6 +47,8 @@ public class QuestionsController {
         QuestionAddResponse genericResponse = questionService.questionOptionsAssessment(questionsRequest);
         return new ResponseEntity<>(genericResponse, new HttpHeaders(), HttpStatus.OK);
     }
+
+
 
 
 }

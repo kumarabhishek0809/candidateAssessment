@@ -19,11 +19,14 @@ public class QuestionsRequest implements Serializable {
     private List<Options> options;
 
     private String header;
-    private String id;
+    private Integer questionId;
     private String technology;
 
     private List<Integer> assessmentIds;
     private Integer marks;
+
+    @Builder.Default
+    private boolean valid = true;
 
     @Data
     @Builder

@@ -51,16 +51,16 @@ public class QuestionService {
 
         if (!CollectionUtils.isEmpty(options)) {
 
-            if(questionsRequest.getQuestionTypeId().equals(new Integer(1))){
+            if (questionsRequest.getQuestionTypeId().equals(new Integer(1))) {
                 long count = options.stream().filter(op -> op.isAnswerOption()).count();
-                if(count != 1){
+                if (count != 1) {
                     throw new RuntimeException("Only One Answer is correct");
                 }
             }
 
             Optional<Question> byHeader = questionRepository.findByHeader(StringUtils.trimWhitespace(questionsRequest.getHeader()));
 
-            if(byHeader.isPresent()){
+            if (byHeader.isPresent()) {
                 throw new RuntimeException("Question Already Present");
             }
 
@@ -75,12 +75,11 @@ public class QuestionService {
                     .options(optionsEntity)
                     .build();
 
-            options.stream().filter( ops -> StringUtils.hasText(StringUtils.trimWhitespace(ops.getDescription()))).forEach(
+            options.stream().filter(ops -> StringUtils.hasText(StringUtils.trimWhitespace(ops.getDescription()))).forEach(
                     op -> optionsEntity.add(Options.builder()
                             .description(StringUtils.trimWhitespace(op.getDescription()))
                             .question(question).build())
             );
-
 
 
             Question questionSave = questionRepository.save(question);
@@ -134,40 +133,47 @@ public class QuestionService {
         return genericResponse;
     }
 
-    public QuestionAddResponse saveQuestion(QuestionsRequest questionsRequest) {
+    public QuestionAddResponse saveUpdateQuestion(QuestionsRequest questionsRequest) {
 
         QuestionAddResponse genericResponse = new QuestionAddResponse();
         genericResponse.setDataAvailable(false);
 
         List<QuestionsRequest.Options> options = questionsRequest.getOptions();
         List<Options> optionsEntity = new ArrayList<>();
-
+        Question question = null;
         if (!CollectionUtils.isEmpty(options)) {
-            Question question = Question.builder().answer(
-                    answerRepository
-                            .findById(questionsRequest.getAnswerId()).orElseThrow(()
-                            -> new RuntimeException("Incorrect Answer Id")))
-                    .questionType(questionTypeRepository.findById(questionsRequest.getQuestionTypeId())
-                            .orElseThrow(() -> new RuntimeException("Question Type Id")))
-                    .header(StringUtils.trimWhitespace(questionsRequest.getHeader()))
-                    .technology(questionsRequest.getTechnology())
-                    .options(optionsEntity)
-                    .build();
+            if (questionsRequest.getQuestionId() == null) {
+                question = Question.builder().answer(
+                        answerRepository
+                                .findById(questionsRequest.getAnswerId()).orElseThrow(()
+                                -> new RuntimeException("Incorrect Answer Id")))
+                        .questionType(questionTypeRepository.findById(questionsRequest.getQuestionTypeId())
+                                .orElseThrow(() -> new RuntimeException("Question Type Id")))
+                        .header(StringUtils.trimWhitespace(questionsRequest.getHeader()))
+                        .technology(questionsRequest.getTechnology())
+                        .options(optionsEntity)
+                        .build();
 
-            options.stream().forEach(
-                    op -> optionsEntity.add(Options.builder()
-                            .description(op.getDescription())
-                            .question(question).build())
-            );
-
-            Question questionSave = questionRepository.save(question);
-            genericResponse.setQuestion(questionSave);
-            System.out.println(question.getId());
-
-            genericResponse.setDataAvailable(true);
+                Question finalQuestion = question;
+                options.stream().forEach(
+                        op -> optionsEntity.add(Options.builder()
+                                .description(op.getDescription())
+                                .question(finalQuestion).build())
+                );
+            }
         }
+        if (questionsRequest.getQuestionId() != null) {
+            question = questionRepository.findById(questionsRequest.getQuestionId())
+                    .orElseThrow(() -> new RuntimeException("Not a Valid Question Id  " + questionsRequest.getQuestionId()));
+            question.setValid(Optional.ofNullable(questionsRequest.isValid()).orElse(question.isValid()));
+        }
+        Question questionSave = questionRepository.save(question);
+        genericResponse.setQuestion(questionSave);
+        System.out.println(question.getId());
+
+        genericResponse.setDataAvailable(true);
         return genericResponse;
-    }
+}
 
     public GenericResponse deleteQuestionById(Integer id) {
         questionRepository.deleteById(id);

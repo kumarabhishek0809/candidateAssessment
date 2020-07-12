@@ -33,4 +33,7 @@ public class Question {
     @OneToOne
     private QuestionType questionType;
 
+    @Builder.Default
+    private boolean valid = true;
+
 }
