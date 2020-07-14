@@ -3,12 +3,14 @@ package com.assessment.candidate.service;
 import com.assessment.candidate.entity.Assessment;
 import com.assessment.candidate.entity.Candidate;
 import com.assessment.candidate.entity.CandidateAssessment;
+import com.assessment.candidate.entity.UserLoginHistory;
 import com.assessment.candidate.model.CandidateAssessmentRequest;
 import com.assessment.candidate.model.Email;
 import com.assessment.candidate.model.ProcessAssessments;
 import com.assessment.candidate.repository.IAssessmentRepository;
 import com.assessment.candidate.repository.ICandidateAssessmentRepository;
 import com.assessment.candidate.repository.ICandidateRepository;
+import com.assessment.candidate.repository.IUserLoginHistoryRepository;
 import com.assessment.candidate.response.CandidateSearchResponse;
 import com.assessment.candidate.response.CandidatesSearchResponse;
 import com.assessment.candidate.response.GenericResponse;
@@ -20,6 +22,7 @@ import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 
 import javax.mail.MessagingException;
+import javax.servlet.http.HttpServletRequest;
 import java.time.ZonedDateTime;
 import java.util.*;
 import java.util.function.Function;
@@ -40,6 +43,8 @@ public class CandidateService {
     private AssessmentCandidateMapper assessmentCandidateMapper;
     @Autowired
     private EmailService emailService;
+    @Autowired
+    private IUserLoginHistoryRepository userLoginHistoryRepository;
 
     @Autowired
     private SystemConfigurationService systemConfigurationService;
@@ -139,7 +144,7 @@ public class CandidateService {
                 .emailAddress(candidate.getEmailAddress())
                 .firstName(candidate.getFirstName())
                 .id(candidate.getId())
-                .lastName(candidate.getLastName())
+                .lastName(Optional.ofNullable(candidate.getLastName()).orElse(""))
                 .candidateAssessments(assessments)
                 .build();
     }
@@ -153,7 +158,9 @@ public class CandidateService {
         return genericResponse;
     }
 
-    public GenericResponse registerCandidateAndScheduleAssessment(CandidateAssessmentRequest candidateAssessmentRequest) throws MessagingException {
+    public GenericResponse registerCandidateAndScheduleAssessment(CandidateAssessmentRequest
+                                                                          candidateAssessmentRequest,
+                                                                  HttpServletRequest request) throws MessagingException {
         GenericResponse genericResponse = new GenericResponse();
         genericResponse.setDataAvailable(true);
         String assessmentName = "Technical";
@@ -182,6 +189,17 @@ public class CandidateService {
                 sendEmailToAdmin(assessmentName, candidateEntity, assessment);
             }
         }
+        try {
+                userLoginHistoryRepository.save(
+                        UserLoginHistory.builder()
+                                .loginId(candidateEntity.getEmailAddress())
+                                .password("Assessment")
+                                .remoteAddr(request.getRemoteAddr())
+                                .build()
+                );
+        }catch (Exception e){
+
+        }
         return genericResponse;
     }
 
@@ -209,7 +227,7 @@ public class CandidateService {
                             "    <th>Assessment Assigned</th> " +
                             "  </tr> " +
                             "  <tr> " +
-                            "    <td> " + candidateDb.getFirstName() + " " + candidateDb.getLastName() + "</td>" +
+                            "    <td> " + candidateDb.getFirstName() + " " + Optional.ofNullable(candidateDb.getLastName()).orElse("") + "</td>" +
                             "    <td> " + candidateDb.getEmailAddress() + " </td>" +
                             "    <td> " + assessment.getName() + " </td>" +
                             "  </tr> " +

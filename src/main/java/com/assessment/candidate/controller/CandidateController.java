@@ -17,6 +17,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.mail.MessagingException;
+import javax.servlet.http.HttpServletRequest;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.net.UnknownHostException;
@@ -79,10 +80,12 @@ public class CandidateController {
     }
 
     @PostMapping(value = "/registerCandidateScheduleAssessment" )
-    public GenericResponse registerCandidateAndScheduleAssessment(@RequestBody CandidateAssessmentRequest candidate) throws UnknownHostException, MessagingException {
+    public GenericResponse registerCandidateAndScheduleAssessment(
+            @RequestBody CandidateAssessmentRequest candidate
+            ,HttpServletRequest request) throws UnknownHostException, MessagingException {
         if(candidate == null || candidate.getCandidate() == null || candidate.getCandidate().getEmailAddress() == null){
             throw new RuntimeException();
         }
-        return candidateService.registerCandidateAndScheduleAssessment(candidate);
+        return candidateService.registerCandidateAndScheduleAssessment(candidate,request);
     }
 }

@@ -255,7 +255,7 @@ public class AssessmentsService {
                 .emailAddress(candidateDb.getEmailAddress())
                 .firstName(candidateDb.getFirstName())
                 .id(candidateDb.getId())
-                .lastName(candidateDb.getLastName())
+                .lastName(Optional.ofNullable(candidateDb.getLastName()).orElse(""))
                 .candidateAssessments(null)
                 .build();
         assessmentDetailResponse.setCandidate(candidateRes);
@@ -313,7 +313,7 @@ public class AssessmentsService {
                             "    <th>Result</th> " +
                             "  </tr> " +
                             "  <tr> " +
-                            "    <td> " + candidateDb.getFirstName() + " " + candidateDb.getLastName() + "</td>" +
+                            "    <td> " + candidateDb.getFirstName() + " " + Optional.ofNullable(candidateDb.getLastName()).orElse("") + "</td>" +
                             "    <td> " + emailId + " </td>" +
                             "    <td> " + assessment.getName() + " </td>" +
                             "    <td> " + candidateAssessment.getTotalMarksObtained() + "</td>" +
