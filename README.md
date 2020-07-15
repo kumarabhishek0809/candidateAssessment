@@ -103,6 +103,8 @@ sudo yum install -y https://dev.mysql.com/get/mysql57-community-release-el7-11.n
 sudo yum install -y mysql-community-server
 
 sudo yum -y install java-1.8.0-openjdk-devel
+sudo yum install java-1.8.0
+sudo /usr/sbin/alternatives --config java
 
 ###########   install mysql ##########
 
