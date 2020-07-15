@@ -222,3 +222,14 @@ and qa.options_id = op.id
 and qa.question_id = aq.questions_id
 and q.id = op.question_id
 order by q.id asc
+
+
+Clear transactional data
+SET SQL_SAFE_UPDATES = 0;
+delete from clientAssessmentPortal.user_login_history;
+delete from clientAssessmentPortal.user_login;
+delete  from clientAssessmentPortal.candidate_assessment_result_submission;
+delete from clientAssessmentPortal.candidate_assessment;
+delete from clientAssessmentPortal.candidate;
+commit;
+SET SQL_SAFE_UPDATES = 1;

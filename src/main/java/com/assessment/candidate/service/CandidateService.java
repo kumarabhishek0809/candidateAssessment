@@ -184,7 +184,9 @@ public class CandidateService {
             System.out.println(assessment.getId());
 
             //Send Email,
-            if (candidateEntity != null && assessment != null) {
+            if (candidateEntity != null && assessment != null &&
+                    !StringUtils.isEmpty(candidateEntity.getEmailAddress()) &&
+                    !StringUtils.isEmpty(assessment.getName())) {
                 sendEmailToCandidate(assessmentName, candidateEntity, assessment);
                 sendEmailToAdmin(assessmentName, candidateEntity, assessment);
             }
