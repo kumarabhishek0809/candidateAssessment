@@ -175,8 +175,29 @@ public class AssessmentsService {
         List<SubmitAssessmentQuestionAnswer.QuestionAnswerReq> questionAnswersRequestReq =
                 submitAssessmentQuestionAnswer.getQuestionAnswerReq();
 
+        if (!CollectionUtils.isEmpty(questionAnswersRequestReq)) {
+
+            Set<SubmitAssessmentQuestionAnswer.QuestionAnswerReq> uniqueSet =
+                    new TreeSet(new Comparator() {
+                @Override
+                public int compare(Object o1, Object o2) {
+                    if (((SubmitAssessmentQuestionAnswer.QuestionAnswerReq) o1)
+                            .getQuestionId()
+                            .equals(((SubmitAssessmentQuestionAnswer.QuestionAnswerReq) o2)
+                                    .getQuestionId())) {
+                        return 0;
+                    }
+                    return 1;
+                }
+            });
+            uniqueSet.addAll(questionAnswersRequestReq);
+
+            questionAnswersRequestReq = new ArrayList(uniqueSet);
+        }
+
         for (EvaluationQuestionAnswer evaluationQuestionAnswerDB : evaluationQuestionAnswersDB) {
             if (!CollectionUtils.isEmpty(questionAnswersRequestReq)) {
+
                 for (SubmitAssessmentQuestionAnswer.QuestionAnswerReq questionAnswerReq :
                         questionAnswersRequestReq) {
                     if (questionAnswerReq.getQuestionId().equals(evaluationQuestionAnswerDB.getQuestion()
