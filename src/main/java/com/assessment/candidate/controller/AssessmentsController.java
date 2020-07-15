@@ -3,6 +3,7 @@ package com.assessment.candidate.controller;
 import com.assessment.candidate.model.AssessmentCandidateCount;
 import com.assessment.candidate.model.AssessmentRequest;
 import com.assessment.candidate.model.SubmitAssessmentQuestionAnswer;
+import com.assessment.candidate.model.SubmitAssessmentReq;
 import com.assessment.candidate.response.AssessmentDetailResponse;
 import com.assessment.candidate.response.AssessmentQuestionResponse;
 import com.assessment.candidate.response.AssessmentResponse;
@@ -61,6 +62,13 @@ public class AssessmentsController {
                                                         @RequestBody SubmitAssessmentQuestionAnswer submitAssessmentQuestionAnswer
                                                    ) throws MessagingException {
         return assessmentsService.submitAssessment(emailId,submitAssessmentQuestionAnswer);
+    }
+
+    @PostMapping(value = "/submitAssessmentMap", produces = MediaType.APPLICATION_JSON_VALUE)
+    public AssessmentSubmittedResponse submitAssessmentMap(@RequestParam("emailId") String emailId,
+                                                        @RequestBody SubmitAssessmentReq submitAssessmentReq
+    ) throws MessagingException {
+        return assessmentsService.submitAssessment(emailId,submitAssessmentReq);
     }
 
     @GetMapping(value = "/candidateAssessmentCount" , produces = MediaType.APPLICATION_JSON_VALUE)

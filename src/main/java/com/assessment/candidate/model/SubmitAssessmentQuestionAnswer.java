@@ -1,7 +1,10 @@
 package com.assessment.candidate.model;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.util.List;
 
@@ -14,6 +17,9 @@ public class SubmitAssessmentQuestionAnswer {
 
 
     @Data
+    @Builder
+    @NoArgsConstructor
+    @AllArgsConstructor
     public static class QuestionAnswerReq {
         private Integer questionId;
         private Integer optionId;

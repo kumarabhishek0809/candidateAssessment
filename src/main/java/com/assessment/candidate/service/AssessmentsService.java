@@ -1,10 +1,10 @@
 package com.assessment.candidate.service;
 
+import com.assessment.candidate.entity.Assessment;
+import com.assessment.candidate.entity.Candidate;
+import com.assessment.candidate.entity.CandidateAssessment;
 import com.assessment.candidate.entity.*;
-import com.assessment.candidate.model.AssessmentCandidateCount;
-import com.assessment.candidate.model.AssessmentRequest;
-import com.assessment.candidate.model.Email;
-import com.assessment.candidate.model.SubmitAssessmentQuestionAnswer;
+import com.assessment.candidate.model.*;
 import com.assessment.candidate.repository.*;
 import com.assessment.candidate.response.AssessmentDetailResponse;
 import com.assessment.candidate.response.AssessmentQuestionResponse;
@@ -131,6 +131,27 @@ public class AssessmentsService {
         return questions;
     }
 
+    public AssessmentSubmittedResponse submitAssessment(String emailId,
+                                                        SubmitAssessmentReq submitAssessmentReq)
+            throws MessagingException {
+
+        AssessmentSubmittedResponse assessmentDetailResponse =
+                AssessmentSubmittedResponse.builder().build();
+        assessmentDetailResponse.setDataAvailable(false);
+
+        List<SubmitAssessmentQuestionAnswer.QuestionAnswerReq> questionAnswersRequestReq = new ArrayList<>();
+        if (submitAssessmentReq != null && submitAssessmentReq.getQuestionAnswerReq() != null) {
+            submitAssessmentReq.getQuestionAnswerReq().forEach(
+                    (questionId, optionId) -> {
+                        questionAnswersRequestReq.add(SubmitAssessmentQuestionAnswer.QuestionAnswerReq.builder().questionId(questionId).optionId(optionId).build());
+                    });
+            SubmitAssessmentQuestionAnswer submitAssessmentQuestionAnswer = new SubmitAssessmentQuestionAnswer();
+            submitAssessmentQuestionAnswer.setAssessmentId(submitAssessmentReq.getAssessmentId());
+            submitAssessmentQuestionAnswer.setQuestionAnswerReq(questionAnswersRequestReq);
+            assessmentDetailResponse = submitAssessment(emailId, submitAssessmentQuestionAnswer);
+        }
+        return assessmentDetailResponse;
+    }
 
     public AssessmentSubmittedResponse submitAssessment(String emailId,
                                                         SubmitAssessmentQuestionAnswer
@@ -158,7 +179,8 @@ public class AssessmentsService {
         candidateAssessment = dbCandidateAssessments.stream().filter(ca
                 ->
                 !ca.isStatus()
-                        && ca.getAssessment().getId().equals(submitAssessmentQuestionAnswer.getAssessmentId()))
+                        && ca.getAssessment().getId()
+                        .equals(submitAssessmentQuestionAnswer.getAssessmentId()))
                 .findFirst().orElse(null);
 
         if (candidateAssessment == null) {
@@ -179,17 +201,17 @@ public class AssessmentsService {
 
             Set<SubmitAssessmentQuestionAnswer.QuestionAnswerReq> uniqueSet =
                     new TreeSet(new Comparator() {
-                @Override
-                public int compare(Object o1, Object o2) {
-                    if (((SubmitAssessmentQuestionAnswer.QuestionAnswerReq) o1)
-                            .getQuestionId()
-                            .equals(((SubmitAssessmentQuestionAnswer.QuestionAnswerReq) o2)
-                                    .getQuestionId())) {
-                        return 0;
-                    }
-                    return 1;
-                }
-            });
+                        @Override
+                        public int compare(Object o1, Object o2) {
+                            if (((SubmitAssessmentQuestionAnswer.QuestionAnswerReq) o1)
+                                    .getQuestionId()
+                                    .equals(((SubmitAssessmentQuestionAnswer.QuestionAnswerReq) o2)
+                                            .getQuestionId())) {
+                                return 0;
+                            }
+                            return 1;
+                        }
+                    });
             uniqueSet.addAll(questionAnswersRequestReq);
 
             questionAnswersRequestReq = new ArrayList(uniqueSet);
