@@ -17,12 +17,25 @@ public class PurgeData {
     }
 
     @Scheduled(fixedDelay = 12 * 60 * 60 * 1000, initialDelay = 500)
-    public void purgeData(){
+    public void purgeAttemptedData(){
         System.out.println("purgeData Cache");
 
         ZonedDateTime past180Days = ZonedDateTime.now().plusDays(-180);
 
         Iterable<CandidateAssessment> allByAttemptedDateBefore = candidateAssessmentRepository.findAllByAttemptedDateBefore(past180Days);
+        candidateAssessmentRepository.deleteAll(allByAttemptedDateBefore);
+
+        System.out.println("purgeData Cache");
+
+    }
+
+    @Scheduled(fixedDelay = 12 * 60 * 60 * 1000, initialDelay = 500)
+    public void purgeInvitedData(){
+        System.out.println("purgeData Cache");
+
+        ZonedDateTime past180Days = ZonedDateTime.now().plusDays(-7);
+
+        Iterable<CandidateAssessment> allByAttemptedDateBefore = candidateAssessmentRepository.findAllByInviteDateBeforeAndAttemptedDateIsNull(past180Days);
         candidateAssessmentRepository.deleteAll(allByAttemptedDateBefore);
 
         System.out.println("purgeData Cache");

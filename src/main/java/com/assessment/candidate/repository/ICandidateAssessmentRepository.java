@@ -14,4 +14,6 @@ public interface ICandidateAssessmentRepository extends CrudRepository<Candidate
     List<AssessmentCandidateCount> getCandidateAssessmentCount();
 
     Iterable<CandidateAssessment> findAllByAttemptedDateBefore(ZonedDateTime past180Days);
+
+    Iterable<CandidateAssessment> findAllByInviteDateBeforeAndAttemptedDateIsNull(ZonedDateTime past180Days);
 }
