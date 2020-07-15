@@ -96,6 +96,7 @@ http://localhost:8080/question
 #!/bin/sh
 
 sudo yum update -y
+
 sudo yum install git -y
 
 sudo yum install -y https://dev.mysql.com/get/mysql57-community-release-el7-11.noarch.rpm
