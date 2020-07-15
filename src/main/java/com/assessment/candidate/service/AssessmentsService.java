@@ -99,6 +99,7 @@ public class AssessmentsService {
                                 .technology(assessment.getTechnology())
                                 .passingPercentage(assessment.getPassingPercentage())
                                 .questions(getRandomQuestions(assessment))
+                                .noOfQuestions(Optional.ofNullable(assessment.getQuestionCount()).orElse(new Integer(25)))
                                 .build());
                 assessmentDetailResponse.setDataAvailable(true);
             } else {
@@ -117,7 +118,7 @@ public class AssessmentsService {
 
             Integer questionCount =
                     Optional.ofNullable(assessment.getQuestionCount())
-                    .orElse(25);
+                            .orElse(25);
             if (questionCount > assessmentQuestions.size()) {
                 questionCount = assessmentQuestions.size();
             }

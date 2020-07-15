@@ -26,7 +26,7 @@ public class AssessmentDetailResponse extends GenericResponse{
         private String name;
         private String technology;
         private Integer passingPercentage;
-
+        private Integer noOfQuestions;
         private List<Question> questions;
     }
 
