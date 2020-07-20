@@ -6,10 +6,7 @@ import com.assessment.candidate.entity.CandidateAssessment;
 import com.assessment.candidate.entity.*;
 import com.assessment.candidate.model.*;
 import com.assessment.candidate.repository.*;
-import com.assessment.candidate.response.AssessmentDetailResponse;
-import com.assessment.candidate.response.AssessmentQuestionResponse;
-import com.assessment.candidate.response.AssessmentResponse;
-import com.assessment.candidate.response.AssessmentSubmittedResponse;
+import com.assessment.candidate.response.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
@@ -64,6 +61,53 @@ public class AssessmentsService {
         return assessmentResponse;
     }
 
+
+    public AssessmentQuestionOptionsResponse getAssessmentQuestions(Integer assessmentId, String emailId) {
+        AssessmentQuestionOptionsResponse assessmentDetailResponse = AssessmentQuestionOptionsResponse.builder().build();
+        assessmentDetailResponse.setDataAvailable(false);
+
+        //validate if test is scheduled for email id.
+        boolean isAssessmentAvailable = false;
+
+        if (!StringUtils.isEmpty(emailId)) {
+
+            Candidate candidate = candidateRepository.findByEmailAddress(emailId)
+                    .orElseThrow(() ->
+                            new RuntimeException("Candidate Details does not exits for email : " + emailId));
+
+            assessmentDetailResponse.setCandidate(candidateService
+                    .mapEntityToModel(candidate, null));
+
+            isAssessmentAvailable = candidate.getCandidateAssessments()
+                    .stream().filter(ca -> !ca.isStatus())
+                    .filter(candidateAssessment
+                            -> candidateAssessment.getAssessment().getId().equals(assessmentId))
+                    .findAny().isPresent();
+
+            if (isAssessmentAvailable) {
+                Assessment assessment = assessmentCandidateMapper.getAssessment(assessmentId)
+                        .orElseThrow(() ->
+                                new RuntimeException("Assessment not exists for assessmentId "
+                                        + assessmentId));
+
+                assessmentDetailResponse.setAssessments(
+                        AssessmentQuestionOptionsResponse.Assessment.builder()
+                                .id(assessment.getId())
+                                .name(assessment.getName())
+                                .duration(assessment.getDuration())
+                                .technology(assessment.getTechnology())
+                                .passingPercentage(assessment.getPassingPercentage())
+                                .questions(getRandomQuestionsForAssessment(assessment))
+                                .noOfQuestions(Optional.ofNullable(assessment.getQuestionCount()).orElse(new Integer(25)))
+                                .build());
+                assessmentDetailResponse.setDataAvailable(true);
+            } else {
+                assessmentDetailResponse.setDataAvailable(false);
+            }
+        }
+        return assessmentDetailResponse;
+    }
+
     public AssessmentDetailResponse getAssessment(Integer assessmentId, String emailId) {
         AssessmentDetailResponse assessmentDetailResponse = AssessmentDetailResponse.builder().build();
         assessmentDetailResponse.setDataAvailable(false);
@@ -107,6 +151,43 @@ public class AssessmentsService {
             }
         }
         return assessmentDetailResponse;
+    }
+
+    private List<AssessmentQuestionOptionsResponse.Question> getRandomQuestionsForAssessment(Assessment assessment) {
+        List<AssessmentQuestionOptionsResponse.Question> questions = new ArrayList<>();
+        if (assessment != null) {
+            List<Question> assessmentQuestions = assessment.getQuestions().stream().filter(question -> question.isValid()).collect(Collectors.toList());
+            Collections.shuffle(assessmentQuestions);
+
+            Integer questionCount =
+                    Optional.ofNullable(assessment.getQuestionCount())
+                            .orElse(25);
+            if (questionCount > assessmentQuestions.size()) {
+                questionCount = assessmentQuestions.size();
+            }
+
+            List<Question> shuffeledQuestions = assessmentQuestions.subList(0, questionCount);
+            questions = shuffeledQuestions.stream().map(question -> {
+                return AssessmentQuestionOptionsResponse.Question.builder()
+                        .answer(question.getAnswer())
+                        .header(question.getHeader())
+                        .questionImgPath(question.getQuestionImgPath())
+                        .id(question.getId())
+                        .questionType(question.getQuestionType())
+                        .technology(question.getTechnology())
+                        .options(getOptionsAsMap(question.getOptions()))
+                        .build();
+            }).collect(Collectors.toList());
+        }
+        return questions;
+    }
+
+    private Map<Integer, String> getOptionsAsMap(List<Options> options) {
+        Map<Integer, String> optionsMap = new HashMap<>();
+        if (!CollectionUtils.isEmpty(options)) {
+            optionsMap = options.stream().collect(Collectors.toMap(Options::getId, Options::getDescription));
+        }
+        return optionsMap;
     }
 
     private List<Question> getRandomQuestions(Assessment assessment) {

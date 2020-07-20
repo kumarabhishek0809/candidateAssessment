@@ -36,4 +36,6 @@ public class Question {
     @Builder.Default
     private boolean valid = true;
 
+    private String questionImgPath;
+
 }
