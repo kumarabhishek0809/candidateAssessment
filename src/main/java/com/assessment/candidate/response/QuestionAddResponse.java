@@ -10,5 +10,6 @@ public class QuestionAddResponse extends GenericResponse{
 
     private Question question;
     private EvaluationResponse evaluationResponse;
+    private String message;
 
 }

@@ -54,14 +54,16 @@ public class QuestionService {
             if (questionsRequest.getQuestionTypeId().equals(new Integer(1))) {
                 long count = options.stream().filter(op -> op.isAnswerOption()).count();
                 if (count != 1) {
-                    throw new RuntimeException("Only One Answer is correct");
+                    genericResponse.setMessage("Only One Answer is correct");
+                    return genericResponse;
                 }
             }
 
             Optional<Question> byHeader = questionRepository.findByHeader(StringUtils.trimWhitespace(questionsRequest.getHeader()));
 
             if (byHeader.isPresent()) {
-                throw new RuntimeException("Question Already Present");
+                genericResponse.setMessage("Question Already Present");
+                return genericResponse;
             }
 
             Question question = Question.builder().answer(
