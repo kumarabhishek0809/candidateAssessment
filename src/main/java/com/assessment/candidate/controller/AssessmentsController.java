@@ -25,11 +25,15 @@ public class AssessmentsController {
         this.assessmentsService = assessmentsService;
     }
 
-    @PostMapping(value = "/assessment", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<AssessmentQuestionResponse> addAssessment(@RequestBody AssessmentRequest
-                                                                            assessmentRequest) {
-        AssessmentQuestionResponse genericResponse = assessmentsService.addUpdateAssessment(assessmentRequest);
-        return new ResponseEntity<>(genericResponse, new HttpHeaders(), HttpStatus.OK);
+    @GetMapping(value = "/assessments", produces = MediaType.APPLICATION_JSON_VALUE)
+    public AssessmentResponse getAssessments() {
+        return assessmentsService.getAssessments();
+    }
+
+    @GetMapping(value = "/assessment", produces = MediaType.APPLICATION_JSON_VALUE)
+    public AssessmentDetailResponse getAssessments(@RequestParam(required = false, name = "emailId") String emailId,
+                                                   @RequestParam("assessmentId") Integer assessmentId) {
+        return assessmentsService.getAssessment(assessmentId, emailId);
     }
 
     @PutMapping(value = "/assessment", produces = MediaType.APPLICATION_JSON_VALUE)
@@ -42,15 +46,11 @@ public class AssessmentsController {
         return new ResponseEntity<>(genericResponse, new HttpHeaders(), HttpStatus.OK);
     }
 
-    @GetMapping(value = "/assessments", produces = MediaType.APPLICATION_JSON_VALUE)
-    public AssessmentResponse getAssessments() {
-        return assessmentsService.getAssessments();
-    }
-
-    @GetMapping(value = "/assessment", produces = MediaType.APPLICATION_JSON_VALUE)
-    public AssessmentDetailResponse getAssessments(@RequestParam("emailId") String emailId,
-                                                   @RequestParam("assessmentId") Integer assessmentId) {
-        return assessmentsService.getAssessment(assessmentId, emailId);
+    @PostMapping(value = "/assessment", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<AssessmentQuestionResponse> addAssessment(@RequestBody AssessmentRequest
+                                                                            assessmentRequest) {
+        AssessmentQuestionResponse genericResponse = assessmentsService.addUpdateAssessment(assessmentRequest);
+        return new ResponseEntity<>(genericResponse, new HttpHeaders(), HttpStatus.OK);
     }
 
     @GetMapping(value = "/assessmentQuestions", produces = MediaType.APPLICATION_JSON_VALUE)

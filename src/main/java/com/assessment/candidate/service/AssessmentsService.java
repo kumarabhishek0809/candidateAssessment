@@ -54,11 +54,15 @@ public class AssessmentsService {
             assessments.add(assessmentCandidateMapper.mapEntityToModel(assessment));
         }
 
-
         AssessmentResponse assessmentResponse = AssessmentResponse.builder()
                 .assessments(assessments).build();
         assessmentResponse.setDataAvailable(true);
         return assessmentResponse;
+    }
+
+    @Cacheable(value = CANDIDATE_CACHE, key = " 'getAssessment' ")
+    public Assessment getAssessment(Integer assessmentId) {
+        return assessmentRepository.findById(assessmentId).orElseThrow(() -> new RuntimeException("Assessment Not found"));
     }
 
 
@@ -112,42 +116,56 @@ public class AssessmentsService {
         AssessmentDetailResponse assessmentDetailResponse = AssessmentDetailResponse.builder().build();
         assessmentDetailResponse.setDataAvailable(false);
 
-        //validate if test is scheduled for email id.
-        boolean isAssessmentAvailable = false;
+        if (StringUtils.isEmpty(emailId) && Optional.ofNullable(assessmentId).isPresent()) {
+            Assessment assessment = getAssessment(assessmentId);
+            assessmentDetailResponse.setAssessments(
+                    AssessmentDetailResponse.Assessment.builder()
+                            .id(assessment.getId())
+                            .name(assessment.getName())
+                            .duration(assessment.getDuration())
+                            .technology(assessment.getTechnology())
+                            .passingPercentage(assessment.getPassingPercentage())
+                            .questions(assessment.getQuestions())
+                            .build());
+            assessmentDetailResponse.setDataAvailable(true);
+        } else {
+            //validate if test is scheduled for email id.
+            boolean isAssessmentAvailable = false;
 
-        if (!StringUtils.isEmpty(emailId)) {
-            Candidate candidate = candidateRepository.findByEmailAddress(emailId)
-                    .orElseThrow(() ->
-                            new RuntimeException("Candidate Details does not exits for email : " + emailId));
-
-            assessmentDetailResponse.setCandidate(candidateService
-                    .mapEntityToModel(candidate, null));
-
-            isAssessmentAvailable = candidate.getCandidateAssessments()
-                    .stream().filter(ca -> !ca.isStatus())
-                    .filter(candidateAssessment
-                            -> candidateAssessment.getAssessment().getId().equals(assessmentId))
-                    .findAny().isPresent();
-
-            if (isAssessmentAvailable) {
-                Assessment assessment = assessmentCandidateMapper.getAssessment(assessmentId)
+            if (!StringUtils.isEmpty(emailId)) {
+                Candidate candidate = candidateRepository.findByEmailAddress(emailId)
                         .orElseThrow(() ->
-                                new RuntimeException("Assessment not exists for assessmentId "
-                                        + assessmentId));
+                                new RuntimeException("Candidate Details does not exits for email : " + emailId));
 
-                assessmentDetailResponse.setAssessments(
-                        AssessmentDetailResponse.Assessment.builder()
-                                .id(assessment.getId())
-                                .name(assessment.getName())
-                                .duration(assessment.getDuration())
-                                .technology(assessment.getTechnology())
-                                .passingPercentage(assessment.getPassingPercentage())
-                                .questions(getRandomQuestions(assessment))
-                                .noOfQuestions(Optional.ofNullable(assessment.getQuestionCount()).orElse(new Integer(25)))
-                                .build());
-                assessmentDetailResponse.setDataAvailable(true);
-            } else {
-                assessmentDetailResponse.setDataAvailable(false);
+                assessmentDetailResponse.setCandidate(candidateService
+                        .mapEntityToModel(candidate, null));
+
+                isAssessmentAvailable = candidate.getCandidateAssessments()
+                        .stream().filter(ca -> !ca.isStatus())
+                        .filter(candidateAssessment
+                                -> candidateAssessment.getAssessment().getId().equals(assessmentId))
+                        .findAny().isPresent();
+
+                if (isAssessmentAvailable) {
+                    Assessment assessment = assessmentCandidateMapper.getAssessment(assessmentId)
+                            .orElseThrow(() ->
+                                    new RuntimeException("Assessment not exists for assessmentId "
+                                            + assessmentId));
+
+                    assessmentDetailResponse.setAssessments(
+                            AssessmentDetailResponse.Assessment.builder()
+                                    .id(assessment.getId())
+                                    .name(assessment.getName())
+                                    .duration(assessment.getDuration())
+                                    .technology(assessment.getTechnology())
+                                    .passingPercentage(assessment.getPassingPercentage())
+                                    .questions(getRandomQuestions(assessment))
+                                    .noOfQuestions(Optional.ofNullable(assessment.getQuestionCount()).orElse(new Integer(25)))
+                                    .build());
+                    assessmentDetailResponse.setDataAvailable(true);
+                } else {
+                    assessmentDetailResponse.setDataAvailable(false);
+                }
             }
         }
         return assessmentDetailResponse;
