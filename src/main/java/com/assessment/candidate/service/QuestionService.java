@@ -59,10 +59,15 @@ public class QuestionService {
                 }
             }
 
-            Optional<Question> byHeader = questionRepository.findByHeader(StringUtils.trimWhitespace(questionsRequest.getHeader()));
+            String headerTrimmed = StringUtils.trimWhitespace(questionsRequest.getHeader());
+            if (StringUtils.isEmpty(headerTrimmed)) {
+                genericResponse.setMessage("Question description should not be blank");
+                return genericResponse;
+            }
+            Optional<Question> byHeader = questionRepository.findByHeader(headerTrimmed);
 
             if (byHeader.isPresent()) {
-                genericResponse.setMessage("Question Already Present");
+                genericResponse.setMessage("Question Already Present "+byHeader.get().getId());
                 return genericResponse;
             }
 
@@ -72,7 +77,7 @@ public class QuestionService {
                             -> new RuntimeException("Incorrect Answer Id")))
                     .questionType(questionTypeRepository.findById(questionsRequest.getQuestionTypeId())
                             .orElseThrow(() -> new RuntimeException("Question Type Id")))
-                    .header(StringUtils.trimWhitespace(questionsRequest.getHeader()))
+                    .header(headerTrimmed)
                     .technology(questionsRequest.getTechnology())
                     .options(optionsEntity)
                     .build();
