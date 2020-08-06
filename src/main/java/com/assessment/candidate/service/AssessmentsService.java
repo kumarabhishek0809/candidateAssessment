@@ -177,7 +177,7 @@ public class AssessmentsService {
             questionsPojo = questions.stream().map(question -> {
 
                 return AssessmentDetailResponse.Question.builder()
-                        .active("" + question.isValid())
+                        .active(question.isValid())
                         .header(question.getHeader())
                         .answer(question.getAnswer())
                         .id(question.getId())

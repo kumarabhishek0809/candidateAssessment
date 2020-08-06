@@ -47,7 +47,7 @@ public class AssessmentDetailResponse extends GenericResponse{
         private QuestionType questionType;
         @Builder.Default
         private boolean valid = true;
-        private String active;
+        private boolean active;
         private String questionImgPath;
 
     }
