@@ -31,7 +31,8 @@ public class AssessmentsController {
     }
 
     @GetMapping(value = "/assessment", produces = MediaType.APPLICATION_JSON_VALUE)
-    public AssessmentDetailResponse getAssessments(@RequestParam(required = false, name = "emailId") String emailId,
+    public AssessmentDetailResponse getAssessments(@RequestParam(required = false, name = "emailId")
+                                                               String emailId,
                                                    @RequestParam("assessmentId") Integer assessmentId) {
         return assessmentsService.getAssessment(assessmentId, emailId);
     }

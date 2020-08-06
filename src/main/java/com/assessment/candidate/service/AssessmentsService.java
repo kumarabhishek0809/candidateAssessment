@@ -125,7 +125,7 @@ public class AssessmentsService {
                             .duration(assessment.getDuration())
                             .technology(assessment.getTechnology())
                             .passingPercentage(assessment.getPassingPercentage())
-                            .questions(assessment.getQuestions())
+                            .questions(mapToPojoQuestion(assessment.getQuestions()))
                             .build());
             assessmentDetailResponse.setDataAvailable(true);
         } else {
@@ -159,7 +159,7 @@ public class AssessmentsService {
                                     .duration(assessment.getDuration())
                                     .technology(assessment.getTechnology())
                                     .passingPercentage(assessment.getPassingPercentage())
-                                    .questions(getRandomQuestions(assessment))
+                                    .questions(mapToPojoQuestion(getRandomQuestions(assessment)))
                                     .noOfQuestions(Optional.ofNullable(assessment.getQuestionCount()).orElse(new Integer(25)))
                                     .build());
                     assessmentDetailResponse.setDataAvailable(true);
@@ -171,10 +171,34 @@ public class AssessmentsService {
         return assessmentDetailResponse;
     }
 
+    private List<AssessmentDetailResponse.Question> mapToPojoQuestion(List<Question> questions) {
+        List<AssessmentDetailResponse.Question> questionsPojo = new ArrayList<>();
+        if (!CollectionUtils.isEmpty(questions)) {
+            questionsPojo = questions.stream().map(question -> {
+
+                return AssessmentDetailResponse.Question.builder()
+                        .active("" + question.isValid())
+                        .header(question.getHeader())
+                        .answer(question.getAnswer())
+                        .id(question.getId())
+                        .options(question.getOptions())
+                        .questionImgPath(question.getQuestionImgPath())
+                        .questionType(question.getQuestionType())
+                        .technology(question.getTechnology())
+                        .valid(question.isValid())
+                        .build();
+
+            }).collect(Collectors.toList());
+        }
+
+        return questionsPojo;
+    }
+
     private List<AssessmentQuestionOptionsResponse.Question> getRandomQuestionsForAssessment(Assessment assessment) {
         List<AssessmentQuestionOptionsResponse.Question> questions = new ArrayList<>();
         if (assessment != null) {
-            List<Question> assessmentQuestions = assessment.getQuestions().stream().filter(question -> question.isValid()).collect(Collectors.toList());
+            List<Question> assessmentQuestions = assessment.getQuestions().stream().filter(
+                    question -> question.isValid()).collect(Collectors.toList());
             Collections.shuffle(assessmentQuestions);
 
             Integer questionCount =

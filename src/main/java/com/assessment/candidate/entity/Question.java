@@ -7,6 +7,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import java.time.ZonedDateTime;
 import java.util.List;
 
 @Data
@@ -37,5 +38,9 @@ public class Question {
     private boolean valid = true;
 
     private String questionImgPath;
+
+    @Builder.Default
+    private ZonedDateTime createdDate = ZonedDateTime.now();
+
 
 }
