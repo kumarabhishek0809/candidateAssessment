@@ -32,6 +32,7 @@ dependencies {
 
     //MYSQL
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+    implementation 'org.springframework.boot:spring-boot-starter-data-rest'
     runtimeOnly 'mysql:mysql-connector-java'
 
     //H2-DATABASE
@@ -39,7 +40,6 @@ dependencies {
 
     //Email Library
     compile('org.springframework.boot:spring-boot-starter-mail')
-
     compile group: 'commons-validator', name: 'commons-validator', version: '1.6'
 
 }
