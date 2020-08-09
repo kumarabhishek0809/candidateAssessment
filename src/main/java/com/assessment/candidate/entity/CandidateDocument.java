@@ -6,10 +6,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
 import java.time.ZonedDateTime;
 
 @Data
@@ -22,12 +19,15 @@ public class CandidateDocument {
 
     @Id
     @GeneratedValue(strategy= GenerationType.AUTO)
-    private Integer documentId;
+    private Integer document_id;
 
     private String emailId;
     private String candidateName;
     private String documentName;
+
+    @Column(length = 500000)
     private String image;
+
     @Builder.Default
     private ZonedDateTime createdDate = ZonedDateTime.now();;
     @Builder.Default
