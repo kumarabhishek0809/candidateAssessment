@@ -38,6 +38,4 @@ public class CandidateApplication {
         System.out.println("Flush Cache");
     }
 
-
-
 }
