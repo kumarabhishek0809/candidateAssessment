@@ -13,4 +13,7 @@ public interface ICandidateDocumentRepository extends CrudRepository<CandidateDo
 
     @RestResource(path = "emailId")
     List<CandidateDocument> findByEmailId(String emailId);
+
+    @RestResource(path = "emailAndDocumentName")
+    List<CandidateDocument> findByEmailIdAndDocumentName(String emailId,String documentName);
 }
